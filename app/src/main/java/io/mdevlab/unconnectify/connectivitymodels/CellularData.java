@@ -18,10 +18,10 @@ public class CellularData {
     private final String TAG = CellularData.class.getSimpleName();
 
     private static CellularData instance = null;
-    private TelephonyManager telephonyManager = null;
+    private TelephonyManager mTelephonyManager = null;
 
     private CellularData(Context context) {
-        telephonyManager = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
+        mTelephonyManager = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
     }
 
     public static CellularData getInstance(Context context) {
@@ -32,9 +32,9 @@ public class CellularData {
 
     public void setMobileDataState(boolean mobileDataEnabled) {
         try {
-            Method setMobileDataEnabledMethod = telephonyManager.getClass().getDeclaredMethod("setDataEnabled", boolean.class);
+            Method setMobileDataEnabledMethod = mTelephonyManager.getClass().getDeclaredMethod("setDataEnabled", boolean.class);
             if (setMobileDataEnabledMethod != null)
-                setMobileDataEnabledMethod.invoke(telephonyManager, mobileDataEnabled);
+                setMobileDataEnabledMethod.invoke(mTelephonyManager, mobileDataEnabled);
         } catch (Exception ex) {
             Log.e(TAG, "Error setting mobile data state", ex);
         }
@@ -42,9 +42,9 @@ public class CellularData {
 
     public boolean getMobileDataState() {
         try {
-            Method getMobileDataEnabledMethod = telephonyManager.getClass().getDeclaredMethod("getDataEnabled");
+            Method getMobileDataEnabledMethod = mTelephonyManager.getClass().getDeclaredMethod("getDataEnabled");
             if (getMobileDataEnabledMethod != null)
-                return (Boolean) getMobileDataEnabledMethod.invoke(telephonyManager);
+                return (Boolean) getMobileDataEnabledMethod.invoke(mTelephonyManager);
         } catch (Exception ex) {
             Log.e(TAG, "Error getting mobile data state", ex);
         }

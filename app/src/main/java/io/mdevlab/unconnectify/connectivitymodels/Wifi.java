@@ -15,10 +15,10 @@ import android.net.wifi.WifiManager;
 public class Wifi {
 
     private static Wifi instance = null;
-    private WifiManager wifiManager = null;
+    private WifiManager mWifiManager = null;
 
     private Wifi(Context context) {
-        wifiManager = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
+        mWifiManager = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
     }
 
     public static Wifi getInstance(Context context) {
@@ -28,12 +28,12 @@ public class Wifi {
     }
 
     public void enable() {
-        if (!wifiManager.isWifiEnabled())
-            wifiManager.setWifiEnabled(true);
+        if (!mWifiManager.isWifiEnabled())
+            mWifiManager.setWifiEnabled(true);
     }
 
     public void disable() {
-        if (wifiManager.isWifiEnabled())
-            wifiManager.setWifiEnabled(false);
+        if (mWifiManager.isWifiEnabled())
+            mWifiManager.setWifiEnabled(false);
     }
 }

@@ -8,16 +8,16 @@ import android.bluetooth.BluetoothAdapter;
  * Bluetooth implements the singleton design pattern since only one instance of this class is needed
  * to manage enabling/disabling Bluetooth
  * <p>
- * Created by husaynhakeem on 2/10/17.
+ * Created by mdevlab on 2/10/17.
  */
 
 public class Bluetooth {
 
     private static Bluetooth instance = null;
-    private BluetoothAdapter bluetoothAdapter = null;
+    private BluetoothAdapter mBluetoothAdapter = null;
 
     private Bluetooth() {
-        bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+        mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
     }
 
     public static Bluetooth getInstance() {
@@ -27,12 +27,12 @@ public class Bluetooth {
     }
 
     public void enable() {
-        if (!bluetoothAdapter.isEnabled())
-            bluetoothAdapter.enable();
+        if (!mBluetoothAdapter.isEnabled())
+            mBluetoothAdapter.enable();
     }
 
     public void disable() {
-        if (bluetoothAdapter.isEnabled())
-            bluetoothAdapter.disable();
+        if (mBluetoothAdapter.isEnabled())
+            mBluetoothAdapter.disable();
     }
 }
