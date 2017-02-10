@@ -4,7 +4,7 @@ import android.content.Context;
 import android.net.wifi.WifiManager;
 
 /**
- * This class handles connecting and disconnecting from a WIFI network
+ * This class handles connecting to and disconnecting from a WIFI network
  * <p>
  * Wifi implements the singleton design pattern since only one instance of this class is needed
  * to manage enabling/disabling WIFI connection
