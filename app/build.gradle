@@ -26,6 +26,13 @@ dependencies {
     })
     compile 'com.android.support:appcompat-v7:25.1.0'
     compile 'com.android.support:design:25.1.0'
-    testCompile 'junit:junit:4.12'
+
+    // Hotspot management
     compile 'cc.mvdan.accesspoint:library:0.2.0'
+
+    // Job scheduling
+    compile 'com.evernote:android-job:1.1.5'
+
+    // Unit tests
+    testCompile 'junit:junit:4.12'
 }

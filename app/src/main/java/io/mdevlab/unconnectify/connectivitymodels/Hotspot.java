@@ -43,15 +43,15 @@ public class Hotspot extends  Connectivity{
 
     //TODO Bachiri Make Sure to Verify apControl is'nt empty befor you run below methods
     public void disable() {
-        apControl.disable();
+//        apControl.disable();
     }
 
 
     public void enable() {
         // Wifi must be disabled to enable the access point
-        if (wifiManager.isWifiEnabled())
-            wifiManager.setWifiEnabled(false);
-        apControl.enable();
+//        if (wifiManager.isWifiEnabled())
+//            wifiManager.setWifiEnabled(false);
+//        apControl.enable();
 
 
     }

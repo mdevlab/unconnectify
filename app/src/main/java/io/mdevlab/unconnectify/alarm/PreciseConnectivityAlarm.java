@@ -55,7 +55,8 @@ public class PreciseConnectivityAlarm {
     // Duration of the alarm
     private long mDuration;
 
-    public PreciseConnectivityAlarm(){}
+    public PreciseConnectivityAlarm() {
+    }
 
     /**
      * Constructor taking one single argument: The execution time of the alarm

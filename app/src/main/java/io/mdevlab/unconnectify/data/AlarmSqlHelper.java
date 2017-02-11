@@ -97,10 +97,10 @@ public class AlarmSqlHelper extends SQLiteOpenHelper {
      *
      * @param context
      */
+
     public AlarmSqlHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
-
 
     public AlarmSqlHelper(Context context, String name, SQLiteDatabase.CursorFactory factory, int version) {
         super(context, name, factory, version);
