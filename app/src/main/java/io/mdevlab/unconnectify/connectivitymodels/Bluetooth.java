@@ -11,7 +11,7 @@ import android.bluetooth.BluetoothAdapter;
  * Created by mdevlab on 2/10/17.
  */
 
-public class Bluetooth {
+public class Bluetooth extends Connectivity {
 
     private static Bluetooth instance = null;
     private BluetoothAdapter mBluetoothAdapter = null;

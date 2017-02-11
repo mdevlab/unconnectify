@@ -12,7 +12,7 @@ import android.net.wifi.WifiManager;
  * Created by mdevlab on 2/10/17.
  */
 
-public class Wifi {
+public class Wifi extends Connectivity {
 
     private static Wifi instance = null;
     private WifiManager mWifiManager = null;

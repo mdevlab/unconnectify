@@ -20,7 +20,7 @@ import cc.mvdan.accesspoint.WifiApControl;
  */
 
 
-public class Hotspot {
+public class Hotspot extends  Connectivity{
 
 
     private static Hotspot hotspot = null;

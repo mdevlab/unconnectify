@@ -13,7 +13,7 @@ import java.lang.reflect.Method;
  * Created by mdevlab on 2/10/17.
  */
 
-public class CellularData {
+public class CellularData extends  Connectivity{
 
     private final String TAG = CellularData.class.getSimpleName();
 
@@ -49,5 +49,15 @@ public class CellularData {
             Log.e(TAG, "Error getting mobile data state", ex);
         }
         return false;
+    }
+
+    @Override
+    protected void enable() {
+
+    }
+
+    @Override
+    protected void disable() {
+
     }
 }
