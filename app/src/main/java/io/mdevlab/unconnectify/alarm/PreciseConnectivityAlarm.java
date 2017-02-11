@@ -7,23 +7,11 @@ import java.util.List;
 import io.mdevlab.unconnectify.utils.Connection;
 
 /**
- * Class that extends the 'ConnectivityAlarm' class, and thus inherets
- * the following attributes:
- * - The exact time at which it is set to
- * - The days to which the alarm is set
- * - The connections the alarm is supposed to enable or disable
- * - The state of the alarm
- * On top of these attributes, this class adds the duration attribute which
- * defines when the alarm ends.
- * <p>
- * Created by mdevlab on 2/10/17.
- */
-
-/**
  * Class that represents one alarm.
- * An alarm is defined by 4 attributes:
+ * An alarm is defined by these attributes:
  * - The exact time at which it is set to. This represents the time
  * at which the alarm is supposed to go off at
+ * - The duration of the alarm
  * - The days to which the alarm is set. These days are represented
  * by the days of the week (Monday, Tuesday, ...)
  * - The connections the alarm is supposed to enable or disable. So far
@@ -36,15 +24,16 @@ import io.mdevlab.unconnectify.utils.Connection;
 
 public class PreciseConnectivityAlarm {
 
-    // Days to which the alarm is set
-    protected int mAlarmId;
-
-
-    // Days to which the alarm is set
-    protected List<Integer> mDays;
+    private int mAlarmId;
 
     // Time at which the alarm starts
     protected long mExecutionTimeInMils;
+
+    // Duration of the alarm
+    private long mDuration;
+
+    // Days to which the alarm is set
+    protected List<Integer> mDays;
 
     // Connections concerned by the alarm
     protected List<Connection> mConnections;
@@ -52,16 +41,55 @@ public class PreciseConnectivityAlarm {
     // Boolean defining whether or not the alarm is active/on
     protected boolean isActive;
 
-    // Duration of the alarm
-    private long mDuration;
+    // Date of last update of the alarm
+    private long mLastUpdate;
 
+    // Id of the job assigned to the alarm
+    private long jobId;
+
+    /**
+     * Empty constructor
+     */
     public PreciseConnectivityAlarm() {
+    }
+
+    /**
+     * Constructor taking 4 arguments: The execution time, the duration, the days of
+     * execution and the connection types concerned by the alarm.
+     * By default the alarm is active once it's created
+     *
+     * @param mConnections:         Connections that will affected by the alarm
+     * @param mDays:                Days to which the connection is set to, it mustn't be null
+     * @param mExecutionTimeInMils: The execution time of the alarm
+     * @param mDuration:            Duration after which the alarm should re-enable mConnections
+     */
+    public PreciseConnectivityAlarm(long mExecutionTimeInMils, long mDuration, List<Integer> mDays, List<Connection> mConnections) {
+        this.mExecutionTimeInMils = mExecutionTimeInMils;
+        this.mDuration = mDuration;
+        this.mDays = mDays;
+        this.mConnections = mConnections;
+        this.isActive = true;
+    }
+
+    /**
+     * Constructor taking 3 arguments: The execution time, the days of execution and
+     * the connection types concerned by the alarm.
+     * By default the alarm is active once it's created and its duration is 0
+     *
+     * @param mConnections:         Connections that will affected by the alarm
+     * @param mDays:                Days to which the connection is set to, it mustn't be null
+     * @param mExecutionTimeInMils: The execution time of the alarm
+     */
+    public PreciseConnectivityAlarm(long mExecutionTimeInMils, List<Integer> mDays, List<Connection> mConnections) {
+        this(mExecutionTimeInMils, 0, mDays, mConnections);
     }
 
     /**
      * Constructor taking one single argument: The execution time of the alarm
      * This is the most important information needed to set the alarm
+     * The duration of the alarm is 0 by default
      * The day of execution of the alarm is set by default to the current day
+     * The connection by default set is Wifi
      * And by default the alarm once created is active
      *
      * @param mExecutionTimeInMils: The execution time of the alarm, in milliseconds
@@ -70,39 +98,35 @@ public class PreciseConnectivityAlarm {
         this.mExecutionTimeInMils = mExecutionTimeInMils;
         this.mDuration = 0;
         this.mDays = getToday();
+        this.mConnections = getDefaultConnection();
         this.isActive = true;
     }
 
     /**
-     * Constructor taking 3 arguments: The execution time, the days of execution and
-     * the connection types concerned by the alarm.
-     * By default the alarm is active once it's created
-     *
-     * @param mConnections:         Connections that will affected by the alarm
-     * @param mDays:                Days to which the connection is set to, it mustn't be null
-     * @param mExecutionTimeInMils: The execution time of the alarm
-     */
-    public PreciseConnectivityAlarm(List<Connection> mConnections, List<Integer> mDays, long mExecutionTimeInMils) {
-        this.mConnections = mConnections;
-        this.mDays = mDays;
-        this.mExecutionTimeInMils = mExecutionTimeInMils;
-        this.mDuration = 0;
-        this.isActive = true;
-    }
-
-    /**
-     * Constructor taking as an argument another connectivityAlarm
-     * The new connectivityAlarm that's being created will be a copy of the alarm passed
+     * Constructor taking as an argument another alarm
+     * The new alarm object that's being created will be a copy of the alarm passed
      * as an argument
      *
      * @param alarm: An alarm on the base of which a new -the current- alarm will be created
      */
     public PreciseConnectivityAlarm(PreciseConnectivityAlarm alarm) {
-        this.mConnections = alarm.getConnections();
-        this.mExecutionTimeInMils = alarm.getExecuteTimeInMils();
-        this.mDuration = alarm.getDuration();
-        this.mDays = alarm.getDays();
-        this.isActive = true;
+        this(alarm.getExecuteTimeInMils(),
+                alarm.getDuration(),
+                alarm.getDays(),
+                alarm.getConnections());
+    }
+
+    /**
+     * Method that returns the default connection option set on the alarm's
+     * creation.
+     * For the moment the default connection is Wifi
+     *
+     * @return: A list containing the default connection option
+     */
+    private List<Connection> getDefaultConnection() {
+        List<Connection> wifi = new ArrayList<>();
+        wifi.add(Connection.WIFI);
+        return wifi;
     }
 
     /**
@@ -115,24 +139,6 @@ public class PreciseConnectivityAlarm {
         List<Integer> today = new ArrayList<>();
         today.add(Calendar.getInstance().get(Calendar.DAY_OF_WEEK));
         return today;
-    }
-
-    /**
-     * Constructor taking 4 arguments: The execution time, the days of execution, the
-     * connection types concerned by the alarm and the duration of the alarm.
-     * By default the alarm is active once it's created
-     *
-     * @param mConnections:         Connections that will affected by the alarm
-     * @param mDays:                Days to which the connection is set to, it mustn't be null
-     * @param mExecutionTimeInMils: The execution time of the alarm
-     * @param mDuration:            Duration after which the alarm should re-enable mConnections
-     */
-    public PreciseConnectivityAlarm(List<Connection> mConnections, List<Integer> mDays, long mExecutionTimeInMils, int mDuration) {
-        this.mConnections = mConnections;
-        this.mExecutionTimeInMils = mExecutionTimeInMils;
-        this.mDuration = mDuration;
-        this.mDays = mDays;
-        this.isActive = true;
     }
 
     /**
@@ -156,24 +162,25 @@ public class PreciseConnectivityAlarm {
      *
      * @param alarm: Alarm with which the current alarm is compared
      *               to determine if a conflict between the two exists
-     * @return: Whether or not the current alarm is in conflict with the
-     * alarm passed on as an argument
+     * @return: Id of the alarm in conflict with the current alarm, -1 if no
+     * conflict found
      */
-    public boolean inConflictWithAlarm(PreciseConnectivityAlarm alarm) {
+    public int inConflictWithAlarm(PreciseConnectivityAlarm alarm) {
         if (alarm != null) {
+
             // Determine if both alarms handle one or more same connection(s)
             if (hasSameConnectivity(alarm.getConnections()))
-                return true;
+                return alarm.getAlarmId();
 
             // Determine if both alarms are set to the same day(s)
             if (isLaunchedOnSameDay(alarm.getDays()))
-                return true;
+                return alarm.getAlarmId();
 
             // Determine if both alarms function in the same period
             if (isExecutedInTheSamePeriod(alarm.getExecuteTimeInMils(), alarm.getDuration()))
-                return true;
+                return alarm.getAlarmId();
         }
-        return false;
+        return -1;
     }
 
     /**
@@ -206,11 +213,39 @@ public class PreciseConnectivityAlarm {
         return false;
     }
 
+    /**
+     * Method that determines whether or not 2 connections function in the same period of time
+     *
+     * @param executionTime: Execution/ start time of the alarm
+     * @param duration:      Duration of the alarm
+     * @return
+     */
     private boolean isExecutedInTheSamePeriod(long executionTime, long duration) {
-//        if( (executionTime <= (mExecutionTimeInMils + mDuration)) &&
-//                ())
-//            return false;
+        return (isInRange(executionTime, mExecutionTimeInMils + mDuration, executionTime + duration) ||
+                isInRange(mExecutionTimeInMils, executionTime + duration, mExecutionTimeInMils + mDuration));
+    }
+
+    /**
+     * Utility method used in the method 'isExecutedInTheSamePeriod'
+     * It checks if a number is contained in a range
+     *
+     * @param lowerBound:   Lower bound of the range
+     * @param middleMember: Number being checked if in range or not
+     * @param upperBound:   Upper bound of the range
+     * @return: Whether or not the middle number is in the range [lowerBound, upperBound]
+     */
+    private boolean isInRange(long lowerBound, long middleMember, long upperBound) {
+        if (lowerBound <= middleMember && middleMember <= upperBound)
+            return true;
         return false;
+    }
+
+    public int getAlarmId() {
+        return mAlarmId;
+    }
+
+    public void setAlarmId(int alarmId) {
+        this.mAlarmId = alarmId;
     }
 
     public boolean isActive() {
@@ -251,10 +286,5 @@ public class PreciseConnectivityAlarm {
 
     public void setDuration(long mDuration) {
         this.mDuration = mDuration;
-    }
-
-
-    public void setAlarmId(int alarmId) {
-        this.mAlarmId = alarmId;
     }
 }
