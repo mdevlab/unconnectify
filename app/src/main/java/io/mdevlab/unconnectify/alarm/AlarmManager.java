@@ -5,6 +5,9 @@ import android.content.Context;
 import java.util.List;
 
 import io.mdevlab.unconnectify.data.AlarmSqlHelper;
+import io.mdevlab.unconnectify.jobs.ConnectivityJobManager;
+import io.mdevlab.unconnectify.notification.AlarmNotificationManager;
+import io.mdevlab.unconnectify.utils.AlarmUtils;
 import io.mdevlab.unconnectify.utils.Connection;
 
 /**
@@ -13,10 +16,12 @@ import io.mdevlab.unconnectify.utils.Connection;
 
 public class AlarmManager {
 
+    private static Context mContext;
     private static AlarmManager instance = null;
     private static AlarmSqlHelper alarmSqlHelper = null;
 
     private AlarmManager(Context context) {
+        this.mContext = context;
         alarmSqlHelper = new AlarmSqlHelper(context);
     }
 
@@ -44,17 +49,14 @@ public class AlarmManager {
     }
 
     /**
-     * In order to set an alarm, the following is needed:
-     * - The frequency of the alarm (every day, every monday, once, ...)
-     * - The service that will launch the alarm
-     * -
+     * Method that sets the first job for an alarm right after its creation
      *
-     * @param alarm
+     * @param alarm: The newly created alarm
      */
     private void createAlarmJob(PreciseConnectivityAlarm alarm) {
-        for(Connection connection: alarm.getConnections()) {
-
-        }
+        ConnectivityJobManager.buildJobRequest(AlarmUtils.getStringFromConnection(AlarmUtils.getFirstConnection(alarm)),
+                false,
+                alarm.getExecuteTimeInMils());
     }
 
     /**
@@ -102,7 +104,7 @@ public class AlarmManager {
      * @param alarm: Alarm we want to check if in conflict with other alarms
      * @return: Id of the conflicting alarm's id if a conflict is found, -1 otherwise
      */
-    public int handleAlarmConflicts(PreciseConnectivityAlarm alarm) {
+    public int handleAlarmConflicts(PreciseConnectivityAlarm alarm, Connection connection) {
         if (alarmSqlHelper != null) {
 
             // Get a list of all precise active alarms from the database
@@ -116,12 +118,16 @@ public class AlarmManager {
             for (PreciseConnectivityAlarm activeAlarm : activeAlarms) {
 
                 // If the two alarms are in conflict, return the conflicting alarm's Id
-                if (alarm.inConflictWithAlarm(activeAlarm) != -1)
+                if (alarm.inConflictWithAlarm(activeAlarm, connection) != -1)
                     return activeAlarm.getAlarmId();
             }
         }
 
         // At this point there aren't any conflicts, -1 is returned
         return -1;
+    }
+
+    public void handleNotification() {
+        AlarmNotificationManager.triggerNotification(mContext);
     }
 }

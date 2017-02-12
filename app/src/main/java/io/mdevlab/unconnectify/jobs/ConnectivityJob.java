@@ -9,6 +9,7 @@ import java.util.Calendar;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
+import io.mdevlab.unconnectify.alarm.AlarmManager;
 import io.mdevlab.unconnectify.alarm.PreciseConnectivityAlarm;
 import io.mdevlab.unconnectify.connectivitymodels.Bluetooth;
 import io.mdevlab.unconnectify.connectivitymodels.Connectivity;
@@ -16,9 +17,12 @@ import io.mdevlab.unconnectify.connectivitymodels.ConnectivityFactory;
 import io.mdevlab.unconnectify.connectivitymodels.Hotspot;
 import io.mdevlab.unconnectify.connectivitymodels.Wifi;
 import io.mdevlab.unconnectify.data.AlarmSqlHelper;
+import io.mdevlab.unconnectify.utils.AlarmUtils;
 import io.mdevlab.unconnectify.utils.Connection;
 import io.mdevlab.unconnectify.utils.Constants;
 import io.mdevlab.unconnectify.utils.DateUtils;
+
+import static io.mdevlab.unconnectify.utils.AlarmUtils.getConnectionFromString;
 
 /**
  * Created by mdevlab on 2/10/17.
@@ -87,6 +91,9 @@ public class ConnectivityJob extends Job {
         // Run the next job
         prepareNextJob(activate);
 
+        // Update notification for next alarm
+        updateNextAlarmNotification();
+
         return Result.SUCCESS;
     }
 
@@ -98,8 +105,32 @@ public class ConnectivityJob extends Job {
      */
     private void runCurrentJob(boolean enableConnectivity) {
         // Connectivity base object, can be wifi, hotspot or bluetooth
-        Connectivity connectivity = ConnectivityFactory.getConnectivity(getConnectionFromString(mTag), mContext);
+        Connectivity connectivity = ConnectivityFactory.getConnectivity(AlarmUtils.getConnectionFromString(mTag), mContext);
 
+        // check whether for the current connection, the alarm is in conflict with another alarm
+        int conflictAlarmId = AlarmManager.getInstance(mContext).handleAlarmConflicts(mCurrentAlarm, AlarmUtils.getConnectionFromString(mTag));
+
+        /**
+         * If the id is equal to -1, it means there wasn't any conflict
+         * And so the current alarm's job goes on
+         */
+        if (conflictAlarmId == -1) {
+
+            executeCurrentJob(connectivity, enableConnectivity);
+        }
+
+        /**
+         * If the id isn't equal to -1, it means there is a conflict
+         * In this case we execute the latest one
+         */
+        else {
+            PreciseConnectivityAlarm conflictAlarm = mAlarmSqlHelper.getAlarmById(mCurrentAlarm.getAlarmId());
+            if (conflictAlarm.getLastUpdate() < mCurrentAlarm.getLastUpdate())
+                executeCurrentJob(connectivity, enableConnectivity);
+        }
+    }
+
+    private void executeCurrentJob(Connectivity connectivity, boolean enableConnectivity) {
         // If it's wifi, enable/disable wifi
         if (connectivity instanceof Wifi)
             enableWifi(enableConnectivity);
@@ -287,6 +318,13 @@ public class ConnectivityJob extends Job {
     }
 
     /**
+     * Method that updates the displayed notification with the latest alarm info
+     */
+    private void updateNextAlarmNotification() {
+        AlarmManager.getInstance(mContext).handleNotification();
+    }
+
+    /**
      * Method that returns the next connection the job should handle
      *
      * @param connectionTag: Tag of the connection that's just been handled
@@ -326,27 +364,6 @@ public class ConnectivityJob extends Job {
 
             default:
                 return mTag;
-        }
-    }
-
-    /**
-     * Method that gets the connection enum value from a string
-     *
-     * @param tag: String value for a connection option
-     * @return
-     */
-    private Connection getConnectionFromString(String tag) {
-        switch (tag) {
-            case Constants.WIFI_TAG:
-                return Connection.WIFI;
-            case Constants.CELLULAR_DATA_TAG:
-                return Connection.CELLULAR_DATA;
-            case Constants.HOTSPOT_TAG:
-                return Connection.HOTSPOT;
-            case Constants.BLUETOOTH_TAG:
-                return Connection.BLUETOOTH;
-            default:
-                return null;
         }
     }
 }

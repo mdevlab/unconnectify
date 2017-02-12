@@ -1,14 +1,11 @@
 package io.mdevlab.unconnectify.utils;
 
-import android.app.NotificationManager;
 import android.content.Context;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import io.mdevlab.unconnectify.alarm.PreciseConnectivityAlarm;
 import io.mdevlab.unconnectify.data.AlarmSqlHelper;
-import io.mdevlab.unconnectify.notification.AlarmNotificationManager;
 
 /**
  * This class is a temporary class for generating a fake data
@@ -62,5 +59,51 @@ public class AlarmUtils {
 
 
 
+    }
+
+    public static Connection getFirstConnection(PreciseConnectivityAlarm alarm) {
+        List<Connection> connectionList = alarm.getConnections();
+
+        if(connectionList.contains(Connection.WIFI))
+            return Connection.WIFI;
+
+        if(connectionList.contains(Connection.HOTSPOT))
+            return Connection.HOTSPOT;
+
+        return Connection.BLUETOOTH;
+    }
+
+    /**
+     * Method that gets the connection enum value from a string
+     *
+     * @param tag: String value for a connection option
+     * @return
+     */
+    public static Connection getConnectionFromString(String tag) {
+        switch (tag) {
+            case Constants.WIFI_TAG:
+                return Connection.WIFI;
+            case Constants.CELLULAR_DATA_TAG:
+                return Connection.CELLULAR_DATA;
+            case Constants.HOTSPOT_TAG:
+                return Connection.HOTSPOT;
+            case Constants.BLUETOOTH_TAG:
+                return Connection.BLUETOOTH;
+            default:
+                return null;
+        }
+    }
+
+    public static String getStringFromConnection(Connection connection) {
+        if(connection == Connection.WIFI)
+            return Constants.WIFI_TAG;
+
+        if(connection == Connection.HOTSPOT)
+            return Constants.HOTSPOT_TAG;
+
+        if(connection == Connection.BLUETOOTH)
+            return Constants.BLUETOOTH_TAG;
+
+        return "";
     }
 }

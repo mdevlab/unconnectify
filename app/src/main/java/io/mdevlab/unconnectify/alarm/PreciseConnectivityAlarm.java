@@ -50,29 +50,21 @@ public class PreciseConnectivityAlarm {
     private boolean isActive;
 
     // Boolean defining the current state of connection within the Alarm
-    //if True the ON
-    //if False the OFF
+    //if True then ON
+    //if False then OFF
     protected boolean mCurrentState;
 
-    // Date of last update of the alarm
+    // Date of last update to the alarm
     private long mLastUpdate;
 
     // Id of the job assigned to the alarm
     private int jobId = -1;
 
-    public long getJobId() {
-        return jobId;
-    }
-
-    public void setJobId(long jobId) {
-        this.jobId = jobId;
-    }
-
-    public long getmLastUpdate() {
+    public long getLastUpdate() {
         return mLastUpdate;
     }
 
-    public void setmLastUpdate(long mLastUpdate) {
+    public void setLastUpdate(long mLastUpdate) {
         this.mLastUpdate = mLastUpdate;
     }
 
@@ -194,11 +186,11 @@ public class PreciseConnectivityAlarm {
      * @return: Id of the alarm in conflict with the current alarm, -1 if no
      * conflict found
      */
-    public int inConflictWithAlarm(PreciseConnectivityAlarm alarm) {
+    public int inConflictWithAlarm(PreciseConnectivityAlarm alarm, Connection connection) {
         if (alarm != null) {
 
             // Determine if both alarms handle one or more same connection(s)
-            if (hasSameConnectivity(alarm.getConnections()))
+            if (hasSameConnectivity(connection))
                 return alarm.getAlarmId();
 
             // Determine if both alarms are set to the same day(s)
@@ -216,15 +208,11 @@ public class PreciseConnectivityAlarm {
      * Method that determines whether or not the current alarm object
      * and another alarm object handle the same connections
      *
-     * @param connectionlist: Connection list of the alarm object
+     * @param connection: Connection list of the alarm object
      * @return
      */
-    private boolean hasSameConnectivity(List<Connection> connectionlist) {
-        for (Connection connection : connectionlist)
-            // Checking whether 'connenction' is contained in the current alarm's object connections
-            if (mConnections.contains(connection))
-                return true;
-        return false;
+    private boolean hasSameConnectivity(Connection connection) {
+        return mConnections.contains(connection);
     }
 
     /**
@@ -332,14 +320,6 @@ public class PreciseConnectivityAlarm {
 
     public void setCurrentState(boolean currentState) {
         this.mCurrentState = currentState;
-    }
-
-    public long getmLastUpdate() {
-        return mLastUpdate;
-    }
-
-    public void setmLastUpdate(long mLastUpdate) {
-        this.mLastUpdate = mLastUpdate;
     }
 
     public int getJobId() {

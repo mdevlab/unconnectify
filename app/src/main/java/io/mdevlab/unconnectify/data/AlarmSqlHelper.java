@@ -281,7 +281,7 @@ public class AlarmSqlHelper extends SQLiteOpenHelper {
         preciseConnectivityAlarm.setActive(Boolean.parseBoolean(cursor.getString((cursor.getColumnIndex(ISACTIVE_COLUMN)))));
         preciseConnectivityAlarm.setCurrentState(Boolean.parseBoolean(cursor.getString((cursor.getColumnIndex(CURRENTSTATE)))));
         preciseConnectivityAlarm.setDuration(cursor.getInt((cursor.getColumnIndex(DURATION))));
-        preciseConnectivityAlarm.setmLastUpdate(cursor.getInt((cursor.getColumnIndex(UPDATETIME))));
+        preciseConnectivityAlarm.setLastUpdate(cursor.getInt((cursor.getColumnIndex(UPDATETIME))));
         preciseConnectivityAlarm.setJobId(cursor.getInt((cursor.getColumnIndex(JOBID))));
 
                 /*Fill days and connections using respectively getAllDaysOfAlarm getAllConnectionOfAlarm the helper methods
@@ -558,6 +558,11 @@ public class AlarmSqlHelper extends SQLiteOpenHelper {
     }
 
     public PreciseConnectivityAlarm getAlarm() {
+        return null;
+    }
+
+
+    public PreciseConnectivityAlarm getAlarmById(int alarmId) {
         return null;
     }
 }
