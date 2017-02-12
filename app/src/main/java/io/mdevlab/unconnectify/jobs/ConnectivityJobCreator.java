@@ -11,11 +11,6 @@ import com.evernote.android.job.JobCreator;
 
 public class ConnectivityJobCreator implements JobCreator {
 
-    public static final String WIFI = "wifi";
-    public static final String CELLULAR_DATA = "cellular data";
-    public static final String HOTSPOT = "hotspot";
-    public static final String BLUETOOTH = "bluetooth";
-
     private Context mContext;
 
     public ConnectivityJobCreator(Context context) {
@@ -24,11 +19,6 @@ public class ConnectivityJobCreator implements JobCreator {
 
     @Override
     public Job create(String tag) {
-        switch (tag) {
-            case WIFI:
-                return new ConnectivityJob(mContext);
-            default:
-                return null;
-        }
+        return new ConnectivityJob(mContext, tag);
     }
 }
