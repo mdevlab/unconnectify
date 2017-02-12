@@ -97,6 +97,7 @@ public class AlarmNotificationManager {
         long executionTime = preciseConnectivityAlarm.getExecuteTimeInMils();
         Boolean currentStatus = preciseConnectivityAlarm.isCurrentState();
         //TODO use the String Builder instead of appending values
+
         //Build the string
         String result = "Next- Turning ";
         if (currentStatus) {
