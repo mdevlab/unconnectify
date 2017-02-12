@@ -49,11 +49,32 @@ public class PreciseConnectivityAlarm {
     // Boolean defining whether or not the alarm is active/on
     private boolean isActive;
 
+    // Boolean defining the current state of connection within the Alarm
+    //if True the ON
+    //if False the OFF
+    protected boolean mCurrentState;
+
     // Date of last update of the alarm
     private long mLastUpdate;
 
     // Id of the job assigned to the alarm
     private int jobId = -1;
+
+    public long getJobId() {
+        return jobId;
+    }
+
+    public void setJobId(long jobId) {
+        this.jobId = jobId;
+    }
+
+    public long getmLastUpdate() {
+        return mLastUpdate;
+    }
+
+    public void setmLastUpdate(long mLastUpdate) {
+        this.mLastUpdate = mLastUpdate;
+    }
 
     /**
      * Empty constructor
@@ -302,6 +323,15 @@ public class PreciseConnectivityAlarm {
 
     public void setDuration(long mDuration) {
         this.mDuration = mDuration;
+    }
+
+
+    public boolean isCurrentState() {
+        return mCurrentState;
+    }
+
+    public void setCurrentState(boolean currentState) {
+        this.mCurrentState = currentState;
     }
 
     public long getmLastUpdate() {
