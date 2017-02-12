@@ -64,17 +64,10 @@ public class PreciseConnectivityAlarm {
         return jobId;
     }
 
-    public void setJobId(long jobId) {
-        this.jobId = jobId;
-    }
 
-    public long getmLastUpdate() {
-        return mLastUpdate;
-    }
 
-    public void setmLastUpdate(long mLastUpdate) {
-        this.mLastUpdate = mLastUpdate;
-    }
+
+
 
     /**
      * Empty constructor
@@ -334,17 +327,14 @@ public class PreciseConnectivityAlarm {
         this.mCurrentState = currentState;
     }
 
-    public long getmLastUpdate() {
+    public long getLastUpdate() {
         return mLastUpdate;
     }
 
-    public void setmLastUpdate(long mLastUpdate) {
+    public void setLastUpdate(long mLastUpdate) {
         this.mLastUpdate = mLastUpdate;
     }
 
-    public int getJobId() {
-        return jobId;
-    }
 
     public void setJobId(int jobId) {
         this.jobId = jobId;
