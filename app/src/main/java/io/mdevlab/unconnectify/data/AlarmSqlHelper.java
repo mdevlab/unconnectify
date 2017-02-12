@@ -389,4 +389,12 @@ public class AlarmSqlHelper extends SQLiteOpenHelper {
         if (db != null && db.isOpen())
             db.close();
     }
+
+    public PreciseConnectivityAlarm getAlarmByJobId(int jobId) {
+        return null;
+    }
+
+    public void updateAlarmCurrentState(int alarmId, boolean currentState) {
+
+    }
 }
