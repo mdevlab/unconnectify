@@ -60,14 +60,6 @@ public class PreciseConnectivityAlarm {
     // Id of the job assigned to the alarm
     private int jobId = -1;
 
-    public long getLastUpdate() {
-        return mLastUpdate;
-    }
-
-    public void setLastUpdate(long mLastUpdate) {
-        this.mLastUpdate = mLastUpdate;
-    }
-
     /**
      * Empty constructor
      */
@@ -320,6 +312,14 @@ public class PreciseConnectivityAlarm {
 
     public void setCurrentState(boolean currentState) {
         this.mCurrentState = currentState;
+    }
+
+    public long getLastUpdate() {
+        return mLastUpdate;
+    }
+
+    public void setLastUpdate(long mLastUpdate) {
+        this.mLastUpdate = mLastUpdate;
     }
 
     public int getJobId() {

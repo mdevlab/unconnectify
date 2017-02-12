@@ -277,7 +277,7 @@ public class AlarmSqlHelper extends SQLiteOpenHelper {
 
         //instanciate the preciseConnectivityAlarm with setters methods
         preciseConnectivityAlarm.setAlarmId(cursor.getInt((cursor.getColumnIndex(KEY_ID))));
-        preciseConnectivityAlarm.setExecuteTimeInMils(cursor.getInt((cursor.getColumnIndex(EXECUTION_TIME_COLUMN))));
+        preciseConnectivityAlarm.setExecuteTimeInMils(cursor.getLong((cursor.getColumnIndex(EXECUTION_TIME_COLUMN))));
         preciseConnectivityAlarm.setActive(Boolean.parseBoolean(cursor.getString((cursor.getColumnIndex(ISACTIVE_COLUMN)))));
         preciseConnectivityAlarm.setCurrentState(Boolean.parseBoolean(cursor.getString((cursor.getColumnIndex(CURRENTSTATE)))));
         preciseConnectivityAlarm.setDuration(cursor.getInt((cursor.getColumnIndex(DURATION))));
@@ -399,7 +399,7 @@ public class AlarmSqlHelper extends SQLiteOpenHelper {
      * @param jobId   the Jobid value to be inserted
      * @return
      */
-    public int updateAlarmJob(int alarmId, long jobId) {
+    public int updateAlarmJob(int alarmId, int jobId) {
         //Get the writable DB
         SQLiteDatabase db = this.getWritableDatabase();
 
