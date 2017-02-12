@@ -1,7 +1,7 @@
 package io.mdevlab.unconnectify.connectivitymodels;
 
 /**
- * Created by bachiri on 2/11/17.
+ * Created by mdevlab on 2/11/17.
  */
 
 import android.content.Context;
