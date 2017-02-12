@@ -496,12 +496,34 @@ public class AlarmSqlHelper extends SQLiteOpenHelper {
      * @return the alarm
      */
     public PreciseConnectivityAlarm getAlarmByJobId(int jobId) {
+        return  getAlarmByIds(jobId,"SELECT * FROM " + TABLE_ALARM + " WHERE " + JOBID + "=? ");
+    }
+
+    /**
+     * This function return the alarm by the provided id
+     * actually the  id provider should brovide a unique id for an alarm
+     *
+     * @param id each alarm is associated to an id
+     */
+    public PreciseConnectivityAlarm getAlarmById(int id) {
+        return  getAlarmByIds(id,"SELECT * FROM " + TABLE_ALARM + " WHERE " + KEY_ID + "=? ");
+    }
+
+
+    /**
+     * A helper for retrieving a row by the specific id  ,this function is used in both getAlarmByJobId and getAlarmById
+     *
+     * @param id
+     * @param Query
+     * @return
+     */
+    private PreciseConnectivityAlarm getAlarmByIds(int id,String Query){
         SQLiteDatabase db = this.getWritableDatabase();
 
         Cursor cursor;
         PreciseConnectivityAlarm preciseConnectivityAlarm;
-        cursor = db.rawQuery("SELECT * FROM " + TABLE_ALARM + " WHERE " + JOBID + "=? ",
-                new String[]{String.valueOf(jobId)});
+        cursor = db.rawQuery(Query,
+                new String[]{String.valueOf(id)});
         if (cursor.getCount() > 0) {
             cursor.moveToFirst();
             //create the instance of preciseConnectivityAlarm form getConnectivityAlarmFromCursor method
@@ -510,7 +532,10 @@ public class AlarmSqlHelper extends SQLiteOpenHelper {
         }
 
         return null;
+
     }
+
+
 
 
     /**
