@@ -2,6 +2,7 @@ package io.mdevlab.unconnectify.utils;
 
 import android.content.Context;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import io.mdevlab.unconnectify.alarm.PreciseConnectivityAlarm;
@@ -18,37 +19,38 @@ public class AlarmUtils {
 
 
     //TODO create UNIT TEST
-    public static void createFakeData(Context context){
-
+    public static void createFakeData(Context context) {
 
 
         AlarmSqlHelper alarmSqlHelper = new AlarmSqlHelper(context);
 
 
-
-        //List<Integer> days = new ArrayList<Integer>();
-        //days.add(2);
-        // days.add(20);
-        //days.add(3);
-        //List<Connection> connections = new ArrayList<Connection>();
-        //connections.add(Connection.BLUETOOTH);
-        //connections.add(Connection.HOTSPOT);
+        List<Integer> days = new ArrayList<Integer>();
+        days.add(2);
+        days.add(6);
+        days.add(3);
+        List<Connection> connections = new ArrayList<Connection>();
+        connections.add(Connection.BLUETOOTH);
+        connections.add(Connection.HOTSPOT);
         //connections.add(Connection.CELLULAR_DATA);
-        //connections.add(Connection.WIFI);
+        connections.add(Connection.WIFI);
 
 
-        //PreciseConnectivityAlarm preciseConnectivityAlarm = new PreciseConnectivityAlarm(System.currentTimeMillis()+100,10,days,connections);
+        PreciseConnectivityAlarm preciseConnectivityAlarm = new PreciseConnectivityAlarm(System.currentTimeMillis() + 100, 10, days, connections);
+        PreciseConnectivityAlarm preciseConnectivityAlarmOne = new PreciseConnectivityAlarm(System.currentTimeMillis() + 300, 10, days, connections);
+        PreciseConnectivityAlarm preciseConnectivityAlarmTwo = new PreciseConnectivityAlarm(System.currentTimeMillis() + 500, 10, days, connections);
 
         //alarmSqlHelper.updateAlarmJob(1,1000);
         // alarmSqlHelper.updateAlarm(2,10000,1045);
 
         //alarmSqlHelper.updateAlarmConnection(1,Connection.CELLULAR_DATA,true);
         //alarmSqlHelper.updateAlarmDay(1,2,false);
-        //List<PreciseConnectivityAlarm> a= alarmSqlHelper.readAllAlarms(null,null);
+        List<PreciseConnectivityAlarm> a= alarmSqlHelper.readAllAlarms(null,null);
         //PreciseConnectivityAlarm preciseConnectivityAlarm2 =  alarmSqlHelper.readNextAlarm();
-        //alarmSqlHelper.createAlarm(preciseConnectivityAlarm);
+        alarmSqlHelper.createAlarm(preciseConnectivityAlarm);
+        alarmSqlHelper.createAlarm(preciseConnectivityAlarmOne);
+        alarmSqlHelper.createAlarm(preciseConnectivityAlarmTwo);
         //AlarmNotificationManager.triggerNotification(context);
-
 
 
         //alarmSqlHelper.updateAlarmJob(1,1990);
@@ -57,17 +59,15 @@ public class AlarmUtils {
         //List<PreciseConnectivityAlarm> b= alarmSqlHelper.readAllAlarms(null,null);
 
 
-
-
     }
 
     public static Connection getFirstConnection(PreciseConnectivityAlarm alarm) {
         List<Connection> connectionList = alarm.getConnections();
 
-        if(connectionList.contains(Connection.WIFI))
+        if (connectionList.contains(Connection.WIFI))
             return Connection.WIFI;
 
-        if(connectionList.contains(Connection.HOTSPOT))
+        if (connectionList.contains(Connection.HOTSPOT))
             return Connection.HOTSPOT;
 
         return Connection.BLUETOOTH;
@@ -95,13 +95,13 @@ public class AlarmUtils {
     }
 
     public static String getStringFromConnection(Connection connection) {
-        if(connection == Connection.WIFI)
+        if (connection == Connection.WIFI)
             return Constants.WIFI_TAG;
 
-        if(connection == Connection.HOTSPOT)
+        if (connection == Connection.HOTSPOT)
             return Constants.HOTSPOT_TAG;
 
-        if(connection == Connection.BLUETOOTH)
+        if (connection == Connection.BLUETOOTH)
             return Constants.BLUETOOTH_TAG;
 
         return "";

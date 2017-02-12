@@ -312,7 +312,8 @@ public class ConnectivityJob extends Job {
             activateNextConnection = !activateNextConnection;
 
         // Build request for new job
-        ConnectivityJobManager.buildJobRequest(nextTag,
+        ConnectivityJobManager.buildJobRequest(mCurrentAlarm,
+                nextTag,
                 activateNextConnection,
                 mCurrentAlarm.getExecuteTimeInMils());
     }

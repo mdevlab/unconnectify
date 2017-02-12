@@ -1,14 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="160dp"
-    android:background="#C5E1A5"
+    android:layout_height="200dp"
+    android:background="@android:color/darker_gray"
     android:orientation="vertical"
     android:padding="10dp">
 
+    <!-- Times -->
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="40dp"
+        android:layout_height="50dp"
         android:orientation="horizontal">
 
         <TextView
@@ -40,27 +41,28 @@
 
     </LinearLayout>
 
+    <!-- show end time check box -->
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="30dp"
+        android:layout_height="40dp"
         android:orientation="horizontal">
 
         <CheckBox
             android:id="@+id/set_end_time"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:text="Set End Time"
             android:layout_marginLeft="20dp"
+            android:buttonTint="#ffffff"
+            android:text="Set End Time"
             android:textColor="#ffffff"
-            android:textStyle="bold"
-            android:buttonTint="#ffffff"/>
+            android:textStyle="bold" />
 
     </LinearLayout>
 
+    <!-- Connections-->
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="40dp"
-        android:background=""
+        android:layout_height="50dp"
         android:orientation="horizontal">
 
         <LinearLayout
@@ -71,8 +73,7 @@
             <android.support.v4.widget.Space
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:layout_weight="1"
-                />
+                android:layout_weight="1" />
 
             <ToggleButton
                 android:id="@+id/wifi"
@@ -88,8 +89,7 @@
             <android.support.v4.widget.Space
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:layout_weight="1"
-                />
+                android:layout_weight="1" />
 
             <ToggleButton
                 android:id="@+id/hotspot"
@@ -125,63 +125,90 @@
         </LinearLayout>
     </LinearLayout>
 
+    <!-- Days -->
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="40dp"
-
+        android:layout_height="50dp"
         android:orientation="horizontal">
-        <TextView
+
+        <ToggleButton
+            android:id="@+id/sunday"
             android:layout_width="0dp"
-            android:layout_weight="1"
             android:layout_height="wrap_content"
+            android:layout_weight="1"
             android:gravity="center"
-            android:text="S"
-            android:textAppearance="@style/DaysStyleBold"/>
-        <TextView
+            android:background="@android:color/transparent"
+            android:textOn="S"
+            android:textOff="S"
+            android:textAppearance="@style/DaysStyleBold" />
+
+        <ToggleButton
+            android:id="@+id/monday"
             android:layout_width="0dp"
-            android:layout_weight="1"
             android:layout_height="wrap_content"
+            android:layout_weight="1"
             android:gravity="center"
-            android:text="M"
-            android:textAppearance="@style/DaysStyleBold"/>
-        <TextView
+            android:background="@android:color/transparent"
+            android:textOn="M"
+            android:textOff="M"
+            android:textAppearance="@style/DaysStyleBold" />
+
+        <ToggleButton
+            android:id="@+id/tuesday"
             android:layout_width="0dp"
-            android:layout_weight="1"
             android:layout_height="wrap_content"
+            android:layout_weight="1"
             android:gravity="center"
-            android:text="T"
-            android:textAppearance="@style/DaysStyleBold"/>
-        <TextView
+            android:background="@android:color/transparent"
+            android:textOn="T"
+            android:textOff="T"
+            android:textAppearance="@style/DaysStyleBold" />
+
+        <ToggleButton
+            android:id="@+id/wednesday"
             android:layout_width="0dp"
-            android:layout_weight="1"
             android:layout_height="wrap_content"
+            android:layout_weight="1"
             android:gravity="center"
-            android:text="W"
-            android:textAppearance="@style/DaysStyleBold"/>
-        <TextView
+            android:background="@android:color/transparent"
+            android:textOn="W"
+            android:textOff="W"
+            android:textAppearance="@style/DaysStyleBold" />
+
+        <ToggleButton
+            android:id="@+id/thursday"
             android:layout_width="0dp"
-            android:layout_weight="1"
             android:layout_height="wrap_content"
+            android:layout_weight="1"
             android:gravity="center"
-            android:text="T"
-            android:textAppearance="@style/DaysStyleBold"/>
-        <TextView
+            android:background="@android:color/transparent"
+            android:textOn="T"
+            android:textOff="T"
+            android:textAppearance="@style/DaysStyleBold" />
+
+        <ToggleButton
+            android:id="@+id/friday"
             android:layout_width="0dp"
-            android:layout_weight="1"
             android:layout_height="wrap_content"
+            android:layout_weight="1"
             android:gravity="center"
-            android:text="F"
-            android:textAppearance="@style/DaysStyleBold"/>
-        <TextView
+            android:background="@android:color/transparent"
+            android:textOn="F"
+            android:textOff="F"
+            android:textAppearance="@style/DaysStyleBold" />
+
+        <ToggleButton
+            android:id="@+id/saturday"
             android:layout_width="0dp"
-            android:layout_weight="1"
             android:layout_height="wrap_content"
+            android:layout_weight="1"
             android:gravity="center"
-            android:text="S"
-            android:textAppearance="@style/DaysStyleNotBold"/>
+            android:background="@android:color/transparent"
+            android:textOn="S"
+            android:textOff="S"
+            android:textAppearance="@style/DaysStyleBold" />
 
 
     </LinearLayout>
-
 
 </LinearLayout>

@@ -3,6 +3,7 @@ package io.mdevlab.unconnectify.jobs;
 import com.evernote.android.job.JobRequest;
 import com.evernote.android.job.util.support.PersistableBundleCompat;
 
+import io.mdevlab.unconnectify.alarm.PreciseConnectivityAlarm;
 import io.mdevlab.unconnectify.utils.Constants;
 
 /**
@@ -19,13 +20,18 @@ public class ConnectivityJobManager {
      * @param executionTime: Milliseconds left before executing the job
      * @return: The built job request
      */
-    public static JobRequest buildJobRequest(String tag, boolean activate, long executionTime) {
+    public static JobRequest buildJobRequest(PreciseConnectivityAlarm alarm, String tag, boolean activate, long executionTime) {
         PersistableBundleCompat extras = new PersistableBundleCompat();
         extras.putBoolean(Constants.ACTIVATE_TAG, activate);
-        return new JobRequest.Builder(tag)
+        JobRequest jobRequest = new JobRequest.Builder(tag)
                 .setExact(executionTime)
                 .setExtras(extras)
                 .setPersisted(true)
                 .build();
+
+        // Set the job id to the alarm
+        alarm.setJobId(jobRequest.getJobId());
+
+        return jobRequest;
     }
 }

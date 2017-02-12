@@ -2,6 +2,8 @@ package io.mdevlab.unconnectify.alarm;
 
 import android.content.Context;
 
+import com.evernote.android.job.JobManager;
+
 import java.util.List;
 
 import io.mdevlab.unconnectify.data.AlarmSqlHelper;
@@ -50,11 +52,17 @@ public class AlarmManager {
 
     /**
      * Method that sets the first job for an alarm right after its creation
+     * It's also called to update an alarm's job after this alarm has been modified
+     * So it starts by canceling the previous job first before creating a new one
      *
      * @param alarm: The newly created alarm
      */
     private void createAlarmJob(PreciseConnectivityAlarm alarm) {
-        ConnectivityJobManager.buildJobRequest(AlarmUtils.getStringFromConnection(AlarmUtils.getFirstConnection(alarm)),
+        // Cancel previous job assigned to alarm if it exists
+        if (alarm.getJobId() != -1)
+            JobManager.instance().cancel(alarm.getJobId());
+
+        ConnectivityJobManager.buildJobRequest(alarm, AlarmUtils.getStringFromConnection(AlarmUtils.getFirstConnection(alarm)),
                 false,
                 alarm.getExecuteTimeInMils());
     }
@@ -68,6 +76,7 @@ public class AlarmManager {
      */
     public void updateAlarm(int alarmId, long executionTime, long alarmDuration) {
         alarmSqlHelper.updateAlarm(alarmId, executionTime, alarmDuration);
+        createAlarmJob(alarmSqlHelper.getAlarmById(alarmId));
     }
 
     /**
@@ -79,6 +88,7 @@ public class AlarmManager {
      */
     public void updateAlarmConnection(int alarmId, Connection selectedConnection, boolean isActive) {
         alarmSqlHelper.updateAlarmConnection(alarmId, selectedConnection, isActive);
+        createAlarmJob(alarmSqlHelper.getAlarmById(alarmId));
     }
 
     /**
@@ -90,6 +100,7 @@ public class AlarmManager {
      */
     public void updateAlarmDay(int alarmId, int selectedDay, boolean isActive) {
         alarmSqlHelper.updateAlarmDay(alarmId, selectedDay, isActive);
+        createAlarmJob(alarmSqlHelper.getAlarmById(alarmId));
     }
 
     /**

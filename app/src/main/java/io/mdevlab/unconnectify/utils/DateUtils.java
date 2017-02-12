@@ -9,8 +9,8 @@ import java.util.Date;
  * -Using Date formats
  * -Form time in millisecond to date
  * -Date to  millisecond
- 
- Created by mdevlab on 2/12/17.
+ * <p>
+ * Created by mdevlab on 2/12/17.
  */
 public class DateUtils {
 
@@ -39,6 +39,20 @@ public class DateUtils {
      */
     public static String getTimeFromLong(long timeInMillis) {
         return new SimpleDateFormat("HH:mm").format(timeInMillis);
+    }
+
+    /**
+     * Method that takes in a string representing time
+     * It returns the time in milliseconds
+     *
+     * @param time: String in the format HH:mm
+     * @return
+     */
+    public static long getLongFromTime(String time) {
+        Date date = new Date();
+        date.setHours(Integer.parseInt(time.split(":")[0]));
+        date.setMinutes(Integer.parseInt(time.split(":")[1]));
+        return date.getTime();
     }
 
     /**

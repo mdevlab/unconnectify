@@ -585,9 +585,4 @@ public class AlarmSqlHelper extends SQLiteOpenHelper {
     public PreciseConnectivityAlarm getAlarm() {
         return null;
     }
-
-
-    public PreciseConnectivityAlarm getAlarmById(int alarmId) {
-        return null;
-    }
 }
