@@ -27,19 +27,27 @@ public class PreciseConnectivityAlarm {
     private int mAlarmId;
 
     // Time at which the alarm starts
-    protected long mExecutionTimeInMils;
+    private long mStartTime;
+
+    /**
+     * Time at which the alarm should be launch
+     * The difference between it and 'mStartTime' is that 'mStartTime'
+     * is static, it doesn't change, whereas 'mExecutionTimeInMils' changes
+     * after every job.
+     */
+    private long mExecutionTimeInMils;
 
     // Duration of the alarm
     private long mDuration;
 
     // Days to which the alarm is set
-    protected List<Integer> mDays;
+    private List<Integer> mDays;
 
     // Connections concerned by the alarm
-    protected List<Connection> mConnections;
+    private List<Connection> mConnections;
 
     // Boolean defining whether or not the alarm is active/on
-    protected boolean isActive;
+    private boolean isActive;
 
     // Boolean defining the current state of connection within the Alarm
     //if True the ON
@@ -50,7 +58,7 @@ public class PreciseConnectivityAlarm {
     private long mLastUpdate;
 
     // Id of the job assigned to the alarm
-    private long jobId;
+    private int jobId = -1;
 
     public long getJobId() {
         return jobId;
@@ -269,6 +277,22 @@ public class PreciseConnectivityAlarm {
         this.mAlarmId = alarmId;
     }
 
+    public long getStartTime() {
+        return mStartTime;
+    }
+
+    public void setStartTime(long mStartTime) {
+        this.mStartTime = mStartTime;
+    }
+
+    public long getExecuteTimeInMils() {
+        return mExecutionTimeInMils;
+    }
+
+    public void setExecuteTimeInMils(long mExecutionTimeInMils) {
+        this.mExecutionTimeInMils = mExecutionTimeInMils;
+    }
+
     public boolean isActive() {
         return isActive;
     }
@@ -293,14 +317,6 @@ public class PreciseConnectivityAlarm {
         this.mDays = mDays;
     }
 
-    public long getExecuteTimeInMils() {
-        return mExecutionTimeInMils;
-    }
-
-    public void setExecuteTimeInMils(long mExecutionTimeInMils) {
-        this.mExecutionTimeInMils = mExecutionTimeInMils;
-    }
-
     public long getDuration() {
         return mDuration;
     }
@@ -309,11 +325,47 @@ public class PreciseConnectivityAlarm {
         this.mDuration = mDuration;
     }
 
+
     public boolean isCurrentState() {
         return mCurrentState;
     }
 
     public void setCurrentState(boolean currentState) {
         this.mCurrentState = currentState;
+    }
+
+    public long getmLastUpdate() {
+        return mLastUpdate;
+    }
+
+    public void setmLastUpdate(long mLastUpdate) {
+        this.mLastUpdate = mLastUpdate;
+    }
+
+    public int getJobId() {
+        return jobId;
+    }
+
+    public void setJobId(int jobId) {
+        this.jobId = jobId;
+    }
+
+    /**
+     * Method that returns the last connection of the current alarm
+     * The chain of connections is: Wifi -> Hotspot -> Bluetooth
+     * So the last connection would be Bluetooth is the alarm handles bluetooth,
+     * if not the last connection would be Hotspot it the alarm handles
+     * Bluetooth, else the last connection is Wifi.
+     *
+     * @return
+     */
+    public Connection getLastConnectionOfAlarm() {
+        if (mConnections.contains(Connection.BLUETOOTH))
+            return Connection.BLUETOOTH;
+
+        if (mConnections.contains(Connection.HOTSPOT))
+            return Connection.HOTSPOT;
+
+        return Connection.WIFI;
     }
 }

@@ -106,7 +106,7 @@ public class AlarmManager {
         if (alarmSqlHelper != null) {
 
             // Get a list of all precise active alarms from the database
-            List<PreciseConnectivityAlarm> activeAlarms = alarmSqlHelper.readAllActiveAlarms();
+            List<PreciseConnectivityAlarm> activeAlarms = alarmSqlHelper.readAllAlarms(null, null);
 
             /**
              * Loop on the elements of the alarm
