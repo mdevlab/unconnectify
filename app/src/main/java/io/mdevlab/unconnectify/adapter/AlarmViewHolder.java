@@ -3,6 +3,7 @@ package io.mdevlab.unconnectify.adapter;
 import android.content.Context;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
@@ -10,6 +11,7 @@ import android.widget.TextView;
 import android.widget.ToggleButton;
 
 import java.util.Calendar;
+import java.util.List;
 
 import io.mdevlab.unconnectify.MainActivity;
 import io.mdevlab.unconnectify.R;
@@ -136,8 +138,10 @@ public class AlarmViewHolder extends RecyclerView.ViewHolder {
         mSunday.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (mAlarm != null)
+                if (mAlarm != null) {
                     AlarmManager.getInstance(mContext).updateAlarmDay(mAlarm.getAlarmId(), Calendar.SUNDAY, isChecked);
+                    changeOpacity(mAlarm.getAlarmId(), mSunday, isChecked);
+                }
             }
         });
 
@@ -145,8 +149,10 @@ public class AlarmViewHolder extends RecyclerView.ViewHolder {
         mMonday.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (mAlarm != null)
+                if (mAlarm != null) {
                     AlarmManager.getInstance(mContext).updateAlarmDay(mAlarm.getAlarmId(), Calendar.MONDAY, isChecked);
+                    changeOpacity(mAlarm.getAlarmId(), mMonday, isChecked);
+                }
             }
         });
 
@@ -154,8 +160,10 @@ public class AlarmViewHolder extends RecyclerView.ViewHolder {
         mTuesday.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (mAlarm != null)
+                if (mAlarm != null) {
                     AlarmManager.getInstance(mContext).updateAlarmDay(mAlarm.getAlarmId(), Calendar.TUESDAY, isChecked);
+                    changeOpacity(mAlarm.getAlarmId(), mTuesday, isChecked);
+                }
             }
         });
 
@@ -163,8 +171,10 @@ public class AlarmViewHolder extends RecyclerView.ViewHolder {
         mWednesday.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (mAlarm != null)
+                if (mAlarm != null) {
                     AlarmManager.getInstance(mContext).updateAlarmDay(mAlarm.getAlarmId(), Calendar.WEDNESDAY, isChecked);
+                    changeOpacity(mAlarm.getAlarmId(), mWednesday, isChecked);
+                }
             }
         });
 
@@ -172,8 +182,10 @@ public class AlarmViewHolder extends RecyclerView.ViewHolder {
         mThursday.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (mAlarm != null)
+                if (mAlarm != null) {
                     AlarmManager.getInstance(mContext).updateAlarmDay(mAlarm.getAlarmId(), Calendar.THURSDAY, isChecked);
+                    changeOpacity(mAlarm.getAlarmId(), mThursday, isChecked);
+                }
             }
         });
 
@@ -181,8 +193,10 @@ public class AlarmViewHolder extends RecyclerView.ViewHolder {
         mFriday.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (mAlarm != null)
+                if (mAlarm != null) {
                     AlarmManager.getInstance(mContext).updateAlarmDay(mAlarm.getAlarmId(), Calendar.FRIDAY, isChecked);
+                    changeOpacity(mAlarm.getAlarmId(), mFriday, isChecked);
+                }
             }
         });
 
@@ -190,8 +204,10 @@ public class AlarmViewHolder extends RecyclerView.ViewHolder {
         mSaturday.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (mAlarm != null)
+                if (mAlarm != null) {
                     AlarmManager.getInstance(mContext).updateAlarmDay(mAlarm.getAlarmId(), Calendar.SATURDAY, isChecked);
+                    changeOpacity(mAlarm.getAlarmId(), mSaturday, isChecked);
+                }
             }
         });
     }
@@ -199,6 +215,19 @@ public class AlarmViewHolder extends RecyclerView.ViewHolder {
     private void showTimePicker() {
         DialogFragment timePickerFragment = new TimePickerFragment();
         timePickerFragment.show(((MainActivity) mContext).getSupportFragmentManager(), "time picker");
+    }
+
+    private void changeOpacity(int alarmId, View toggleButton, boolean isChecked) {
+        float opacity = 0.5f;
+        if (isChecked)
+            opacity = 1f;
+        toggleButton.setAlpha(opacity);
+
+        Log.e("Days", "Days of alarm " + alarmId);
+        List<Integer> days = mAlarmSqlHelper.getAllDaysOfAlarm(alarmId);
+        for(Integer day: days) {
+            Log.e("Days", String.valueOf(day));
+        }
     }
 
     public PreciseConnectivityAlarm getAlarm() {

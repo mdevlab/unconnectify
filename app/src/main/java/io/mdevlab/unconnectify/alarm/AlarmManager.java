@@ -65,6 +65,8 @@ public class AlarmManager {
         ConnectivityJobManager.buildJobRequest(alarm, AlarmUtils.getStringFromConnection(AlarmUtils.getFirstConnection(alarm)),
                 false,
                 alarm.getExecuteTimeInMils());
+
+        alarmSqlHelper.updateAlarmJob(alarm.getAlarmId(), alarm.getJobId());
     }
 
     /**
