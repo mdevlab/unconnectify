@@ -5,7 +5,6 @@ import android.app.TimePickerDialog;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatDialogFragment;
 import android.text.format.DateFormat;
-import android.widget.TimePicker;
 
 import java.util.Calendar;
 
@@ -13,7 +12,9 @@ import java.util.Calendar;
  * Created by mdevlab on 2/12/17.
  */
 
-public class TimePickerFragment extends AppCompatDialogFragment implements TimePickerDialog.OnTimeSetListener {
+public class TimePickerFragment extends AppCompatDialogFragment {
+
+    private TimePickerDialog.OnTimeSetListener mListener;
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
@@ -24,10 +25,11 @@ public class TimePickerFragment extends AppCompatDialogFragment implements TimeP
         int minute = calendar.get(Calendar.MINUTE);
 
         // Create a new instance of TimePickerDialog and return it
-        return new TimePickerDialog(getActivity(), this, hour, minute,
+        return new TimePickerDialog(getActivity(), mListener, hour, minute,
                 DateFormat.is24HourFormat(getActivity()));
     }
 
-    public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+    public void setListener(TimePickerDialog.OnTimeSetListener mListener) {
+        this.mListener = mListener;
     }
 }
