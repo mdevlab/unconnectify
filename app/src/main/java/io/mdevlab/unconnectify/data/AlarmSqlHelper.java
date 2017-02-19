@@ -46,6 +46,7 @@ public class AlarmSqlHelper extends SQLiteOpenHelper {
 
     // Alarm Table - column names
     public static final String ISACTIVE_COLUMN = "isactive";
+    public static final String START_TIME_COLUMN= "starttimeinmils";
     public static final String EXECUTION_TIME_COLUMN = "executiontimeinmils";
     public static final String DURATION = "duration";
     public static final String JOBID = "jobid";
@@ -71,6 +72,7 @@ public class AlarmSqlHelper extends SQLiteOpenHelper {
             + KEY_ID + " INTEGER PRIMARY KEY  AUTOINCREMENT ,"
             + ISACTIVE_COLUMN + " TEXT,"
             + CURRENTSTATE + " TEXT,"
+            + START_TIME_COLUMN + " INTEGER,"
             + EXECUTION_TIME_COLUMN + " INTEGER,"
             + DURATION + " INTEGER,"
             + JOBID + " INTEGER,"
@@ -154,6 +156,7 @@ public class AlarmSqlHelper extends SQLiteOpenHelper {
         ContentValues values = new ContentValues();
         values.put(ISACTIVE_COLUMN, String.valueOf(connectivityAlarm.isActive()));
         values.put(CURRENTSTATE, String.valueOf(DEFAULT_CURRENTSTATE));
+        values.put(START_TIME_COLUMN, connectivityAlarm.getStartTime());
         values.put(EXECUTION_TIME_COLUMN, connectivityAlarm.getExecuteTimeInMils());
         //update the current alarm update time value
         values.put(UPDATETIME, System.currentTimeMillis());
@@ -277,6 +280,7 @@ public class AlarmSqlHelper extends SQLiteOpenHelper {
 
         //instanciate the preciseConnectivityAlarm with setters methods
         preciseConnectivityAlarm.setAlarmId(cursor.getInt((cursor.getColumnIndex(KEY_ID))));
+        preciseConnectivityAlarm.setStartTime(cursor.getLong((cursor.getColumnIndex(START_TIME_COLUMN))));
         preciseConnectivityAlarm.setExecuteTimeInMils(cursor.getLong((cursor.getColumnIndex(EXECUTION_TIME_COLUMN))));
         preciseConnectivityAlarm.setActive(Boolean.parseBoolean(cursor.getString((cursor.getColumnIndex(ISACTIVE_COLUMN)))));
         preciseConnectivityAlarm.setCurrentState(Boolean.parseBoolean(cursor.getString((cursor.getColumnIndex(CURRENTSTATE)))));

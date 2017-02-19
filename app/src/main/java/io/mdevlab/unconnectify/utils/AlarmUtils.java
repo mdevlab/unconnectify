@@ -36,16 +36,16 @@ public class AlarmUtils {
         connections.add(Connection.WIFI);
 
 
-        PreciseConnectivityAlarm preciseConnectivityAlarm = new PreciseConnectivityAlarm(System.currentTimeMillis() + 100, 10, days, connections);
-        PreciseConnectivityAlarm preciseConnectivityAlarmOne = new PreciseConnectivityAlarm(System.currentTimeMillis() + 300, 10, days, connections);
-        PreciseConnectivityAlarm preciseConnectivityAlarmTwo = new PreciseConnectivityAlarm(System.currentTimeMillis() + 500, 10, days, connections);
+        PreciseConnectivityAlarm preciseConnectivityAlarm = new PreciseConnectivityAlarm(System.currentTimeMillis(), 1, days, connections);
+        PreciseConnectivityAlarm preciseConnectivityAlarmOne = new PreciseConnectivityAlarm(System.currentTimeMillis() + 3000, 257003, days, connections);
+        PreciseConnectivityAlarm preciseConnectivityAlarmTwo = new PreciseConnectivityAlarm(System.currentTimeMillis() + 27500, 793903, days, connections);
 
         //alarmSqlHelper.updateAlarmJob(1,1000);
         // alarmSqlHelper.updateAlarm(2,10000,1045);
 
         //alarmSqlHelper.updateAlarmConnection(1,Connection.CELLULAR_DATA,true);
         //alarmSqlHelper.updateAlarmDay(1,2,false);
-        List<PreciseConnectivityAlarm> a= alarmSqlHelper.readAllAlarms(null,null);
+//        List<PreciseConnectivityAlarm> a= alarmSqlHelper.readAllAlarms(null,null);
         //PreciseConnectivityAlarm preciseConnectivityAlarm2 =  alarmSqlHelper.readNextAlarm();
         alarmSqlHelper.createAlarm(preciseConnectivityAlarm);
         alarmSqlHelper.createAlarm(preciseConnectivityAlarmOne);
