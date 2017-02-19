@@ -16,10 +16,10 @@ import java.util.List;
 import io.mdevlab.unconnectify.adapter.AlarmAdapter;
 import io.mdevlab.unconnectify.alarm.PreciseConnectivityAlarm;
 import io.mdevlab.unconnectify.data.AlarmSqlHelper;
-import io.mdevlab.unconnectify.utils.AlarmUtils;
 
 public class MainActivity extends AppCompatActivity {
-    public static final String TAG = MainActivity.class.getSimpleName();
+
+    private RecyclerView mAlarmList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,25 +27,24 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
-        RecyclerView alarmList = (RecyclerView) findViewById(R.id.alarms_list);
+//
+        mAlarmList = (RecyclerView) findViewById(R.id.alarms_list);
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(MainActivity.this);
-        alarmList.setLayoutManager(mLayoutManager);
-        alarmList.setItemAnimator(new DefaultItemAnimator());
+        mAlarmList.setLayoutManager(mLayoutManager);
+        mAlarmList.setItemAnimator(new DefaultItemAnimator());
 
-        AlarmUtils.createFakeData(getApplicationContext());
+//        AlarmUtils.createFakeData(getApplicationContext());
 
         AlarmSqlHelper alarmSqlHelper = new AlarmSqlHelper(MainActivity.this);
         List<PreciseConnectivityAlarm> alarms = alarmSqlHelper.readAllAlarms(null, null);
-
+//
         AlarmAdapter alarmAdapter = new AlarmAdapter(alarms, MainActivity.this);
 
         TextView alarmsCount = (TextView) findViewById(R.id.alarms_count);
         alarmsCount.setText(alarms.size() + " alarms");
 
-        alarmList.setAdapter(alarmAdapter);
+        mAlarmList.setAdapter(alarmAdapter);
     }
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
