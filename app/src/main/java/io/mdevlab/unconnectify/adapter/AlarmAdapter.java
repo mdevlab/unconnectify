@@ -1,10 +1,13 @@
 package io.mdevlab.unconnectify.adapter;
 
 import android.content.Context;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
+import com.chauthai.swipereveallayout.ViewBinderHelper;
 
 import java.util.Calendar;
 import java.util.List;
@@ -35,6 +38,7 @@ public class AlarmAdapter extends RecyclerView.Adapter<AlarmViewHolder> {
 
     private List<PreciseConnectivityAlarm> alarms;
     private Context mContext;
+    private final ViewBinderHelper viewBinderHelper = new ViewBinderHelper();
 
     public AlarmAdapter(List<PreciseConnectivityAlarm> alarms, Context context) {
         this.alarms = alarms;
@@ -52,11 +56,13 @@ public class AlarmAdapter extends RecyclerView.Adapter<AlarmViewHolder> {
     public void onBindViewHolder(AlarmViewHolder holder, int position) {
         PreciseConnectivityAlarm currentAlarm = alarms.get(position);
 
+        viewBinderHelper.bind(holder.mSwipeRevealLayout, String.valueOf(currentAlarm.getAlarmId()));
+
         // Setting the alarm object to the holder
         holder.setAlarm(currentAlarm);
 
         // Setting the card's color
-        holder.mContainer.setBackgroundColor(mContext.getColor(colors[position % colors.length]));
+        holder.mContainer.setBackgroundColor(ContextCompat.getColor(mContext, colors[position % colors.length]));
 
         // Start time
         holder.mStartTime.setText(DateUtils.getTimeFromLong(currentAlarm.getStartTime()));

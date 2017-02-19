@@ -11,6 +11,8 @@ import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.ToggleButton;
 
+import com.chauthai.swipereveallayout.SwipeRevealLayout;
+
 import java.util.Calendar;
 import java.util.List;
 
@@ -33,6 +35,8 @@ public class AlarmViewHolder extends RecyclerView.ViewHolder implements TimePick
     private PreciseConnectivityAlarm mAlarm;
     private Context mContext;
     private boolean hasChosenStartTime = true;
+
+    SwipeRevealLayout mSwipeRevealLayout;
 
     View mContainer;
 
@@ -59,6 +63,8 @@ public class AlarmViewHolder extends RecyclerView.ViewHolder implements TimePick
 
         mAlarmSqlHelper = new AlarmSqlHelper(context);
         mContext = context;
+
+        mSwipeRevealLayout = (SwipeRevealLayout) itemView.findViewById(R.id.swipeRevealLayout);
 
         mContainer = itemView.findViewById(R.id.container);
 
