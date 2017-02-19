@@ -32,6 +32,8 @@ public class AlarmViewHolder extends RecyclerView.ViewHolder {
     private PreciseConnectivityAlarm mAlarm;
     private Context mContext;
 
+    View mContainer;
+
     TextView mStartTime;
     TextView mTimesSeparator;
     TextView mEndTime;
@@ -55,6 +57,8 @@ public class AlarmViewHolder extends RecyclerView.ViewHolder {
 
         mAlarmSqlHelper = new AlarmSqlHelper(context);
         mContext = context;
+
+        mContainer = itemView.findViewById(R.id.container);
 
         // start time
         mStartTime = (TextView) itemView.findViewById(R.id.start_time);
@@ -111,8 +115,15 @@ public class AlarmViewHolder extends RecyclerView.ViewHolder {
         mWifi.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (mAlarm != null)
+                if (mAlarm != null) {
                     AlarmManager.getInstance(mContext).updateAlarmConnection(mAlarm.getAlarmId(), Connection.WIFI, isChecked);
+
+                    Log.e("Connections", "Connections of alarm " + mAlarm.getAlarmId());
+                    List<Connection> days = mAlarmSqlHelper.getAllConnectionOfAlarm(mAlarm.getAlarmId());
+                    for (Connection day : days) {
+                        Log.e("Connections", String.valueOf(day));
+                    }
+                }
             }
         });
 
@@ -120,8 +131,15 @@ public class AlarmViewHolder extends RecyclerView.ViewHolder {
         mHotspot.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (mAlarm != null)
+                if (mAlarm != null) {
                     AlarmManager.getInstance(mContext).updateAlarmConnection(mAlarm.getAlarmId(), Connection.HOTSPOT, isChecked);
+
+                    Log.e("Connections", "Connections of alarm " + mAlarm.getAlarmId());
+                    List<Connection> days = mAlarmSqlHelper.getAllConnectionOfAlarm(mAlarm.getAlarmId());
+                    for (Connection day : days) {
+                        Log.e("Connections", String.valueOf(day));
+                    }
+                }
             }
         });
 
@@ -129,8 +147,15 @@ public class AlarmViewHolder extends RecyclerView.ViewHolder {
         mBluetooth.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (mAlarm != null)
+                if (mAlarm != null) {
                     AlarmManager.getInstance(mContext).updateAlarmConnection(mAlarm.getAlarmId(), Connection.BLUETOOTH, isChecked);
+
+                    Log.e("Connections", "Connections of alarm " + mAlarm.getAlarmId());
+                    List<Connection> days = mAlarmSqlHelper.getAllConnectionOfAlarm(mAlarm.getAlarmId());
+                    for (Connection day : days) {
+                        Log.e("Connections", String.valueOf(day));
+                    }
+                }
             }
         });
 
@@ -225,7 +250,7 @@ public class AlarmViewHolder extends RecyclerView.ViewHolder {
 
         Log.e("Days", "Days of alarm " + alarmId);
         List<Integer> days = mAlarmSqlHelper.getAllDaysOfAlarm(alarmId);
-        for(Integer day: days) {
+        for (Integer day : days) {
             Log.e("Days", String.valueOf(day));
         }
     }

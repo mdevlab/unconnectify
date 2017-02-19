@@ -20,6 +20,19 @@ import io.mdevlab.unconnectify.utils.DateUtils;
 
 public class AlarmAdapter extends RecyclerView.Adapter<AlarmViewHolder> {
 
+    private int[] colors = {
+            R.color.color_1,
+            R.color.color_2,
+            R.color.color_3,
+            R.color.color_4,
+            R.color.color_5,
+            R.color.color_6,
+            R.color.color_7,
+            R.color.color_8,
+            R.color.color_9,
+            R.color.color_10
+    };
+
     private List<PreciseConnectivityAlarm> alarms;
     private Context mContext;
 
@@ -41,6 +54,9 @@ public class AlarmAdapter extends RecyclerView.Adapter<AlarmViewHolder> {
 
         // Setting the alarm object to the holder
         holder.setAlarm(currentAlarm);
+
+        // Setting the card's color
+        holder.mContainer.setBackgroundColor(mContext.getColor(colors[position % colors.length]));
 
         // Start time
         holder.mStartTime.setText(DateUtils.getTimeFromLong(currentAlarm.getStartTime()));

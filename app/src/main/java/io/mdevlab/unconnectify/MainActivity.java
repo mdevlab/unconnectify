@@ -11,6 +11,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.TextView;
 
 import java.util.List;
 
@@ -22,7 +23,6 @@ import io.mdevlab.unconnectify.utils.DialogUtils;
 
 public class MainActivity extends AppCompatActivity {
     public static final String TAG = MainActivity.class.getSimpleName();
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,6 +42,9 @@ public class MainActivity extends AppCompatActivity {
         List<PreciseConnectivityAlarm> alarms = alarmSqlHelper.readAllAlarms(null, null);
 
         AlarmAdapter alarmAdapter = new AlarmAdapter(alarms, MainActivity.this);
+
+        TextView alarmsCount = (TextView) findViewById(R.id.alarms_count);
+        alarmsCount.setText(alarms.size() + " alarms");
 
         alarmList.setAdapter(alarmAdapter);
 
