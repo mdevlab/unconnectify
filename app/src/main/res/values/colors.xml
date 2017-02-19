@@ -1,6 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#3F51B5</color>
-    <color name="colorPrimaryDark">#303F9F</color>
+    <color name="colorPrimary">@android:color/black</color>
+    <color name="colorPrimaryDark">@android:color/black</color>
     <color name="colorAccent">#FF4081</color>
+
+    <!--Alarm list colors-->
+    <color name="color_1">#D39F56</color>
+    <color name="color_2">#DCBF61</color>
+    <color name="color_3">#D3D482</color>
+    <color name="color_4">#D1E7AC</color>
+    <color name="color_5">#CAE7DF</color>
+    <color name="color_6">#A9C7D0</color>
+    <color name="color_7">#9AA3BB</color>
+    <color name="color_8">#8D7C9F</color>
+    <color name="color_9">#716573</color>
+    <color name="color_10">#414141</color>
+
 </resources>

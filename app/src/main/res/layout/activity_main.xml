@@ -23,11 +23,23 @@
 
     </android.support.design.widget.AppBarLayout>
 
+    <TextView
+        android:id="@+id/alarms_count"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:layout_below="@+id/appbar"
+        android:background="@android:color/black"
+        android:gravity="center"
+        android:text="10 alarms"
+        android:textColor="#99FFFFFF"
+        android:textStyle="bold"
+        android:textAllCaps="true"/>
+
     <android.support.v7.widget.RecyclerView
         android:id="@+id/alarms_list"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/appbar"/>
+        android:layout_below="@+id/alarms_count" />
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/fab"
