@@ -65,10 +65,12 @@ public class AlarmAdapter extends RecyclerView.Adapter<AlarmViewHolder> {
         if (currentAlarm.getDuration() != 1) {
             holder.mEndTime.setText(DateUtils.getTimeFromLong(currentAlarm.getStartTime() + currentAlarm.getDuration()));
             holder.mEndTime.setEnabled(true);
+            holder.mSetEndTime.setChecked(true);
         } else {
             holder.mEndTime.setAlpha(0.5f);
             holder.mEndTime.setEnabled(false);
             holder.mTimesSeparator.setAlpha(0.5f);
+            holder.mSetEndTime.setChecked(false);
         }
 
         // Wifi

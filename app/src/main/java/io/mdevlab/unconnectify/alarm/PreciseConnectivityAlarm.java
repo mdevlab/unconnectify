@@ -58,7 +58,7 @@ public class PreciseConnectivityAlarm {
     private long mLastUpdate;
 
     // Id of the job assigned to the alarm
-    private int jobId = -1;
+    private int mJobId = -1;
 
     /**
      * Empty constructor
@@ -77,6 +77,7 @@ public class PreciseConnectivityAlarm {
      * @param mDuration:            Duration after which the alarm should re-enable mConnections
      */
     public PreciseConnectivityAlarm(long mExecutionTimeInMils, long mDuration, List<Integer> mDays, List<Connection> mConnections) {
+        this.mStartTime = mExecutionTimeInMils;
         this.mExecutionTimeInMils = mExecutionTimeInMils;
         this.mDuration = mDuration;
         this.mDays = mDays;
@@ -108,11 +109,7 @@ public class PreciseConnectivityAlarm {
      * @param mExecutionTimeInMils: The execution time of the alarm, in milliseconds
      */
     public PreciseConnectivityAlarm(long mExecutionTimeInMils) {
-        this.mExecutionTimeInMils = mExecutionTimeInMils;
-        this.mDuration = 0;
-        this.mDays = getToday();
-        this.mConnections = getDefaultConnection();
-        this.isActive = true;
+        this(mExecutionTimeInMils, 0);
     }
 
     /**
@@ -163,6 +160,7 @@ public class PreciseConnectivityAlarm {
      * @param mDuration
      */
     public PreciseConnectivityAlarm(long mExecutionTimeInMils, int mDuration) {
+        this.mStartTime = mExecutionTimeInMils;
         this.mExecutionTimeInMils = mExecutionTimeInMils;
         this.mDuration = mDuration;
         this.mDays = getToday();
@@ -323,11 +321,11 @@ public class PreciseConnectivityAlarm {
     }
 
     public int getJobId() {
-        return jobId;
+        return mJobId;
     }
 
     public void setJobId(int jobId) {
-        this.jobId = jobId;
+        this.mJobId = jobId;
     }
 
     /**
