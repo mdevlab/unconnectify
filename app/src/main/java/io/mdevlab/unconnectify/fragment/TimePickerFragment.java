@@ -12,9 +12,15 @@ import java.util.Calendar;
  * Created by mdevlab on 2/12/17.
  */
 
+
+/**
+ * this function is the main class for displaying the time picker fragement
+ */
 public class TimePickerFragment extends AppCompatDialogFragment {
 
+    //The callback interface used to indicate the user is done filling in the time
     private TimePickerDialog.OnTimeSetListener mListener;
+
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
@@ -29,6 +35,11 @@ public class TimePickerFragment extends AppCompatDialogFragment {
                 DateFormat.is24HourFormat(getActivity()));
     }
 
+    /**
+     * Set the TimePickerListener of  DialogFragment
+     *
+     * @param mListener listener
+     */
     public void setListener(TimePickerDialog.OnTimeSetListener mListener) {
         this.mListener = mListener;
     }
