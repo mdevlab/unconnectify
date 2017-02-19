@@ -46,7 +46,7 @@ public class AlarmSqlHelper extends SQLiteOpenHelper {
 
     // Alarm Table - column names
     public static final String ISACTIVE_COLUMN = "isactive";
-    public static final String START_TIME_COLUMN= "starttimeinmils";
+    public static final String START_TIME_COLUMN = "starttimeinmils";
     public static final String EXECUTION_TIME_COLUMN = "executiontimeinmils";
     public static final String DURATION = "duration";
     public static final String JOBID = "jobid";
@@ -500,7 +500,7 @@ public class AlarmSqlHelper extends SQLiteOpenHelper {
      * @return the alarm
      */
     public PreciseConnectivityAlarm getAlarmByJobId(int jobId) {
-        return  getAlarmByIds(jobId,"SELECT * FROM " + TABLE_ALARM + " WHERE " + JOBID + "=? ");
+        return getAlarmByIds(jobId, "SELECT * FROM " + TABLE_ALARM + " WHERE " + JOBID + "=? ");
     }
 
     /**
@@ -510,7 +510,7 @@ public class AlarmSqlHelper extends SQLiteOpenHelper {
      * @param id each alarm is associated to an id
      */
     public PreciseConnectivityAlarm getAlarmById(int id) {
-        return  getAlarmByIds(id,"SELECT * FROM " + TABLE_ALARM + " WHERE " + KEY_ID + "=? ");
+        return getAlarmByIds(id, "SELECT * FROM " + TABLE_ALARM + " WHERE " + KEY_ID + "=? ");
     }
 
 
@@ -521,7 +521,7 @@ public class AlarmSqlHelper extends SQLiteOpenHelper {
      * @param Query
      * @return
      */
-    private PreciseConnectivityAlarm getAlarmByIds(int id,String Query){
+    private PreciseConnectivityAlarm getAlarmByIds(int id, String Query) {
         SQLiteDatabase db = this.getWritableDatabase();
 
         Cursor cursor;
@@ -538,8 +538,6 @@ public class AlarmSqlHelper extends SQLiteOpenHelper {
         return null;
 
     }
-
-
 
 
     /**
@@ -586,6 +584,7 @@ public class AlarmSqlHelper extends SQLiteOpenHelper {
 
     }
 
+    //TODO implement this function to allow querying the DB by id
     public PreciseConnectivityAlarm getAlarm() {
         return null;
     }

@@ -23,6 +23,7 @@ import io.mdevlab.unconnectify.utils.DateUtils;
 
 public class AlarmAdapter extends RecyclerView.Adapter<AlarmViewHolder> {
 
+    //Colors for items background
     private int[] colors = {
             R.color.color_1,
             R.color.color_2,
@@ -40,10 +41,28 @@ public class AlarmAdapter extends RecyclerView.Adapter<AlarmViewHolder> {
     private Context mContext;
     private final ViewBinderHelper viewBinderHelper = new ViewBinderHelper();
 
+    /**
+     * Constructor for  the alarm adapter
+     *
+     * @param alarms  list of alarms provided
+     * @param context
+     */
     public AlarmAdapter(List<PreciseConnectivityAlarm> alarms, Context context) {
         this.alarms = alarms;
         this.mContext = context;
     }
+
+    /**
+     * add alarm to the List of alarms
+     *
+     * @param preciseConnectivityAlarm
+     */
+    public void addAlarm(PreciseConnectivityAlarm preciseConnectivityAlarm) {
+        //TODO add the alarm to the top of the list
+        alarms.add(preciseConnectivityAlarm);
+        this.notifyDataSetChanged();
+    }
+
 
     @Override
     public AlarmViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {

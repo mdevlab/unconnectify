@@ -17,9 +17,10 @@ public class DialogUtils {
     /**
      * this method is used to redirect users to setting activity ,
      * user will be redirected to this setting activity until he/she provide the write access ,this function is called in devise runing 6.0+
+     *
      * @param context the context is used for lunching the AlertDialog
      */
-    public  static void showDialog(final Context context){
+    public static void showDialog(final Context context) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && !Settings.System.canWrite(context)) {
             new AlertDialog.Builder(context)
                     .setMessage("Allow reading/writing the system settings? Necessary to set up access points.")

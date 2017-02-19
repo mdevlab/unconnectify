@@ -151,6 +151,19 @@ public class PreciseConnectivityAlarm {
         return today;
     }
 
+
+    /**
+     * Method that returns the Default Connection Wifi
+     * This method uses the predefined Connection enum to provide the list with the wifi Connection
+     *
+     * @return: List containing the wifi connection
+     */
+    private List<Connection> getDefaultToday() {
+        List<Connection> connectionArrayList = new ArrayList<>();
+        connectionArrayList.add(Connection.WIFI);
+        return connectionArrayList;
+    }
+
     /**
      * Constructor taking two arguments: The execution time of the alarm and its duration
      * The day of execution of the alarm is set by default to the current day
@@ -164,6 +177,7 @@ public class PreciseConnectivityAlarm {
         this.mExecutionTimeInMils = mExecutionTimeInMils;
         this.mDuration = mDuration;
         this.mDays = getToday();
+        this.mConnections = getDefaultConnection();
         this.isActive = true;
     }
 

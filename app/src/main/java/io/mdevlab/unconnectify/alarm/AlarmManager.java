@@ -40,7 +40,7 @@ public class AlarmManager {
      *
      * @param alarm
      */
-    public void createAlarm(PreciseConnectivityAlarm alarm) {
+    public long createAlarm(PreciseConnectivityAlarm alarm) {
 
         // Saving the alarm to the local database using the sql helper
         long alarmId = alarmSqlHelper.createAlarm(alarm);
@@ -48,6 +48,7 @@ public class AlarmManager {
         // Launching alarm job
         alarm.setAlarmId((int) alarmId);
         createAlarmJob(alarm);
+        return alarmId;
     }
 
     /**
