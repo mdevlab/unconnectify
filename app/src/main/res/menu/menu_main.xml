@@ -2,9 +2,11 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="io.mdevlab.unconnectify.MainActivity">
+
     <item
-        android:id="@+id/action_settings"
-        android:orderInCategory="100"
-        android:title="@string/action_settings"
-        app:showAsAction="never" />
+        android:id="@+id/action_add_alarm"
+        android:orderInCategory="1"
+        android:icon="@drawable/ic_add_alarm"
+        android:title="@string/action_add_alarm"
+        app:showAsAction="always" />
 </menu>
