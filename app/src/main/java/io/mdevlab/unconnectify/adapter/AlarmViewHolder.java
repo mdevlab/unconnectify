@@ -1,13 +1,14 @@
 package io.mdevlab.unconnectify.adapter;
 
+import android.app.TimePickerDialog;
 import android.content.Context;
-import android.support.v4.app.DialogFragment;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.TextView;
+import android.widget.TimePicker;
 import android.widget.ToggleButton;
 
 import java.util.Calendar;
@@ -26,11 +27,12 @@ import io.mdevlab.unconnectify.utils.DateUtils;
  * Created by mdevlab on 2/12/17.
  */
 
-public class AlarmViewHolder extends RecyclerView.ViewHolder {
+public class AlarmViewHolder extends RecyclerView.ViewHolder implements TimePickerDialog.OnTimeSetListener {
 
     private AlarmSqlHelper mAlarmSqlHelper;
     private PreciseConnectivityAlarm mAlarm;
     private Context mContext;
+    private boolean hasChosenStartTime = true;
 
     View mContainer;
 
@@ -66,6 +68,7 @@ public class AlarmViewHolder extends RecyclerView.ViewHolder {
             @Override
             public void onClick(View v) {
                 showTimePicker();
+                hasChosenStartTime = true;
             }
         });
 
@@ -78,6 +81,7 @@ public class AlarmViewHolder extends RecyclerView.ViewHolder {
             @Override
             public void onClick(View v) {
                 showTimePicker();
+                hasChosenStartTime = false;
             }
         });
 
@@ -165,7 +169,7 @@ public class AlarmViewHolder extends RecyclerView.ViewHolder {
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (mAlarm != null) {
                     AlarmManager.getInstance(mContext).updateAlarmDay(mAlarm.getAlarmId(), Calendar.SUNDAY, isChecked);
-                    changeOpacity(mAlarm.getAlarmId(), mSunday, isChecked);
+                    changeOpacity(mSunday, isChecked);
                 }
             }
         });
@@ -176,7 +180,7 @@ public class AlarmViewHolder extends RecyclerView.ViewHolder {
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (mAlarm != null) {
                     AlarmManager.getInstance(mContext).updateAlarmDay(mAlarm.getAlarmId(), Calendar.MONDAY, isChecked);
-                    changeOpacity(mAlarm.getAlarmId(), mMonday, isChecked);
+                    changeOpacity(mMonday, isChecked);
                 }
             }
         });
@@ -187,7 +191,7 @@ public class AlarmViewHolder extends RecyclerView.ViewHolder {
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (mAlarm != null) {
                     AlarmManager.getInstance(mContext).updateAlarmDay(mAlarm.getAlarmId(), Calendar.TUESDAY, isChecked);
-                    changeOpacity(mAlarm.getAlarmId(), mTuesday, isChecked);
+                    changeOpacity(mTuesday, isChecked);
                 }
             }
         });
@@ -198,7 +202,7 @@ public class AlarmViewHolder extends RecyclerView.ViewHolder {
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (mAlarm != null) {
                     AlarmManager.getInstance(mContext).updateAlarmDay(mAlarm.getAlarmId(), Calendar.WEDNESDAY, isChecked);
-                    changeOpacity(mAlarm.getAlarmId(), mWednesday, isChecked);
+                    changeOpacity(mWednesday, isChecked);
                 }
             }
         });
@@ -209,7 +213,7 @@ public class AlarmViewHolder extends RecyclerView.ViewHolder {
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (mAlarm != null) {
                     AlarmManager.getInstance(mContext).updateAlarmDay(mAlarm.getAlarmId(), Calendar.THURSDAY, isChecked);
-                    changeOpacity(mAlarm.getAlarmId(), mThursday, isChecked);
+                    changeOpacity(mThursday, isChecked);
                 }
             }
         });
@@ -220,7 +224,7 @@ public class AlarmViewHolder extends RecyclerView.ViewHolder {
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (mAlarm != null) {
                     AlarmManager.getInstance(mContext).updateAlarmDay(mAlarm.getAlarmId(), Calendar.FRIDAY, isChecked);
-                    changeOpacity(mAlarm.getAlarmId(), mFriday, isChecked);
+                    changeOpacity(mFriday, isChecked);
                 }
             }
         });
@@ -231,28 +235,23 @@ public class AlarmViewHolder extends RecyclerView.ViewHolder {
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (mAlarm != null) {
                     AlarmManager.getInstance(mContext).updateAlarmDay(mAlarm.getAlarmId(), Calendar.SATURDAY, isChecked);
-                    changeOpacity(mAlarm.getAlarmId(), mSaturday, isChecked);
+                    changeOpacity(mSaturday, isChecked);
                 }
             }
         });
     }
 
     private void showTimePicker() {
-        DialogFragment timePickerFragment = new TimePickerFragment();
+        TimePickerFragment timePickerFragment = new TimePickerFragment();
+        timePickerFragment.setListener(this);
         timePickerFragment.show(((MainActivity) mContext).getSupportFragmentManager(), "time picker");
     }
 
-    private void changeOpacity(int alarmId, View toggleButton, boolean isChecked) {
+    private void changeOpacity(View toggleButton, boolean isChecked) {
         float opacity = 0.5f;
         if (isChecked)
             opacity = 1f;
         toggleButton.setAlpha(opacity);
-
-        Log.e("Days", "Days of alarm " + alarmId);
-        List<Integer> days = mAlarmSqlHelper.getAllDaysOfAlarm(alarmId);
-        for (Integer day : days) {
-            Log.e("Days", String.valueOf(day));
-        }
     }
 
     public PreciseConnectivityAlarm getAlarm() {
@@ -261,5 +260,50 @@ public class AlarmViewHolder extends RecyclerView.ViewHolder {
 
     public void setAlarm(PreciseConnectivityAlarm mAlarm) {
         this.mAlarm = mAlarm;
+    }
+
+    @Override
+    public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+
+        /**
+         * If 'minute' is between 0 and 9 it only has one digit,
+         * so a '0' is added to the beginning of it
+         */
+        String s_minute = (0 <= minute && minute <= 9) ? "0" + minute : String.valueOf(minute);
+
+        /**
+         * By default, we suppose that the start time is being updated
+         * So the textView to update once the time has been chosen by the user
+         * is the startTime textView
+         */
+        TextView viewToUpdate = mStartTime;
+
+        // New execution time
+        long newExecutionTime = DateUtils.getLongFromTime(hourOfDay + ":" + s_minute);
+
+        // Duration hasn't changed
+        long newDuration = mAlarm.getDuration();
+
+        // If the end time is being updated
+        if (!hasChosenStartTime) {
+            // The textView to update is the endTime
+            viewToUpdate = mEndTime;
+
+            /**
+             * duration = endTime - executionTime
+             * endTime's value is in newExecutionTime, so:
+             * duration = newExecutionTime - executionTime
+             */
+            newDuration = newExecutionTime - mAlarm.getExecuteTimeInMils();
+
+            // Execution time hasn't changed
+            newExecutionTime = mAlarm.getExecuteTimeInMils();
+        }
+
+        // Update the UI
+        viewToUpdate.setText(hourOfDay + ":" + s_minute);
+
+        // Update the alarm in the database and the alarm's job
+        AlarmManager.getInstance(mContext).updateAlarm(mAlarm.getAlarmId(), newExecutionTime, newDuration);
     }
 }
