@@ -361,16 +361,17 @@ public class AlarmSqlHelper extends SQLiteOpenHelper {
 
 
     /**
-     * Deleting single Alarm by id
+     * * Deleting single Alarm by id
      *
      * @param id alarm to be deleted
+     * @return deleted Lines
      */
-    public void deleteAlarm(int id) {
+    public int  deleteAlarm(int id) {
         SQLiteDatabase db = this.getWritableDatabase();
 
-        db.delete(TABLE_ALARM, KEY_ID + " = ?",
+        int deletedLines =  db.delete(TABLE_ALARM, KEY_ID + " = ?",
                 new String[]{String.valueOf(id)});
-        db.close();
+        return deletedLines;
     }
 
     /**

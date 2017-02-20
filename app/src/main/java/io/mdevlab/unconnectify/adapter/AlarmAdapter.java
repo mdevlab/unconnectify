@@ -13,6 +13,7 @@ import java.util.Calendar;
 import java.util.List;
 
 import io.mdevlab.unconnectify.R;
+import io.mdevlab.unconnectify.alarm.AlarmManager;
 import io.mdevlab.unconnectify.alarm.PreciseConnectivityAlarm;
 import io.mdevlab.unconnectify.utils.Connection;
 import io.mdevlab.unconnectify.utils.DateUtils;
@@ -22,6 +23,7 @@ import io.mdevlab.unconnectify.utils.DateUtils;
  */
 
 public class AlarmAdapter extends RecyclerView.Adapter<AlarmViewHolder> {
+
 
     //Colors for items background
     private int[] colors = {
@@ -63,6 +65,21 @@ public class AlarmAdapter extends RecyclerView.Adapter<AlarmViewHolder> {
         this.notifyDataSetChanged();
     }
 
+    /**
+     * delete the alarm from the list position and with the given id
+     *
+     * @param position the position in the list
+     * @param alarmId  the id of the alarm used for db purposes as we delete the alarm by id
+     */
+    public void deleteAlarm(int position, int alarmId) {
+
+        AlarmManager.getInstance(mContext).clearAlarm(alarmId);
+        alarms.remove(position);
+        this.notifyItemRemoved(position);
+        this.notifyItemChanged(position, alarms.size());
+
+    }
+
 
     @Override
     public AlarmViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -72,8 +89,20 @@ public class AlarmAdapter extends RecyclerView.Adapter<AlarmViewHolder> {
     }
 
     @Override
-    public void onBindViewHolder(AlarmViewHolder holder, int position) {
-        PreciseConnectivityAlarm currentAlarm = alarms.get(position);
+    public void onBindViewHolder(AlarmViewHolder holder, final int position) {
+        final PreciseConnectivityAlarm currentAlarm = alarms.get(position);
+
+        //Delete the alarm
+        holder.mDeletealarmImageView.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View view) {
+
+                deleteAlarm(position, currentAlarm.getAlarmId());
+
+
+            }
+        });
 
         viewBinderHelper.bind(holder.mSwipeRevealLayout, String.valueOf(currentAlarm.getAlarmId()));
 
@@ -145,4 +174,6 @@ public class AlarmAdapter extends RecyclerView.Adapter<AlarmViewHolder> {
             return alarms.size();
         return 0;
     }
+
+
 }

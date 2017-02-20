@@ -52,6 +52,22 @@ public class AlarmManager {
     }
 
     /**
+     * This method is for deleting an alarm from the database
+     * @param alarmId id of the alarm
+     * @return true if deleted false otherways
+     */
+    public Boolean clearAlarm(int alarmId) {
+
+        // Saving the alarm to the local database using the sql helper
+       int lines = alarmSqlHelper.deleteAlarm(alarmId);
+        //TODO husayn check if we should delete the alarm job
+        if (lines > 0){
+            return true;
+        }
+        else return false;
+    }
+
+    /**
      * Method that sets the first job for an alarm right after its creation
      * It's also called to update an alarm's job after this alarm has been modified
      * So it starts by canceling the previous job first before creating a new one
