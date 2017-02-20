@@ -38,6 +38,9 @@ public class AlarmViewHolder extends RecyclerView.ViewHolder implements TimePick
 
     SwipeRevealLayout mSwipeRevealLayout;
 
+    View mSwitchOnOff;
+    ToggleButton mSwitchOnOffToggle;
+
     View mContainer;
 
     TextView mStartTime;
@@ -66,6 +69,19 @@ public class AlarmViewHolder extends RecyclerView.ViewHolder implements TimePick
 
         mSwipeRevealLayout = (SwipeRevealLayout) itemView.findViewById(R.id.swipeRevealLayout);
 
+        // Switch alarm on/off
+        mSwitchOnOff = itemView.findViewById(R.id.switch_alarm_on_off);
+        mSwitchOnOffToggle = (ToggleButton) itemView.findViewById(R.id.switch_alarm_on_off_toggle);
+        mSwitchOnOffToggle.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (mAlarm != null) {
+                    AlarmManager.getInstance(mContext).updateAlarmState(mAlarm, isChecked);
+                }
+            }
+        });
+
+        // Main view container
         mContainer = itemView.findViewById(R.id.container);
 
         // start time

@@ -71,6 +71,38 @@ public class AlarmManager {
     }
 
     /**
+     * Method that cancels an alarm's job
+     *
+     * @param alarm: Alarm of which we want to cancel the job
+     */
+    private void cancelAlarmJob(PreciseConnectivityAlarm alarm) {
+
+        // If the alarm has a job, cancel it
+        if (alarm.getJobId() != -1)
+            JobManager.instance().cancel(alarm.getJobId());
+    }
+
+    /**
+     * Method that updates an alarm's state (on/off)
+     *
+     * @param alarm:    Alarm object whose state is being changed
+     * @param isActive: New state of the alarm, either on (true) or off (false)
+     */
+    public void updateAlarmState(PreciseConnectivityAlarm alarm, boolean isActive) {
+
+        // Update the state of the alarm in the dababase
+        alarmSqlHelper.updateAlarmCurrentState(alarm.getAlarmId(), isActive);
+
+        // If alarm is now active, create its job
+        if (isActive)
+            createAlarmJob(alarm);
+
+            // Else, cancel its current running job
+        else
+            cancelAlarmJob(alarm);
+    }
+
+    /**
      * Method that updates the alarm's execution time and duration
      *
      * @param alarmId:       Id of the alarm being updated
