@@ -1,12 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-
 <com.chauthai.swipereveallayout.SwipeRevealLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/swipeRevealLayout"
     android:layout_width="match_parent"
     android:layout_height="220dp"
     app:dragEdge="right"
-    app:mode="normal">
+    app:mode="same_level">
 
     <!--Secondary layout-->
     <LinearLayout
@@ -30,12 +29,15 @@
                 android:textColor="@android:color/white"
                 android:textStyle="bold" />
 
-            <TextView
+            <ToggleButton
+                android:id="@+id/switch_alarm_on_off_toggle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="ON"
+                android:background="@android:color/transparent"
                 android:textAllCaps="true"
                 android:textColor="@android:color/white"
+                android:textOff="OFF"
+                android:textOn="ON"
                 android:textSize="48sp"
                 android:textStyle="bold" />
 
@@ -60,7 +62,7 @@
             <ImageView
                 android:layout_width="48dp"
                 android:layout_height="48dp"
-                android:src="@drawable/ic_delete_alarm"/>
+                android:src="@drawable/ic_delete_alarm" />
 
         </LinearLayout>
 
