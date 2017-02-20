@@ -20,7 +20,7 @@
     <style name="CodeFont">
         <item name="android:textColor">#EEEEEE</item>
         <item name="android:textStyle">bold</item>
-        <item name="android:textSize">46sp</item>
+        <item name="android:textSize">40sp</item>
     </style>
     <style name="DaysStyleBold">
         <item name="android:textColor">#ffffff</item>
@@ -30,7 +30,7 @@
     </style>
     <style name="DaysStyleNotBold">
         <item name="android:textColor">#ffffff</item>
-        <item name="android:textSize">30sp</item>
+        <item name="android:textSize">24sp</item>
 
     </style>
 
