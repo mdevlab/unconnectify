@@ -109,7 +109,7 @@ public class PreciseConnectivityAlarm {
      * @param mExecutionTimeInMils: The execution time of the alarm, in milliseconds
      */
     public PreciseConnectivityAlarm(long mExecutionTimeInMils) {
-        this(mExecutionTimeInMils, 0);
+        this(mExecutionTimeInMils, 1);
     }
 
     /**

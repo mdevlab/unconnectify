@@ -27,12 +27,11 @@ import io.mdevlab.unconnectify.utils.DateUtils;
 public class MainActivity extends AppCompatActivity implements TimePickerDialog.OnTimeSetListener {
     public static final String TAG = MainActivity.class.getSimpleName();
 
-
-
     private RecyclerView.LayoutManager mLayoutManager;
-    private RecyclerView alarmList;
-    private AlarmAdapter alarmAdapter;
-    private AlarmSqlHelper alarmSqlHelper;
+    private RecyclerView mAlarmList;
+    private AlarmAdapter mAlarmAdapter;
+    private AlarmSqlHelper mAlarmSqlHelper;
+    private TextView mAlarmsCount;
 
 
     @Override
@@ -44,36 +43,30 @@ public class MainActivity extends AppCompatActivity implements TimePickerDialog.
 
 
         //Recycler View
-        alarmList = (RecyclerView) findViewById(R.id.alarms_list);
+        mAlarmList = (RecyclerView) findViewById(R.id.alarms_list);
 
         //Layout manager
         mLayoutManager = new LinearLayoutManager(MainActivity.this);
 
         //Set the Recycler with layout manager
-        alarmList.setLayoutManager(mLayoutManager);
+        mAlarmList.setLayoutManager(mLayoutManager);
 
         //Set the animator with the default
-        alarmList.setItemAnimator(new DefaultItemAnimator());
+        mAlarmList.setItemAnimator(new DefaultItemAnimator());
 
         //instance of the SQLHelper
-        alarmSqlHelper = new AlarmSqlHelper(MainActivity.this);
-
+        mAlarmSqlHelper = new AlarmSqlHelper(MainActivity.this);
 
         //Read the list of alarms
-        List<PreciseConnectivityAlarm> alarms = alarmSqlHelper.readAllAlarms(null, null);
-
+        List<PreciseConnectivityAlarm> alarms = mAlarmSqlHelper.readAllAlarms(null, null);
 
         //The alarm Adapter
-        alarmAdapter = new AlarmAdapter(alarms, MainActivity.this);
-        alarmList.setAdapter(alarmAdapter);
-
+        mAlarmAdapter = new AlarmAdapter(alarms, MainActivity.this);
+        mAlarmList.setAdapter(mAlarmAdapter);
 
         //Alarms counts textview
-        TextView alarmsCount = (TextView) findViewById(R.id.alarms_count);
-        alarmsCount.setText(alarms.size() + " alarms");
-
-
-
+        mAlarmsCount = (TextView) findViewById(R.id.alarms_count);
+        mAlarmsCount.setText(alarms.size() + " alarms");
     }
 
 
@@ -125,13 +118,22 @@ public class MainActivity extends AppCompatActivity implements TimePickerDialog.
         PreciseConnectivityAlarm preciseConnectivityAlarm = new PreciseConnectivityAlarm(newExecutionTime);
 
         //Create and insert the new Alarm
-        long alarmid = AlarmManager.getInstance(getApplicationContext()).createAlarm(preciseConnectivityAlarm);
+        long alarmId = AlarmManager.getInstance(getApplicationContext()).createAlarm(preciseConnectivityAlarm);
 
         //set the alarm id
-        preciseConnectivityAlarm.setAlarmId((int) alarmid);
+        preciseConnectivityAlarm.setAlarmId((int) alarmId);
 
-        alarmAdapter.addAlarm(preciseConnectivityAlarm);
+        mAlarmAdapter.addAlarm(preciseConnectivityAlarm);
 
+        // Increment number of alarms in alarms count textview
+        mAlarmsCount.setText(mAlarmAdapter.getItemCount() + " alarms");
+    }
 
+    public AlarmAdapter getAlarmAdapter() {
+        return mAlarmAdapter;
+    }
+
+    public TextView getAlarmsCount() {
+        return mAlarmsCount;
     }
 }
