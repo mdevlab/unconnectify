@@ -11,6 +11,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
 import android.widget.TimePicker;
+import android.widget.Toast;
 
 import java.util.List;
 
@@ -125,7 +126,16 @@ public class MainActivity extends AppCompatActivity implements TimePickerDialog.
 
         mAlarmAdapter.addAlarm(preciseConnectivityAlarm);
 
-        // Increment number of alarms in alarms count textview
+        adjustAlarmcounts();
+
+
+    }
+
+    /**
+     * This function adjust the number of alarms displayed in mAlarmsCount textview
+     */
+    public void adjustAlarmcounts(){
+        // Adjust number of alarms in alarms count textview
         mAlarmsCount.setText(mAlarmAdapter.getItemCount() + " alarms");
     }
 
@@ -136,4 +146,6 @@ public class MainActivity extends AppCompatActivity implements TimePickerDialog.
     public TextView getAlarmsCount() {
         return mAlarmsCount;
     }
+
+
 }

@@ -7,8 +7,10 @@ import android.util.Log;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.TimePicker;
+import android.widget.Toast;
 import android.widget.ToggleButton;
 
 import com.chauthai.swipereveallayout.SwipeRevealLayout;
@@ -40,6 +42,7 @@ public class AlarmViewHolder extends RecyclerView.ViewHolder implements TimePick
 
     View mSwitchOnOff;
     ToggleButton mSwitchOnOffToggle;
+    ImageView mDeletealarmImageView;
 
     View mContainer;
 
@@ -61,7 +64,7 @@ public class AlarmViewHolder extends RecyclerView.ViewHolder implements TimePick
     ToggleButton mFriday;
     ToggleButton mSaturday;
 
-    public AlarmViewHolder(View itemView, Context context) {
+    public AlarmViewHolder(View itemView,final  Context context) {
         super(itemView);
 
         mAlarmSqlHelper = new AlarmSqlHelper(context);
@@ -80,6 +83,10 @@ public class AlarmViewHolder extends RecyclerView.ViewHolder implements TimePick
                 }
             }
         });
+
+        //Delete the alarm
+        mDeletealarmImageView = (ImageView)  itemView.findViewById(R.id.delete_alarm_button);
+
 
         // Main view container
         mContainer = itemView.findViewById(R.id.container);
@@ -328,4 +335,6 @@ public class AlarmViewHolder extends RecyclerView.ViewHolder implements TimePick
         // Update the alarm in the database and the alarm's job
         AlarmManager.getInstance(mContext).updateAlarm(mAlarm.getAlarmId(), newExecutionTime, newDuration);
     }
+
+
 }
