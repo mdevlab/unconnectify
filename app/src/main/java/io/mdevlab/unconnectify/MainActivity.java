@@ -9,6 +9,7 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
@@ -146,6 +147,8 @@ public class MainActivity extends AppCompatActivity implements TimePickerDialog.
     public TextView getAlarmsCount() {
         return mAlarmsCount;
     }
+
+
 
 
 }
