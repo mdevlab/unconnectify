@@ -2,8 +2,10 @@ package io.mdevlab.unconnectify;
 
 import android.app.Application;
 
+import com.crashlytics.android.Crashlytics;
 import com.evernote.android.job.JobManager;
 
+import io.fabric.sdk.android.Fabric;
 import io.mdevlab.unconnectify.jobs.ConnectivityJobCreator;
 
 /**
@@ -15,6 +17,7 @@ public class App extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
+        Fabric.with(this, new Crashlytics());
         JobManager.create(this).addJobCreator(new ConnectivityJobCreator(getApplicationContext()));
     }
 }
