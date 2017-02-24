@@ -20,7 +20,7 @@ import cc.mvdan.accesspoint.WifiApControl;
  */
 
 
-public class Hotspot extends  Connectivity{
+public class Hotspot extends Connectivity {
 
 
     private static Hotspot hotspot = null;
@@ -41,17 +41,23 @@ public class Hotspot extends  Connectivity{
         return hotspot;
     }
 
-    //TODO Bachiri Make Sure to Verify apControl is'nt empty befor you run below methods
+
+    /**
+     * This function is for disabling the hotspot
+     */
     public void disable() {
-//        apControl.disable();
+        apControl.disable();
     }
 
-
+    /**
+     * This function is for enabling  the default hotspot
+     * to enable the hotspot the wifi should be turned off so we turn off the wifi first
+     */
     public void enable() {
         // Wifi must be disabled to enable the access point
-//        if (wifiManager.isWifiEnabled())
-//            wifiManager.setWifiEnabled(false);
-//        apControl.enable();
+        if (wifiManager.isWifiEnabled())
+            wifiManager.setWifiEnabled(false);
+        apControl.enable();
 
 
     }
