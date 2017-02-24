@@ -19,11 +19,11 @@ import java.util.List;
 import io.mdevlab.unconnectify.adapter.AlarmAdapter;
 import io.mdevlab.unconnectify.alarm.AlarmManager;
 import io.mdevlab.unconnectify.alarm.PreciseConnectivityAlarm;
+import io.mdevlab.unconnectify.connectivitymodels.Hotspot;
 import io.mdevlab.unconnectify.data.AlarmSqlHelper;
 import io.mdevlab.unconnectify.fragment.TimePickerFragment;
 import io.mdevlab.unconnectify.utils.DateUtils;
-
-
+import io.mdevlab.unconnectify.utils.DialogUtils;
 
 
 public class MainActivity extends AppCompatActivity implements TimePickerDialog.OnTimeSetListener {
@@ -42,6 +42,7 @@ public class MainActivity extends AppCompatActivity implements TimePickerDialog.
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
 
 
         //Recycler View
@@ -146,6 +147,28 @@ public class MainActivity extends AppCompatActivity implements TimePickerDialog.
 
     public TextView getAlarmsCount() {
         return mAlarmsCount;
+    }
+
+
+    /**
+     * Function used for testing Hotspot enabling
+     * @param view
+     */
+    public void enable(View view){
+
+        if (DialogUtils.showDialog(MainActivity.this)){
+            Hotspot.getInstance(MainActivity.this).enable();
+        }
+    }
+
+    /**
+     * Function used for testing Hotspot disabling
+     * @param view
+     */
+    public void disable(View view){
+        if (DialogUtils.showDialog(MainActivity.this)){
+            Hotspot.getInstance(MainActivity.this).disable();
+        }
     }
 
 

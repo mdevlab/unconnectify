@@ -10,7 +10,6 @@ import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.TimePicker;
-import android.widget.Toast;
 import android.widget.ToggleButton;
 
 import com.chauthai.swipereveallayout.SwipeRevealLayout;
@@ -26,6 +25,7 @@ import io.mdevlab.unconnectify.data.AlarmSqlHelper;
 import io.mdevlab.unconnectify.fragment.TimePickerFragment;
 import io.mdevlab.unconnectify.utils.Connection;
 import io.mdevlab.unconnectify.utils.DateUtils;
+import io.mdevlab.unconnectify.utils.DialogUtils;
 
 /**
  * Created by mdevlab on 2/12/17.
@@ -64,7 +64,7 @@ public class AlarmViewHolder extends RecyclerView.ViewHolder implements TimePick
     ToggleButton mFriday;
     ToggleButton mSaturday;
 
-    public AlarmViewHolder(View itemView,final  Context context) {
+    public AlarmViewHolder(View itemView, final Context context) {
         super(itemView);
 
         mAlarmSqlHelper = new AlarmSqlHelper(context);
@@ -85,7 +85,7 @@ public class AlarmViewHolder extends RecyclerView.ViewHolder implements TimePick
         });
 
         //Delete the alarm
-        mDeletealarmImageView = (ImageView)  itemView.findViewById(R.id.delete_alarm_button);
+        mDeletealarmImageView = (ImageView) itemView.findViewById(R.id.delete_alarm_button);
 
 
         // Main view container
@@ -164,14 +164,17 @@ public class AlarmViewHolder extends RecyclerView.ViewHolder implements TimePick
         mHotspot.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (mAlarm != null) {
-                    AlarmManager.getInstance(mContext).updateAlarmConnection(mAlarm.getAlarmId(), Connection.HOTSPOT, isChecked);
-
-                    Log.e("Connections", "Connections of alarm " + mAlarm.getAlarmId());
-                    List<Connection> days = mAlarmSqlHelper.getAllConnectionOfAlarm(mAlarm.getAlarmId());
-                    for (Connection day : days) {
-                        Log.e("Connections", String.valueOf(day));
+                if (DialogUtils.showDialog(mContext)) {
+                    if (mAlarm != null) {
+                        AlarmManager.getInstance(mContext).updateAlarmConnection(mAlarm.getAlarmId(), Connection.HOTSPOT, isChecked);
+                        Log.e("Connections", "Connections of alarm " + mAlarm.getAlarmId());
+                        List<Connection> days = mAlarmSqlHelper.getAllConnectionOfAlarm(mAlarm.getAlarmId());
+                        for (Connection day : days) {
+                            Log.e("Connections", String.valueOf(day));
+                        }
                     }
+                }else {
+                    mHotspot.setChecked(false);
                 }
             }
         });
