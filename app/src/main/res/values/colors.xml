@@ -16,4 +16,6 @@
     <color name="color_9">#716573</color>
     <color name="color_10">#414141</color>
 
+    <color name="transparent_black">#60000000</color>
+
 </resources>

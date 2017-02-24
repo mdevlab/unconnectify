@@ -53,18 +53,23 @@ public class AlarmManager {
 
     /**
      * This method is for deleting an alarm from the database
+     *
      * @param alarmId id of the alarm
      * @return true if deleted false otherways
      */
     public Boolean clearAlarm(int alarmId) {
 
-        // Saving the alarm to the local database using the sql helper
-       int lines = alarmSqlHelper.deleteAlarm(alarmId);
-        //TODO husayn check if we should delete the alarm job
-        if (lines > 0){
+        // Cancel the job assigned to the alarm being deleted
+        cancelAlarmJob(alarmSqlHelper.getAlarmById(alarmId));
+
+        // Deleting the alarm from the local database using the sql helper
+        int lines = alarmSqlHelper.deleteAlarm(alarmId);
+
+        if (lines > 0) {
             return true;
         }
-        else return false;
+
+        return false;
     }
 
     /**
@@ -109,6 +114,9 @@ public class AlarmManager {
         // Update the state of the alarm in the dababase
         alarmSqlHelper.updateAlarmCurrentState(alarm.getAlarmId(), isActive);
 
+        // Update the value of 'isActive'
+        alarm.setActive(isActive);
+
         // If alarm is now active, create its job
         if (isActive)
             createAlarmJob(alarm);
@@ -121,13 +129,15 @@ public class AlarmManager {
     /**
      * Method that updates the alarm's execution time and duration
      *
-     * @param alarmId:       Id of the alarm being updated
+     * @param alarm:       The alarm being updated
      * @param executionTime: New execution time to be assigned to the alarm being updated
      * @param alarmDuration: New duration to be assigned to the alarm being updated
      */
-    public void updateAlarm(int alarmId, long executionTime, long alarmDuration) {
-        alarmSqlHelper.updateAlarm(alarmId, executionTime, alarmDuration);
-        createAlarmJob(alarmSqlHelper.getAlarmById(alarmId));
+    public void updateAlarm(PreciseConnectivityAlarm alarm, long executionTime, long alarmDuration) {
+        alarm.setExecuteTimeInMils(executionTime);
+        alarm.setDuration(alarmDuration);
+        alarmSqlHelper.updateAlarm(alarm.getAlarmId(), executionTime, alarmDuration);
+        createAlarmJob(alarmSqlHelper.getAlarmById(alarm.getAlarmId()));
     }
 
     /**

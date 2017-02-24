@@ -222,7 +222,7 @@ public class ConnectivityJob extends Job {
             switchActivationState = false;
         }
 
-        mAlarmSqlHelper.updateAlarm(mCurrentAlarm.getAlarmId(),
+        AlarmManager.getInstance(mContext).updateAlarm(mCurrentAlarm,
                 newExecutionTime,
                 mCurrentAlarm.getDuration());
     }

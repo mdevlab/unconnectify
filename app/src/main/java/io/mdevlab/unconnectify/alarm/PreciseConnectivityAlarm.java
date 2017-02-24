@@ -52,7 +52,7 @@ public class PreciseConnectivityAlarm {
     // Boolean defining the current state of connection within the Alarm
     //if True then ON
     //if False then OFF
-    protected boolean mCurrentState;
+    protected boolean mCurrentlyOn;
 
     // Date of last update to the alarm
     private long mLastUpdate;
@@ -318,12 +318,12 @@ public class PreciseConnectivityAlarm {
     }
 
 
-    public boolean isCurrentState() {
-        return mCurrentState;
+    public boolean isCurrentlyOn() {
+        return mCurrentlyOn;
     }
 
-    public void setCurrentState(boolean currentState) {
-        this.mCurrentState = currentState;
+    public void setCurrentlyOn(boolean currentState) {
+        this.mCurrentlyOn = currentState;
     }
 
     public long getLastUpdate() {

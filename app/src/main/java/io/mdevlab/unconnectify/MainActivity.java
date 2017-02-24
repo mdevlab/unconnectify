@@ -11,18 +11,16 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
 import android.widget.TimePicker;
-import android.widget.Toast;
 
 import java.util.List;
 
 import io.mdevlab.unconnectify.adapter.AlarmAdapter;
+import io.mdevlab.unconnectify.adapter.AlarmViewHolder;
 import io.mdevlab.unconnectify.alarm.AlarmManager;
 import io.mdevlab.unconnectify.alarm.PreciseConnectivityAlarm;
 import io.mdevlab.unconnectify.data.AlarmSqlHelper;
 import io.mdevlab.unconnectify.fragment.TimePickerFragment;
 import io.mdevlab.unconnectify.utils.DateUtils;
-
-
 
 
 public class MainActivity extends AppCompatActivity implements TimePickerDialog.OnTimeSetListener {
@@ -41,7 +39,6 @@ public class MainActivity extends AppCompatActivity implements TimePickerDialog.
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
 
         //Recycler View
         mAlarmList = (RecyclerView) findViewById(R.id.alarms_list);
@@ -62,7 +59,7 @@ public class MainActivity extends AppCompatActivity implements TimePickerDialog.
         List<PreciseConnectivityAlarm> alarms = mAlarmSqlHelper.readAllAlarms(null, null);
 
         //The alarm Adapter
-        mAlarmAdapter = new AlarmAdapter(alarms, MainActivity.this);
+        mAlarmAdapter = new AlarmAdapter(alarms, MainActivity.this, mAlarmList);
         mAlarmList.setAdapter(mAlarmAdapter);
 
         //Alarms counts textview
@@ -126,15 +123,13 @@ public class MainActivity extends AppCompatActivity implements TimePickerDialog.
 
         mAlarmAdapter.addAlarm(preciseConnectivityAlarm);
 
-        adjustAlarmcounts();
-
-
+        setAlarmsCount();
     }
 
     /**
      * This function adjust the number of alarms displayed in mAlarmsCount textview
      */
-    public void adjustAlarmcounts(){
+    public void setAlarmsCount() {
         // Adjust number of alarms in alarms count textview
         mAlarmsCount.setText(mAlarmAdapter.getItemCount() + " alarms");
     }
@@ -147,5 +142,14 @@ public class MainActivity extends AppCompatActivity implements TimePickerDialog.
         return mAlarmsCount;
     }
 
-
+    /**
+     * Method that disables end time, and sets the value of the boolean
+     * 'hasDisabledEndTime' to false
+     *
+     * @param position: Position of alarm to update
+     */
+    public void disableEndTime(int position) {
+        if (mAlarmList != null && mAlarmList.findViewHolderForAdapterPosition(position) != null)
+        ((AlarmViewHolder) mAlarmList.findViewHolderForAdapterPosition(position)).disableEndTime();
+    }
 }

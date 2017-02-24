@@ -2,29 +2,27 @@ package io.mdevlab.unconnectify.adapter;
 
 import android.app.TimePickerDialog;
 import android.content.Context;
+import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
-import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.TimePicker;
-import android.widget.Toast;
 import android.widget.ToggleButton;
 
 import com.chauthai.swipereveallayout.SwipeRevealLayout;
 
 import java.util.Calendar;
-import java.util.List;
 
 import io.mdevlab.unconnectify.MainActivity;
 import io.mdevlab.unconnectify.R;
 import io.mdevlab.unconnectify.alarm.AlarmManager;
 import io.mdevlab.unconnectify.alarm.PreciseConnectivityAlarm;
-import io.mdevlab.unconnectify.data.AlarmSqlHelper;
 import io.mdevlab.unconnectify.fragment.TimePickerFragment;
 import io.mdevlab.unconnectify.utils.Connection;
+import io.mdevlab.unconnectify.utils.Constants;
 import io.mdevlab.unconnectify.utils.DateUtils;
 
 /**
@@ -33,24 +31,24 @@ import io.mdevlab.unconnectify.utils.DateUtils;
 
 public class AlarmViewHolder extends RecyclerView.ViewHolder implements TimePickerDialog.OnTimeSetListener {
 
-    private AlarmSqlHelper mAlarmSqlHelper;
     private PreciseConnectivityAlarm mAlarm;
     private Context mContext;
+    private int mPosition;
+
     private boolean hasChosenStartTime = true;
 
     SwipeRevealLayout mSwipeRevealLayout;
 
+    View mSwitchedOffAlarmCover;
     View mSwitchOnOff;
     ToggleButton mSwitchOnOffToggle;
-    ImageView mDeletealarmImageView;
+    ImageView mDeleteAlarm;
 
     View mContainer;
 
     TextView mStartTime;
     TextView mTimesSeparator;
     TextView mEndTime;
-
-    CheckBox mSetEndTime;
 
     ToggleButton mWifi;
     ToggleButton mHotspot;
@@ -64,13 +62,17 @@ public class AlarmViewHolder extends RecyclerView.ViewHolder implements TimePick
     ToggleButton mFriday;
     ToggleButton mSaturday;
 
-    public AlarmViewHolder(View itemView,final  Context context) {
+    public AlarmViewHolder(View itemView, final Context context) {
         super(itemView);
-
-        mAlarmSqlHelper = new AlarmSqlHelper(context);
         mContext = context;
 
         mSwipeRevealLayout = (SwipeRevealLayout) itemView.findViewById(R.id.swipeRevealLayout);
+
+        // Switched off alarm opaque cover
+        mSwitchedOffAlarmCover = itemView.findViewById(R.id.switched_off_alarm);
+
+        // Main view container
+        mContainer = itemView.findViewById(R.id.container);
 
         // Switch alarm on/off
         mSwitchOnOff = itemView.findViewById(R.id.switch_alarm_on_off);
@@ -79,25 +81,34 @@ public class AlarmViewHolder extends RecyclerView.ViewHolder implements TimePick
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (mAlarm != null) {
-                    AlarmManager.getInstance(mContext).updateAlarmState(mAlarm, isChecked);
+                    /**
+                     * If it's checked, it means "switch alarm on" is written
+                     * in this case the alarm is off, which means the cover should be visible
+                     *
+                     * If on the other hand it's unchecked, "switch alarm off" is displayed
+                     * In this case the alarm is on and thus the cover should be 'gone'
+                     */
+                    mSwitchedOffAlarmCover.setVisibility(isChecked ? View.VISIBLE : View.GONE);
+
+                    // If the alarm view is masked, it shouldn't be clickable
+                    if (mSwitchedOffAlarmCover.getVisibility() == View.GONE)
+                        disableAlarmViewOnClick();
+
+                    AlarmManager.getInstance(mContext).updateAlarmState(mAlarm, !isChecked);
                 }
             }
         });
 
-        //Delete the alarm
-        mDeletealarmImageView = (ImageView)  itemView.findViewById(R.id.delete_alarm_button);
-
-
-        // Main view container
-        mContainer = itemView.findViewById(R.id.container);
+        // Delete the alarm, it's onClickListener is in the Adapter class
+        mDeleteAlarm = (ImageView) itemView.findViewById(R.id.delete_alarm_button);
 
         // start time
         mStartTime = (TextView) itemView.findViewById(R.id.start_time);
         mStartTime.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                showTimePicker();
                 hasChosenStartTime = true;
+                showTimePicker();
             }
         });
 
@@ -109,38 +120,8 @@ public class AlarmViewHolder extends RecyclerView.ViewHolder implements TimePick
         mEndTime.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                showTimePicker();
                 hasChosenStartTime = false;
-            }
-        });
-
-        // Set
-        mSetEndTime = (CheckBox) itemView.findViewById(R.id.set_end_time);
-        mSetEndTime.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                long duration;
-                float alpha;
-                boolean isEnabled;
-
-                if (!isChecked) {
-                    duration = 0;
-                    alpha = 0.5f;
-                    isEnabled = false;
-                } else {
-                    duration = DateUtils.getLongFromTime(mEndTime.getText().toString()) - DateUtils.getLongFromTime(mStartTime.getText().toString());
-                    alpha = 1f;
-                    isEnabled = true;
-                }
-
-                mEndTime.setEnabled(isEnabled);
-                mEndTime.setAlpha(alpha);
-                mTimesSeparator.setAlpha(alpha);
-
-                if (mAlarm != null)
-                    mAlarmSqlHelper.updateAlarm(mAlarm.getAlarmId(),
-                            mAlarm.getExecuteTimeInMils(),
-                            duration);
+                showTimePicker();
             }
         });
 
@@ -150,12 +131,6 @@ public class AlarmViewHolder extends RecyclerView.ViewHolder implements TimePick
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (mAlarm != null) {
                     AlarmManager.getInstance(mContext).updateAlarmConnection(mAlarm.getAlarmId(), Connection.WIFI, isChecked);
-
-                    Log.e("Connections", "Connections of alarm " + mAlarm.getAlarmId());
-                    List<Connection> days = mAlarmSqlHelper.getAllConnectionOfAlarm(mAlarm.getAlarmId());
-                    for (Connection day : days) {
-                        Log.e("Connections", String.valueOf(day));
-                    }
                 }
             }
         });
@@ -166,12 +141,6 @@ public class AlarmViewHolder extends RecyclerView.ViewHolder implements TimePick
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (mAlarm != null) {
                     AlarmManager.getInstance(mContext).updateAlarmConnection(mAlarm.getAlarmId(), Connection.HOTSPOT, isChecked);
-
-                    Log.e("Connections", "Connections of alarm " + mAlarm.getAlarmId());
-                    List<Connection> days = mAlarmSqlHelper.getAllConnectionOfAlarm(mAlarm.getAlarmId());
-                    for (Connection day : days) {
-                        Log.e("Connections", String.valueOf(day));
-                    }
                 }
             }
         });
@@ -182,12 +151,6 @@ public class AlarmViewHolder extends RecyclerView.ViewHolder implements TimePick
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (mAlarm != null) {
                     AlarmManager.getInstance(mContext).updateAlarmConnection(mAlarm.getAlarmId(), Connection.BLUETOOTH, isChecked);
-
-                    Log.e("Connections", "Connections of alarm " + mAlarm.getAlarmId());
-                    List<Connection> days = mAlarmSqlHelper.getAllConnectionOfAlarm(mAlarm.getAlarmId());
-                    for (Connection day : days) {
-                        Log.e("Connections", String.valueOf(day));
-                    }
                 }
             }
         });
@@ -270,27 +233,38 @@ public class AlarmViewHolder extends RecyclerView.ViewHolder implements TimePick
         });
     }
 
+    /**
+     * Method that displays a time picker interface
+     */
     private void showTimePicker() {
         TimePickerFragment timePickerFragment = new TimePickerFragment();
+
+        /**
+         * If the user has chosen to set the alarm's end time, a boolean indicating
+         * this is sent to the time picker fragment. The alarm's position in the
+         * recyclerView is also sent
+         * - The boolean variable is used in order to add a "deactivate" button in the
+         * time picker dialog
+         * - The position of the alarm is used in order to disable the end time textView
+         * if the user decides to deactivate the alarm
+         */
+        if (!hasChosenStartTime) {
+            Bundle endTimeBundle = new Bundle();
+            endTimeBundle.putBoolean(Constants.END_TIME_BUNDLE_KEY, true);
+            endTimeBundle.putInt(Constants.ALARM_POSITION, mPosition);
+            timePickerFragment.setArguments(endTimeBundle);
+        }
+
         timePickerFragment.setListener(this);
         timePickerFragment.show(((MainActivity) mContext).getSupportFragmentManager(), "time picker");
     }
 
-    private void changeOpacity(View toggleButton, boolean isChecked) {
-        float opacity = 0.5f;
-        if (isChecked)
-            opacity = 1f;
-        toggleButton.setAlpha(opacity);
-    }
-
-    public PreciseConnectivityAlarm getAlarm() {
-        return mAlarm;
-    }
-
-    public void setAlarm(PreciseConnectivityAlarm mAlarm) {
-        this.mAlarm = mAlarm;
-    }
-
+    /**
+     * Method that's called once the time is set in the timePickerDialog
+     * @param view
+     * @param hourOfDay
+     * @param minute: Chosen hour in the timePickerDialog
+     */
     @Override
     public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
 
@@ -315,6 +289,10 @@ public class AlarmViewHolder extends RecyclerView.ViewHolder implements TimePick
 
         // If the end time is being updated
         if (!hasChosenStartTime) {
+
+            // Update end time and separator opacity
+            enableEndTime();
+
             // The textView to update is the endTime
             viewToUpdate = mEndTime;
 
@@ -333,8 +311,81 @@ public class AlarmViewHolder extends RecyclerView.ViewHolder implements TimePick
         viewToUpdate.setText(hourOfDay + ":" + s_minute);
 
         // Update the alarm in the database and the alarm's job
-        AlarmManager.getInstance(mContext).updateAlarm(mAlarm.getAlarmId(), newExecutionTime, newDuration);
+        AlarmManager.getInstance(mContext).updateAlarm(mAlarm, newExecutionTime, newDuration);
     }
 
+    /**
+     * Method that sets the opacity of a toggle button depending on a boolean
+     * value 'isChecked', which disignates whether or not the toggle button is checked.
+     *
+     * @param toggleButton
+     * @param isChecked
+     */
+    private void changeOpacity(View toggleButton, boolean isChecked) {
+        float opacity = 0.5f;
+        if (isChecked)
+            opacity = 1f;
+        toggleButton.setAlpha(opacity);
+    }
 
+    /**
+     * Method that sets the current alarm being handled which is also related to the current
+     * viewHolder object
+     *
+     * @param mAlarm
+     */
+    public void setAlarm(PreciseConnectivityAlarm mAlarm) {
+        this.mAlarm = mAlarm;
+    }
+
+    /**
+     * Method that updates an alarm's UI once the end time has been set
+     * It basically makes the opacity of mEndTime and the separator 1
+     */
+    public void enableEndTime() {
+        if (mEndTime != null) {
+            mEndTime.setAlpha(1f);
+            mTimesSeparator.setAlpha(1f);
+        }
+    }
+
+    /**
+     * Method that updates an alarm's UI once the end time has been deactivated
+     * It also
+     */
+    public void disableEndTime() {
+        if (mEndTime != null) {
+            mEndTime.setAlpha(0.5f);
+            mTimesSeparator.setAlpha(0.5f);
+
+            if (mAlarm != null)
+                AlarmManager.getInstance(mContext).updateAlarm(mAlarm,
+                        mAlarm.getExecuteTimeInMils(),
+                        0);
+        }
+    }
+
+    /**
+     * Method that sets the position of the current alarm
+     *
+     * @param mPosition
+     */
+    public void setPosition(int mPosition) {
+        this.mPosition = mPosition;
+    }
+
+    /**
+     * Method that disables any click events on an alarm view's elements
+     * This is used when the alarm is set to off
+     * The user will have to reset the alarm to 'on' in order to modify it
+     */
+    public void disableAlarmViewOnClick() {
+        if (mSwitchedOffAlarmCover != null)
+            mSwitchedOffAlarmCover.setOnTouchListener(new View.OnTouchListener() {
+                @Override
+                public boolean onTouch(View v, MotionEvent event) {
+                    return false;
+                }
+            });
+    }
 }

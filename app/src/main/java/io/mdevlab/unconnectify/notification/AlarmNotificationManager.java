@@ -95,7 +95,7 @@ public class AlarmNotificationManager {
 
         List<Connection> connectionList = preciseConnectivityAlarm.getConnections();
         long executionTime = preciseConnectivityAlarm.getExecuteTimeInMils();
-        Boolean currentStatus = preciseConnectivityAlarm.isCurrentState();
+        Boolean currentStatus = preciseConnectivityAlarm.isCurrentlyOn();
         //TODO use the String Builder instead of appending values
 
         //Build the string

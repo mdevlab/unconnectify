@@ -31,8 +31,8 @@ public class AlarmSqlHelper extends SQLiteOpenHelper {
     public static final String DATABASE_NAME = "Alarms.db";
     //Current Version 1 since Feb 11 2017
     public static final int DATABASE_VERSION = 1;
-    public static final int NO_DURATION = 0;
-    public static final int NO_JOBID = 0;
+    public static final int NO_DURATION = 1;
+    public static final int NO_JOBID = -1;
     public static final Boolean DEFAULT_CURRENTSTATE = false;
     public static final String ASC = "ASC";
 
@@ -249,7 +249,7 @@ public class AlarmSqlHelper extends SQLiteOpenHelper {
                 selectionArgs,
                 null,
                 null,
-                EXECUTION_TIME_COLUMN);
+                null);
 
         // looping through all rows and adding to list
         if (cursor.moveToFirst()) {
@@ -283,7 +283,7 @@ public class AlarmSqlHelper extends SQLiteOpenHelper {
         preciseConnectivityAlarm.setStartTime(cursor.getLong((cursor.getColumnIndex(START_TIME_COLUMN))));
         preciseConnectivityAlarm.setExecuteTimeInMils(cursor.getLong((cursor.getColumnIndex(EXECUTION_TIME_COLUMN))));
         preciseConnectivityAlarm.setActive(Boolean.parseBoolean(cursor.getString((cursor.getColumnIndex(ISACTIVE_COLUMN)))));
-        preciseConnectivityAlarm.setCurrentState(Boolean.parseBoolean(cursor.getString((cursor.getColumnIndex(CURRENTSTATE)))));
+        preciseConnectivityAlarm.setCurrentlyOn(Boolean.parseBoolean(cursor.getString((cursor.getColumnIndex(CURRENTSTATE)))));
         preciseConnectivityAlarm.setDuration(cursor.getInt((cursor.getColumnIndex(DURATION))));
         preciseConnectivityAlarm.setLastUpdate(cursor.getInt((cursor.getColumnIndex(UPDATETIME))));
         preciseConnectivityAlarm.setJobId(cursor.getInt((cursor.getColumnIndex(JOBID))));
@@ -366,10 +366,10 @@ public class AlarmSqlHelper extends SQLiteOpenHelper {
      * @param id alarm to be deleted
      * @return deleted Lines
      */
-    public int  deleteAlarm(int id) {
+    public int deleteAlarm(int id) {
         SQLiteDatabase db = this.getWritableDatabase();
 
-        int deletedLines =  db.delete(TABLE_ALARM, KEY_ID + " = ?",
+        int deletedLines = db.delete(TABLE_ALARM, KEY_ID + " = ?",
                 new String[]{String.valueOf(id)});
         return deletedLines;
     }
@@ -566,23 +566,20 @@ public class AlarmSqlHelper extends SQLiteOpenHelper {
      * This method update the current state of the alarm
      *
      * @param alarmId      alarm concerned
-     * @param currentState the statte of current Connection whether true(ON) or false(OFF)
+     * @param isActive the state of current Connection whether true(ON) or false(OFF)
      * @return the number of  row affected normally 1 or 0
      */
-    public int updateAlarmCurrentState(int alarmId, boolean currentState) {
+    public int updateAlarmCurrentState(int alarmId, boolean isActive) {
         //Get the writable DB
         SQLiteDatabase db = this.getWritableDatabase();
 
-        //values to be updated JOBID
         ContentValues values = new ContentValues();
-        values.put(CURRENTSTATE, String.valueOf(currentState));
+        values.put(ISACTIVE_COLUMN, String.valueOf(isActive));
         values.put(UPDATETIME, System.currentTimeMillis());
 
         // updating the row
         return db.update(TABLE_ALARM, values, KEY_ID + " = ?",
                 new String[]{String.valueOf(alarmId)});
-
-
     }
 
     //TODO implement this function to allow querying the DB by id
