@@ -35,10 +35,12 @@
         android:textStyle="bold"
         android:textAllCaps="true"/>
 
+
     <android.support.v7.widget.RecyclerView
         android:id="@+id/alarms_list"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/alarms_count" />
+
 
 </RelativeLayout>

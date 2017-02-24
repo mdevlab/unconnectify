@@ -24,6 +24,7 @@ import io.mdevlab.unconnectify.fragment.TimePickerFragment;
 import io.mdevlab.unconnectify.utils.Connection;
 import io.mdevlab.unconnectify.utils.Constants;
 import io.mdevlab.unconnectify.utils.DateUtils;
+import io.mdevlab.unconnectify.utils.DialogUtils;
 
 /**
  * Created by mdevlab on 2/12/17.
@@ -141,6 +142,8 @@ public class AlarmViewHolder extends RecyclerView.ViewHolder implements TimePick
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (mAlarm != null) {
                     AlarmManager.getInstance(mContext).updateAlarmConnection(mAlarm.getAlarmId(), Connection.HOTSPOT, isChecked);
+                } else {
+                    mHotspot.setChecked(false);
                 }
             }
         });
@@ -261,9 +264,10 @@ public class AlarmViewHolder extends RecyclerView.ViewHolder implements TimePick
 
     /**
      * Method that's called once the time is set in the timePickerDialog
+     *
      * @param view
      * @param hourOfDay
-     * @param minute: Chosen hour in the timePickerDialog
+     * @param minute:   Chosen hour in the timePickerDialog
      */
     @Override
     public void onTimeSet(TimePicker view, int hourOfDay, int minute) {

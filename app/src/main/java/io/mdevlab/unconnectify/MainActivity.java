@@ -9,6 +9,7 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.TextView;
 import android.widget.TimePicker;
 
@@ -18,10 +19,11 @@ import io.mdevlab.unconnectify.adapter.AlarmAdapter;
 import io.mdevlab.unconnectify.adapter.AlarmViewHolder;
 import io.mdevlab.unconnectify.alarm.AlarmManager;
 import io.mdevlab.unconnectify.alarm.PreciseConnectivityAlarm;
+import io.mdevlab.unconnectify.connectivitymodels.Hotspot;
 import io.mdevlab.unconnectify.data.AlarmSqlHelper;
 import io.mdevlab.unconnectify.fragment.TimePickerFragment;
 import io.mdevlab.unconnectify.utils.DateUtils;
-
+import io.mdevlab.unconnectify.utils.DialogUtils;
 
 public class MainActivity extends AppCompatActivity implements TimePickerDialog.OnTimeSetListener {
     public static final String TAG = MainActivity.class.getSimpleName();
@@ -151,5 +153,26 @@ public class MainActivity extends AppCompatActivity implements TimePickerDialog.
     public void disableEndTime(int position) {
         if (mAlarmList != null && mAlarmList.findViewHolderForAdapterPosition(position) != null)
         ((AlarmViewHolder) mAlarmList.findViewHolderForAdapterPosition(position)).disableEndTime();
+    }
+
+    /**
+     * Function used for testing Hotspot enabling
+     * @param view
+     */
+    public void enable(View view){
+
+        if (DialogUtils.showDialog(MainActivity.this)){
+            Hotspot.getInstance(MainActivity.this).enable();
+        }
+    }
+
+    /**
+     * Function used for testing Hotspot disabling
+     * @param view
+     */
+    public void disable(View view){
+        if (DialogUtils.showDialog(MainActivity.this)){
+            Hotspot.getInstance(MainActivity.this).disable();
+        }
     }
 }
