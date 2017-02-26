@@ -155,7 +155,7 @@
 
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="24dp"
+                    android:layout_height="35dp"
                     android:orientation="horizontal">
 
                     <android.support.v4.widget.Space
@@ -166,8 +166,8 @@
                     <!--Wifi-->
                     <ToggleButton
                         android:id="@+id/wifi"
-                        android:layout_width="24dp"
-                        android:layout_height="24dp"
+                        android:layout_width="35dp"
+                        android:layout_height="35dp"
                         android:layout_gravity="center"
                         android:background="@drawable/toogle_wifi"
                         android:checked="false"
@@ -182,8 +182,8 @@
                     <!--Hotspot-->
                     <ToggleButton
                         android:id="@+id/hotspot"
-                        android:layout_width="24dp"
-                        android:layout_height="24dp"
+                        android:layout_width="35dp"
+                        android:layout_height="35dp"
                         android:layout_gravity="center"
                         android:background="@drawable/toogle_hotspot"
                         android:checked="false"
@@ -198,8 +198,8 @@
                     <!--Bluetooth-->
                     <ToggleButton
                         android:id="@+id/bluetooth"
-                        android:layout_width="24dp"
-                        android:layout_height="24dp"
+                        android:layout_width="35dp"
+                        android:layout_height="35dp"
                         android:layout_gravity="center"
                         android:background="@drawable/toogle_bluetooth"
                         android:checked="false"
@@ -216,7 +216,7 @@
             <!-- Days -->
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="50dp"
+                android:layout_height="40dp"
                 android:orientation="horizontal">
 
                 <ToggleButton
