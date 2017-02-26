@@ -61,7 +61,7 @@ public class MainActivity extends AppCompatActivity implements TimePickerDialog.
         List<PreciseConnectivityAlarm> alarms = mAlarmSqlHelper.readAllAlarms(null, null);
 
         //The alarm Adapter
-        mAlarmAdapter = new AlarmAdapter(alarms, MainActivity.this, mAlarmList);
+        mAlarmAdapter = new AlarmAdapter(alarms, MainActivity.this);
         mAlarmList.setAdapter(mAlarmAdapter);
 
         //Alarms counts textview

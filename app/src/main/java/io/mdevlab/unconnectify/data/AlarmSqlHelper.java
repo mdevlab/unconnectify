@@ -398,6 +398,27 @@ public class AlarmSqlHelper extends SQLiteOpenHelper {
     }
 
     /**
+     * Method that updates the start time of an alarm
+     *
+     * @param alarmId:      Alarm id of the alarm to update
+     * @param newStartTime: New value of the start time
+     * @return
+     */
+    public int updateAlarmStartTime(int alarmId, long newStartTime) {
+        //Get the writable DB
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        //values to be updated: Start time
+        ContentValues values = new ContentValues();
+        values.put(START_TIME_COLUMN, newStartTime);
+        values.put(UPDATETIME, System.currentTimeMillis());
+
+        // updating the row
+        return db.update(TABLE_ALARM, values, KEY_ID + " = ?",
+                new String[]{String.valueOf(alarmId)});
+    }
+
+    /**
      * Update the Jobid of the given alarm
      *
      * @param alarmId the alarm id to be updated
@@ -565,7 +586,7 @@ public class AlarmSqlHelper extends SQLiteOpenHelper {
     /**
      * This method update the current state of the alarm
      *
-     * @param alarmId      alarm concerned
+     * @param alarmId  alarm concerned
      * @param isActive the state of current Connection whether true(ON) or false(OFF)
      * @return the number of  row affected normally 1 or 0
      */

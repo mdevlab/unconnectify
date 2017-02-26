@@ -43,7 +43,6 @@ public class AlarmAdapter extends RecyclerView.Adapter<AlarmViewHolder> {
 
     private List<PreciseConnectivityAlarm> alarms;
     private Context mContext;
-    private RecyclerView mRecyclerView;
     private final ViewBinderHelper viewBinderHelper = new ViewBinderHelper();
 
     /**
@@ -52,10 +51,9 @@ public class AlarmAdapter extends RecyclerView.Adapter<AlarmViewHolder> {
      * @param alarms  list of alarms provided
      * @param context
      */
-    public AlarmAdapter(List<PreciseConnectivityAlarm> alarms, Context context, RecyclerView recyclerView) {
+    public AlarmAdapter(List<PreciseConnectivityAlarm> alarms, Context context) {
         this.alarms = alarms;
         this.mContext = context;
-        this.mRecyclerView = recyclerView;
     }
 
     /**
@@ -116,8 +114,6 @@ public class AlarmAdapter extends RecyclerView.Adapter<AlarmViewHolder> {
 
         // Setting the card's mask
         holder.mSwitchedOffAlarmCover.setVisibility(currentAlarm.isActive() ? View.GONE : View.VISIBLE);
-        if (holder.mSwitchedOffAlarmCover.getVisibility() == View.GONE)
-            holder.disableAlarmViewOnClick();
 
         // Setting the switch on/off toggle button
         setToggleWithoutEvent(holder.mSwitchOnOffToggle, !currentAlarm.isActive());

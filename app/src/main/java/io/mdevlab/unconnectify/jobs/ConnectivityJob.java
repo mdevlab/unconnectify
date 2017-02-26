@@ -115,7 +115,6 @@ public class ConnectivityJob extends Job {
          * And so the current alarm's job goes on
          */
         if (conflictAlarmId == -1) {
-
             executeCurrentJob(connectivity, enableConnectivity);
         }
 
@@ -222,9 +221,12 @@ public class ConnectivityJob extends Job {
             switchActivationState = false;
         }
 
-        AlarmManager.getInstance(mContext).updateAlarm(mCurrentAlarm,
-                newExecutionTime,
-                mCurrentAlarm.getDuration());
+        mCurrentAlarm.setExecuteTimeInMils(newExecutionTime);
+        mAlarmSqlHelper.updateAlarm(mCurrentAlarm.getAlarmId(), newExecutionTime, mCurrentAlarm.getDuration());
+
+//        AlarmManager.getInstance(mContext).updateAlarm(mCurrentAlarm,
+//                newExecutionTime,
+//                mCurrentAlarm.getDuration());
     }
 
     /**
