@@ -43,20 +43,20 @@
         android:layout_below="@+id/alarms_count" />
 
 
-    <Button
-        android:id="@+id/enable"
-        android:layout_below="@+id/alarms_list"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:onClick="enable"
-        android:text="enable"/>
+    <!--<Button-->
+        <!--android:id="@+id/enable"-->
+        <!--android:layout_below="@+id/alarms_list"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:onClick="enable"-->
+        <!--android:text="enable"/>-->
 
-    <Button
-        android:id="@+id/disable"
-        android:layout_below="@+id/enable"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:onClick="disable"
-        android:text="disable"/>
+    <!--<Button-->
+        <!--android:id="@+id/disable"-->
+        <!--android:layout_below="@+id/enable"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:onClick="disable"-->
+        <!--android:text="disable"/>-->
 
 </RelativeLayout>
