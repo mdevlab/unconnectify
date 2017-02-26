@@ -21,13 +21,20 @@ public class ConnectivityJobManager {
      * @return: The built job request
      */
     public static JobRequest buildJobRequest(PreciseConnectivityAlarm alarm, String tag, boolean activate, long executionTime) {
+        if (executionTime < 0)
+            return null;
+
+        // Extras
         PersistableBundleCompat extras = new PersistableBundleCompat();
         extras.putBoolean(Constants.ACTIVATE_TAG, activate);
+
         JobRequest jobRequest = new JobRequest.Builder(tag)
                 .setExact(executionTime)
                 .setExtras(extras)
                 .setPersisted(true)
                 .build();
+
+        jobRequest.schedule();
 
         // Set the job id to the alarm
         alarm.setJobId(jobRequest.getJobId());
