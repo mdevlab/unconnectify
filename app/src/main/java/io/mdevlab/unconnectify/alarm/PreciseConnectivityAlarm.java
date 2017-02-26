@@ -1,10 +1,10 @@
 package io.mdevlab.unconnectify.alarm;
 
-import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
 
+import io.mdevlab.unconnectify.utils.AlarmUtils;
 import io.mdevlab.unconnectify.utils.Connection;
+import io.mdevlab.unconnectify.utils.DateUtils;
 
 /**
  * Class that represents one alarm.
@@ -52,7 +52,7 @@ public class PreciseConnectivityAlarm {
     // Boolean defining the current state of connection within the Alarm
     //if True then ON
     //if False then OFF
-    protected boolean mCurrentState;
+    protected boolean mCurrentlyOn;
 
     // Date of last update to the alarm
     private long mLastUpdate;
@@ -127,44 +127,6 @@ public class PreciseConnectivityAlarm {
     }
 
     /**
-     * Method that returns the default connection option set on the alarm's
-     * creation.
-     * For the moment the default connection is Wifi
-     *
-     * @return: A list containing the default connection option
-     */
-    private List<Connection> getDefaultConnection() {
-        List<Connection> wifi = new ArrayList<>();
-        wifi.add(Connection.WIFI);
-        return wifi;
-    }
-
-    /**
-     * Method that returns the current day of the week (Monday, Tuesday, ...)
-     * This method uses the predefined days of the week defined in the class Calendar
-     *
-     * @return: The current day of the week
-     */
-    private List<Integer> getToday() {
-        List<Integer> today = new ArrayList<>();
-        today.add(Calendar.getInstance().get(Calendar.DAY_OF_WEEK));
-        return today;
-    }
-
-
-    /**
-     * Method that returns the Default Connection Wifi
-     * This method uses the predefined Connection enum to provide the list with the wifi Connection
-     *
-     * @return: List containing the wifi connection
-     */
-    private List<Connection> getDefaultToday() {
-        List<Connection> connectionArrayList = new ArrayList<>();
-        connectionArrayList.add(Connection.WIFI);
-        return connectionArrayList;
-    }
-
-    /**
      * Constructor taking two arguments: The execution time of the alarm and its duration
      * The day of execution of the alarm is set by default to the current day
      * And by default the alarm once created is active
@@ -176,8 +138,8 @@ public class PreciseConnectivityAlarm {
         this.mStartTime = mExecutionTimeInMils;
         this.mExecutionTimeInMils = mExecutionTimeInMils;
         this.mDuration = mDuration;
-        this.mDays = getToday();
-        this.mConnections = getDefaultConnection();
+        this.mDays = DateUtils.getToday();
+        this.mConnections = AlarmUtils.getDefaultConnection();
         this.isActive = true;
     }
 
@@ -318,12 +280,12 @@ public class PreciseConnectivityAlarm {
     }
 
 
-    public boolean isCurrentState() {
-        return mCurrentState;
+    public boolean isCurrentlyOn() {
+        return mCurrentlyOn;
     }
 
-    public void setCurrentState(boolean currentState) {
-        this.mCurrentState = currentState;
+    public void setCurrentlyOn(boolean currentState) {
+        this.mCurrentlyOn = currentState;
     }
 
     public long getLastUpdate() {

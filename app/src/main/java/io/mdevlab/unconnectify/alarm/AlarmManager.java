@@ -5,12 +5,14 @@ import android.content.Context;
 import com.evernote.android.job.JobManager;
 
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import io.mdevlab.unconnectify.data.AlarmSqlHelper;
 import io.mdevlab.unconnectify.jobs.ConnectivityJobManager;
 import io.mdevlab.unconnectify.notification.AlarmNotificationManager;
 import io.mdevlab.unconnectify.utils.AlarmUtils;
 import io.mdevlab.unconnectify.utils.Connection;
+import io.mdevlab.unconnectify.utils.DateUtils;
 
 /**
  * Created by mdevlab on 2/10/17.
@@ -48,23 +50,31 @@ public class AlarmManager {
         // Launching alarm job
         alarm.setAlarmId((int) alarmId);
         createAlarmJob(alarm);
+
+        AlarmUtils.displayAlarm(alarm, "createAlarm");
+
         return alarmId;
     }
 
     /**
      * This method is for deleting an alarm from the database
+     *
      * @param alarmId id of the alarm
      * @return true if deleted false otherways
      */
     public Boolean clearAlarm(int alarmId) {
 
-        // Saving the alarm to the local database using the sql helper
-       int lines = alarmSqlHelper.deleteAlarm(alarmId);
-        //TODO husayn check if we should delete the alarm job
-        if (lines > 0){
+        // Cancel the job assigned to the alarm being deleted
+        cancelAlarmJob(alarmSqlHelper.getAlarmById(alarmId));
+
+        // Deleting the alarm from the local database using the sql helper
+        int lines = alarmSqlHelper.deleteAlarm(alarmId);
+
+        if (lines > 0) {
             return true;
         }
-        else return false;
+
+        return false;
     }
 
     /**
@@ -79,9 +89,21 @@ public class AlarmManager {
         if (alarm.getJobId() != -1)
             JobManager.instance().cancel(alarm.getJobId());
 
+        /**
+         * The execution time of the alarm is either set by default to today
+         * If the user's input is a time in today that's passed, the alarm is set
+         * to that same time in one week
+         */
+        long executionTime = alarm.getExecuteTimeInMils();
+        if(executionTime != 1L) {
+            executionTime = alarm.getExecuteTimeInMils() - DateUtils.getCurrentTimeInMillis();
+            if (executionTime < 1)
+                executionTime += TimeUnit.DAYS.toMillis(7);
+        }
+
         ConnectivityJobManager.buildJobRequest(alarm, AlarmUtils.getStringFromConnection(AlarmUtils.getFirstConnection(alarm)),
                 false,
-                alarm.getExecuteTimeInMils());
+                executionTime);
 
         alarmSqlHelper.updateAlarmJob(alarm.getAlarmId(), alarm.getJobId());
     }
@@ -94,8 +116,11 @@ public class AlarmManager {
     private void cancelAlarmJob(PreciseConnectivityAlarm alarm) {
 
         // If the alarm has a job, cancel it
-        if (alarm.getJobId() != -1)
+        if (alarm.getJobId() != -1) {
+            alarm.setJobId(-1);
+            alarmSqlHelper.updateAlarmJob(alarm.getAlarmId(), -1);
             JobManager.instance().cancel(alarm.getJobId());
+        }
     }
 
     /**
@@ -106,28 +131,48 @@ public class AlarmManager {
      */
     public void updateAlarmState(PreciseConnectivityAlarm alarm, boolean isActive) {
 
-        // Update the state of the alarm in the dababase
+        // Update the state of the alarm object and in the dababase
+        alarm.setCurrentlyOn(isActive);
         alarmSqlHelper.updateAlarmCurrentState(alarm.getAlarmId(), isActive);
+
+        // Update the value of 'isActive'
+        alarm.setActive(isActive);
 
         // If alarm is now active, create its job
         if (isActive)
             createAlarmJob(alarm);
 
-            // Else, cancel its current running job
+        // Else, cancel its current running job
         else
             cancelAlarmJob(alarm);
+
+        AlarmUtils.displayAlarm(alarm, "updateAlarmState");
     }
 
     /**
      * Method that updates the alarm's execution time and duration
      *
-     * @param alarmId:       Id of the alarm being updated
+     * @param alarm:         The alarm being updated
      * @param executionTime: New execution time to be assigned to the alarm being updated
      * @param alarmDuration: New duration to be assigned to the alarm being updated
      */
-    public void updateAlarm(int alarmId, long executionTime, long alarmDuration) {
-        alarmSqlHelper.updateAlarm(alarmId, executionTime, alarmDuration);
-        createAlarmJob(alarmSqlHelper.getAlarmById(alarmId));
+    public void updateAlarm(PreciseConnectivityAlarm alarm, long executionTime, long alarmDuration) {
+        // Update the alarm object
+        alarm.setExecuteTimeInMils(executionTime);
+        alarm.setDuration(alarmDuration);
+
+        // Update the alarm in the database
+        alarmSqlHelper.updateAlarm(alarm.getAlarmId(), executionTime, alarmDuration);
+
+        // Create new job for the alarm
+        createAlarmJob(alarmSqlHelper.getAlarmById(alarm.getAlarmId()));
+
+        AlarmUtils.displayAlarm(alarm, "updateAlarm");
+    }
+
+    public void updateAlarmStartTime(PreciseConnectivityAlarm alarm, long newStartTime) {
+        alarm.setStartTime(newStartTime);
+        alarmSqlHelper.updateAlarmStartTime(alarm.getAlarmId(), newStartTime);
     }
 
     /**
@@ -138,8 +183,16 @@ public class AlarmManager {
      * @param isActive:           State of the selected connection
      */
     public void updateAlarmConnection(int alarmId, Connection selectedConnection, boolean isActive) {
+        PreciseConnectivityAlarm alarm = alarmSqlHelper.getAlarmById(alarmId);
+        if (isActive)
+            alarm.getConnections().add(selectedConnection);
+        else
+            alarm.getConnections().remove(selectedConnection);
+
         alarmSqlHelper.updateAlarmConnection(alarmId, selectedConnection, isActive);
         createAlarmJob(alarmSqlHelper.getAlarmById(alarmId));
+
+        AlarmUtils.displayAlarm(alarm, "updateAlarmConnection");
     }
 
     /**
@@ -150,8 +203,16 @@ public class AlarmManager {
      * @param isActive:    State of the selected day
      */
     public void updateAlarmDay(int alarmId, int selectedDay, boolean isActive) {
+        PreciseConnectivityAlarm alarm = alarmSqlHelper.getAlarmById(alarmId);
+        if (isActive)
+            alarm.getDays().add(selectedDay);
+        else
+            alarm.getDays().remove(Integer.valueOf(selectedDay));
+
         alarmSqlHelper.updateAlarmDay(alarmId, selectedDay, isActive);
-        createAlarmJob(alarmSqlHelper.getAlarmById(alarmId));
+        createAlarmJob(alarm);
+
+        AlarmUtils.displayAlarm(alarm, "updateAlarmDay");
     }
 
     /**
@@ -180,8 +241,9 @@ public class AlarmManager {
             for (PreciseConnectivityAlarm activeAlarm : activeAlarms) {
 
                 // If the two alarms are in conflict, return the conflicting alarm's Id
-                if (alarm.inConflictWithAlarm(activeAlarm, connection) != -1)
-                    return activeAlarm.getAlarmId();
+                if (alarm.getAlarmId() != activeAlarm.getAlarmId())
+                    if (alarm.inConflictWithAlarm(activeAlarm, connection) != -1)
+                        return activeAlarm.getAlarmId();
             }
         }
 

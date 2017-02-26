@@ -1,8 +1,10 @@
 package io.mdevlab.unconnectify.utils;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 
 /**
  * This class is the class helper for all date conversion and transformations
@@ -84,9 +86,21 @@ public class DateUtils {
          * There are 6 days separating tuesday of week 1 from monday of week 2, so
          * when the result is negative 7 is simply added to it.
          */
-        if (theDifference < 0)
+        if (theDifference <= 0)
             theDifference += 7;
 
         return theDifference;
+    }
+
+    /**
+     * Method that returns the current day of the week (Monday, Tuesday, ...)
+     * This method uses the predefined days of the week defined in the class Calendar
+     *
+     * @return: The current day of the week
+     */
+    public static List<Integer> getToday() {
+        List<Integer> today = new ArrayList<>();
+        today.add(Calendar.getInstance().get(Calendar.DAY_OF_WEEK));
+        return today;
     }
 }

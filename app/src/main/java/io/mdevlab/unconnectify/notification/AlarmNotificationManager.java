@@ -95,7 +95,7 @@ public class AlarmNotificationManager {
 
         List<Connection> connectionList = preciseConnectivityAlarm.getConnections();
         long executionTime = preciseConnectivityAlarm.getExecuteTimeInMils();
-        Boolean currentStatus = preciseConnectivityAlarm.isCurrentState();
+        Boolean currentStatus = preciseConnectivityAlarm.isCurrentlyOn();
         //TODO use the String Builder instead of appending values
 
         //Build the string
@@ -110,7 +110,7 @@ public class AlarmNotificationManager {
         }
 
         //Date  with the given format using timeinMillistoDate function from DateUtils
-        String returnedDate = DateUtils.timeinMillistoDate(executionTime, DateUtils.NOTIFICATION_DATE_FORMAT);
+        String returnedDate = DateUtils.timeinMillistoDate(preciseConnectivityAlarm.getStartTime() + executionTime, DateUtils.NOTIFICATION_DATE_FORMAT);
 
         //set the final result
         result += " at " + returnedDate;

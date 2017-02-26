@@ -1,6 +1,7 @@
 package io.mdevlab.unconnectify.utils;
 
 import android.content.Context;
+import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -105,5 +106,44 @@ public class AlarmUtils {
             return Constants.BLUETOOTH_TAG;
 
         return "";
+    }
+
+    public static void displayAlarm(PreciseConnectivityAlarm alarm, String function) {
+        Log.e("Alarm display", function);
+
+        // Start time
+        Log.e("Alarm display", "Start time = " + alarm.getStartTime() + " which is at " + DateUtils.getTimeFromLong(alarm.getStartTime()));
+
+        // Execution time
+        Log.e("Alarm display", "Execution time = " + alarm.getExecuteTimeInMils() + " which is at " + DateUtils.getTimeFromLong(alarm.getExecuteTimeInMils()));
+
+        // Duration
+        Log.e("Alarm display", "Duration = " + alarm.getDuration() + " which is at " + DateUtils.getTimeFromLong(alarm.getExecuteTimeInMils() + alarm.getDuration()));
+
+        // Connections
+        Log.e("Alarm display", "Connections: ");
+        for (Connection conn : alarm.getConnections())
+            Log.e("Alarm display", "" + conn);
+
+        // Days
+        Log.e("Alarm display", "Days: ");
+        for (Integer day : alarm.getDays())
+            Log.e("Alarm display", "" + day);
+
+        // Separator
+        Log.e("Alarm display", "-");
+    }
+
+    /**
+     * Method that returns the default connection option set on the alarm's
+     * creation.
+     * For the moment the default connection is Wifi
+     *
+     * @return: A list containing the default connection option
+     */
+    public static List<Connection> getDefaultConnection() {
+        List<Connection> wifi = new ArrayList<>();
+        wifi.add(Connection.WIFI);
+        return wifi;
     }
 }

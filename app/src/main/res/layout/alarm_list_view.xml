@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/swipeRevealLayout"
     android:layout_width="match_parent"
-    android:layout_height="180dp"
+    android:layout_height="158dp"
     app:dragEdge="right"
     app:mode="same_level">
 
@@ -39,7 +39,8 @@
                 android:textOff="OFF"
                 android:textOn="ON"
                 android:textSize="48sp"
-                android:textStyle="bold" />
+                android:textStyle="bold"
+                android:checked="false"/>
 
         </LinearLayout>
 
@@ -72,240 +73,234 @@
     <!--Main Layout-->
     <android.support.v7.widget.CardView
         android:layout_width="match_parent"
-        android:layout_height="180dp">
+        android:layout_height="match_parent">
 
-        <LinearLayout
-            android:id="@+id/container"
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="@color/color_10"
-            android:orientation="vertical"
-            android:paddingBottom="8dp"
-            android:paddingTop="8dp">
+            android:layout_height="match_parent">
 
-            <!-- Times -->
+            <!--Alarm view-->
             <LinearLayout
+                android:id="@+id/container"
                 android:layout_width="match_parent"
-                android:layout_height="48dp"
-                android:gravity="center_vertical"
-                android:orientation="horizontal">
+                android:layout_height="match_parent"
+                android:background="@color/color_10"
+                android:orientation="vertical"
+                android:paddingBottom="8dp"
+                android:paddingTop="8dp">
 
-                <!--Start time-->
-                <TextView
-                    android:id="@+id/start_time"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:gravity="center"
-                    android:text="10:15"
-                    android:textAppearance="@style/CodeFont" />
+                <!-- Times -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="48dp"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
 
-                <!--Times separator-->
-                <TextView
-                    android:id="@+id/times_separator"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:text="-"
-                    android:textAppearance="@style/CodeFont" />
+                    <!--Start time-->
+                    <TextView
+                        android:id="@+id/start_time"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:text="10:15"
+                        android:textAppearance="@style/CodeFont" />
 
-                <!--End time-->
-                <TextView
-                    android:id="@+id/end_time"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:gravity="center"
-                    android:text="00:00"
-                    android:textAppearance="@style/CodeFont" />
-            </LinearLayout>
+                    <!--Times separator-->
+                    <TextView
+                        android:id="@+id/times_separator"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:text="-"
+                        android:textAppearance="@style/CodeFont" />
 
-            <!--Show end time check box -->
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="40dp"
-                android:orientation="horizontal">
+                    <!--End time-->
+                    <TextView
+                        android:id="@+id/end_time"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:text="00:00"
+                        android:textAppearance="@style/CodeFont" />
+                </LinearLayout>
 
-                <CheckBox
-                    android:id="@+id/set_end_time"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:buttonTint="@android:color/white"
-                    android:text="Set End Time"
-                    android:textColor="@android:color/white" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:text="-"
-                    android:textAppearance="@style/CodeFont"
-                    android:visibility="gone"/>
-
-                <Space
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1" />
-            </LinearLayout>
-
-            <!-- Connections-->
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
-
+                <!-- Connections-->
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="35dp"
                     android:orientation="horizontal">
 
-                    <android.support.v4.widget.Space
-                        android:layout_width="0dp"
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:layout_weight="1" />
+                        android:orientation="horizontal">
 
-                    <!--Wifi-->
-                    <ToggleButton
-                        android:id="@+id/wifi"
-                        android:layout_width="35dp"
-                        android:layout_height="35dp"
-                        android:layout_gravity="center"
-                        android:background="@drawable/toogle_wifi"
-                        android:checked="false"
-                        android:textOff=""
-                        android:textOn="" />
+                        <android.support.v4.widget.Space
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1" />
 
-                    <android.support.v4.widget.Space
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1" />
+                        <!--Wifi-->
+                        <ToggleButton
+                            android:id="@+id/wifi"
+                            android:layout_width="24dp"
+                            android:layout_height="24dp"
+                            android:layout_gravity="center"
+                            android:background="@drawable/toogle_wifi"
+                            android:checked="false"
+                            android:textOff=""
+                            android:textOn="" />
 
-                    <!--Hotspot-->
-                    <ToggleButton
-                        android:id="@+id/hotspot"
-                        android:layout_width="35dp"
-                        android:layout_height="35dp"
-                        android:layout_gravity="center"
-                        android:background="@drawable/toogle_hotspot"
-                        android:checked="false"
-                        android:textOff=""
-                        android:textOn="" />
+                        <android.support.v4.widget.Space
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1" />
 
-                    <android.support.v4.widget.Space
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1" />
+                        <!--Hotspot-->
+                        <ToggleButton
+                            android:id="@+id/hotspot"
+                            android:layout_width="24dp"
+                            android:layout_height="24dp"
+                            android:layout_gravity="center"
+                            android:background="@drawable/toogle_hotspot"
+                            android:checked="false"
+                            android:textOff=""
+                            android:textOn="" />
 
-                    <!--Bluetooth-->
-                    <ToggleButton
-                        android:id="@+id/bluetooth"
-                        android:layout_width="35dp"
-                        android:layout_height="35dp"
-                        android:layout_gravity="center"
-                        android:background="@drawable/toogle_bluetooth"
-                        android:checked="false"
-                        android:textOff=""
-                        android:textOn="" />
+                        <android.support.v4.widget.Space
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1" />
 
-                    <android.support.v4.widget.Space
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1" />
+                        <!--Bluetooth-->
+                        <ToggleButton
+                            android:id="@+id/bluetooth"
+                            android:layout_width="24dp"
+                            android:layout_height="24dp"
+                            android:layout_gravity="center"
+                            android:background="@drawable/toogle_bluetooth"
+                            android:checked="false"
+                            android:textOff=""
+                            android:textOn="" />
+
+                        <android.support.v4.widget.Space
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1" />
+                    </LinearLayout>
                 </LinearLayout>
+
+                <!-- Days -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:orientation="horizontal"
+                    android:layout_marginTop="10dp">
+
+                    <ToggleButton
+
+                        android:id="@+id/sunday"
+
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:alpha="0.5"
+                        android:background="@android:color/transparent"
+                        android:gravity="center"
+                        android:textAppearance="@style/DaysStyleBold"
+                        android:textOff="S"
+                        android:textOn="S" />
+
+                    <ToggleButton
+
+                        android:id="@+id/monday"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:alpha="0.5"
+                        android:background="@android:color/transparent"
+                        android:gravity="center"
+                        android:textAppearance="@style/DaysStyleBold"
+                        android:textOff="M"
+                        android:textOn="M" />
+
+                    <ToggleButton
+
+                        android:id="@+id/tuesday"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:alpha="0.5"
+                        android:background="@android:color/transparent"
+                        android:gravity="center"
+                        android:textAppearance="@style/DaysStyleBold"
+                        android:textOff="T"
+                        android:textOn="T" />
+
+                    <ToggleButton
+                        android:id="@+id/wednesday"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:alpha="0.5"
+                        android:background="@android:color/transparent"
+                        android:gravity="center"
+                        android:textAppearance="@style/DaysStyleBold"
+                        android:textOff="W"
+                        android:textOn="W" />
+
+                    <ToggleButton
+                        android:id="@+id/thursday"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:alpha="0.5"
+                        android:background="@android:color/transparent"
+                        android:gravity="center"
+                        android:textAppearance="@style/DaysStyleBold"
+                        android:textOff="T"
+                        android:textOn="T" />
+
+                    <ToggleButton
+                        android:id="@+id/friday"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:alpha="0.5"
+                        android:background="@android:color/transparent"
+                        android:gravity="center"
+                        android:textAppearance="@style/DaysStyleBold"
+                        android:textOff="F"
+                        android:textOn="F" />
+
+                    <ToggleButton
+                        android:id="@+id/saturday"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:alpha="0.5"
+                        android:background="@android:color/transparent"
+                        android:gravity="center"
+                        android:textAppearance="@style/DaysStyleBold"
+                        android:textOff="S"
+                        android:textOn="S" />
+
+                </LinearLayout>
+
             </LinearLayout>
 
-            <!-- Days -->
-            <LinearLayout
+            <!--Dark transparent view-->
+            <View
+                android:id="@+id/switched_off_alarm"
                 android:layout_width="match_parent"
-                android:layout_height="40dp"
-                android:orientation="horizontal">
+                android:layout_height="match_parent"
+                android:clickable="true"
+                android:background="@color/transparent_black"
+                android:visibility="gone"/>
 
-                <ToggleButton
-                    android:id="@+id/sunday"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:alpha="0.5"
-                    android:background="@android:color/transparent"
-                    android:gravity="center"
-                    android:textAppearance="@style/DaysStyleBold"
-                    android:textOff="S"
-                    android:textOn="S" />
-
-                <ToggleButton
-                    android:id="@+id/monday"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:alpha="0.5"
-                    android:background="@android:color/transparent"
-                    android:gravity="center"
-                    android:textAppearance="@style/DaysStyleBold"
-                    android:textOff="M"
-                    android:textOn="M" />
-
-                <ToggleButton
-                    android:id="@+id/tuesday"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:alpha="0.5"
-                    android:background="@android:color/transparent"
-                    android:gravity="center"
-                    android:textAppearance="@style/DaysStyleBold"
-                    android:textOff="T"
-                    android:textOn="T" />
-
-                <ToggleButton
-                    android:id="@+id/wednesday"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:alpha="0.5"
-                    android:background="@android:color/transparent"
-                    android:gravity="center"
-                    android:textAppearance="@style/DaysStyleBold"
-                    android:textOff="W"
-                    android:textOn="W" />
-
-                <ToggleButton
-                    android:id="@+id/thursday"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:alpha="0.5"
-                    android:background="@android:color/transparent"
-                    android:gravity="center"
-                    android:textAppearance="@style/DaysStyleBold"
-                    android:textOff="T"
-                    android:textOn="T" />
-
-                <ToggleButton
-                    android:id="@+id/friday"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:alpha="0.5"
-                    android:background="@android:color/transparent"
-                    android:gravity="center"
-                    android:textAppearance="@style/DaysStyleBold"
-                    android:textOff="F"
-                    android:textOn="F" />
-
-                <ToggleButton
-                    android:id="@+id/saturday"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:alpha="0.5"
-                    android:background="@android:color/transparent"
-                    android:gravity="center"
-                    android:textAppearance="@style/DaysStyleBold"
-                    android:textOff="S"
-                    android:textOn="S" />
-
-            </LinearLayout>
-
-        </LinearLayout>
+        </RelativeLayout>
 
     </android.support.v7.widget.CardView>
 

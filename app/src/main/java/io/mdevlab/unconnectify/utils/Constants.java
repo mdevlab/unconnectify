@@ -11,4 +11,8 @@ public class Constants {
     public static final String HOTSPOT_TAG = "hotspot";
     public static final String BLUETOOTH_TAG = "bluetooth";
     public static final String ACTIVATE_TAG = "activate";
+
+    public static final String END_TIME_BUNDLE_KEY = "isEndTime";
+    public static final String ALARM_POSITION = "alarm position";
+
 }
