@@ -7,7 +7,6 @@ import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -105,32 +104,32 @@ public class MainActivity extends AppCompatActivity implements TimePickerDialog.
     @Override
     public void onTimeSet(TimePicker timePicker, int hourOfDay, int minute) {
 
-        //Verify if The timepicker is shown
+        //Verify if The timePicker is shown
         //This is a know Bug https://code.google.com/p/android/issues/detail?id=34833
         if (timePicker.isShown()) {
 
-        /**
-         * If 'minute' is between 0 and 9 it only has one digit,
-         * so a '0' is added to the beginning of it
-         */
-        String s_minute = (0 <= minute && minute <= 9) ? "0" + minute : String.valueOf(minute);
+            /**
+             * If 'minute' is between 0 and 9 it only has one digit,
+             * so a '0' is added to the beginning of it
+             */
+            String s_minute = (0 <= minute && minute <= 9) ? "0" + minute : String.valueOf(minute);
 
-        // New execution time
-        long newExecutionTime = DateUtils.getLongFromTime(hourOfDay + ":" + s_minute);
+            // New execution time
+            long newExecutionTime = DateUtils.getLongFromTime(hourOfDay + ":" + s_minute);
 
 
-        //Create the default alarm
-        PreciseConnectivityAlarm preciseConnectivityAlarm = new PreciseConnectivityAlarm(newExecutionTime);
+            //Create the default alarm
+            PreciseConnectivityAlarm preciseConnectivityAlarm = new PreciseConnectivityAlarm(newExecutionTime);
 
-        //Create and insert the new Alarm
-        long alarmId = AlarmManager.getInstance(getApplicationContext()).createAlarm(preciseConnectivityAlarm);
+            //Create and insert the new Alarm
+            long alarmId = AlarmManager.getInstance(getApplicationContext()).createAlarm(preciseConnectivityAlarm);
 
-        //set the alarm id
-        preciseConnectivityAlarm.setAlarmId((int) alarmId);
+            //set the alarm id
+            preciseConnectivityAlarm.setAlarmId((int) alarmId);
 
-        mAlarmAdapter.addAlarm(preciseConnectivityAlarm);
+            mAlarmAdapter.addAlarm(preciseConnectivityAlarm);
 
-        setAlarmsCount();
+            setAlarmsCount();
         }
     }
 
@@ -158,26 +157,28 @@ public class MainActivity extends AppCompatActivity implements TimePickerDialog.
      */
     public void disableEndTime(int position) {
         if (mAlarmList != null && mAlarmList.findViewHolderForAdapterPosition(position) != null)
-        ((AlarmViewHolder) mAlarmList.findViewHolderForAdapterPosition(position)).disableEndTime();
+            ((AlarmViewHolder) mAlarmList.findViewHolderForAdapterPosition(position)).disableEndTime();
     }
 
     /**
      * Function used for testing Hotspot enabling
+     *
      * @param view
      */
-    public void enable(View view){
+    public void enable(View view) {
 
-        if (DialogUtils.showDialog(MainActivity.this)){
+        if (DialogUtils.showDialog(MainActivity.this)) {
             Hotspot.getInstance(MainActivity.this).enable();
         }
     }
 
     /**
      * Function used for testing Hotspot disabling
+     *
      * @param view
      */
-    public void disable(View view){
-        if (DialogUtils.showDialog(MainActivity.this)){
+    public void disable(View view) {
+        if (DialogUtils.showDialog(MainActivity.this)) {
             Hotspot.getInstance(MainActivity.this).disable();
         }
     }
