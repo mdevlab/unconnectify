@@ -62,6 +62,20 @@ public class AlarmViewHolder extends RecyclerView.ViewHolder implements TimePick
     ToggleButton mFriday;
     ToggleButton mSaturday;
 
+    private boolean checkToggleOnOff = false;
+
+    private boolean checkWifi = false;
+    private boolean checkHotspot = false;
+    private boolean checkBluetooth = false;
+
+    private boolean checkSunday = false;
+    private boolean checkMonday = false;
+    private boolean checkTuesday = false;
+    private boolean checkWednesday = false;
+    private boolean checkThursday = false;
+    private boolean checkFriday = false;
+    private boolean checkSaturday = false;
+
     public AlarmViewHolder(View itemView, final Context context) {
         super(itemView);
         mContext = context;
@@ -82,38 +96,39 @@ public class AlarmViewHolder extends RecyclerView.ViewHolder implements TimePick
         mSwitchOnOffToggle.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (mAlarm != null) {
-                    /**
-                     * If it's checked, it means "switch alarm on" is written
-                     * in this case the alarm is off, which means the cover should be visible
-                     *
-                     * If on the other hand it's unchecked, "switch alarm off" is displayed
-                     * In this case the alarm is on and thus the cover should be 'gone'
-                     */
-                    mSwitchedOffAlarmCover.setVisibility(isChecked ? View.VISIBLE : View.GONE);
+                if (checkToggleOnOff)
+                    if (mAlarm != null) {
+                        /**
+                         * If it's checked, it means "switch alarm on" is written
+                         * in this case the alarm is off, which means the cover should be visible
+                         *
+                         * If on the other hand it's unchecked, "switch alarm off" is displayed
+                         * In this case the alarm is on and thus the cover should be 'gone'
+                         */
+                        mSwitchedOffAlarmCover.setVisibility(isChecked ? View.VISIBLE : View.GONE);
 
-                    /**
-                     * If the user switches the alarm on, we need to make sure that at least
-                     * one connection and one day are checked.
-                     * - If no connections are checked, the default connection (wifi) is
-                     * automatically checked
-                     * - If no days are checked, the default day (current day) is
-                     * automatically checked
-                     */
-                    if (!isChecked) {
-                        if (daysAreAllUnchecked()) {
-                            mAlarm.setDays(DateUtils.getToday());
-                            checkCurrentDay();
+                        /**
+                         * If the user switches the alarm on, we need to make sure that at least
+                         * one connection and one day are checked.
+                         * - If no connections are checked, the default connection (wifi) is
+                         * automatically checked
+                         * - If no days are checked, the default day (current day) is
+                         * automatically checked
+                         */
+                        if (!isChecked) {
+                            if (daysAreAllUnchecked()) {
+                                mAlarm.setDays(DateUtils.getToday());
+                                checkCurrentDay();
+                            }
+
+                            if (connectionsAreAllUnchecked()) {
+                                mAlarm.setConnections(AlarmUtils.getDefaultConnection());
+                                checkDefaultConnection();
+                            }
                         }
 
-                        if (connectionsAreAllUnchecked()) {
-                            mAlarm.setConnections(AlarmUtils.getDefaultConnection());
-                            checkDefaultConnection();
-                        }
+                        AlarmManager.getInstance(mContext).updateAlarmState(mAlarm, !isChecked);
                     }
-
-                    AlarmManager.getInstance(mContext).updateAlarmState(mAlarm, !isChecked);
-                }
             }
         });
 
@@ -147,10 +162,11 @@ public class AlarmViewHolder extends RecyclerView.ViewHolder implements TimePick
         mWifi.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (mAlarm != null) {
-                    onLastConnectionIsUnchecked();
-                    AlarmManager.getInstance(mContext).updateAlarmConnection(mAlarm.getAlarmId(), Connection.WIFI, isChecked);
-                }
+                if (checkWifi)
+                    if (mAlarm != null) {
+                        onLastConnectionIsUnchecked();
+                        AlarmManager.getInstance(mContext).updateAlarmConnection(mAlarm.getAlarmId(), Connection.WIFI, isChecked);
+                    }
             }
         });
 
@@ -158,10 +174,11 @@ public class AlarmViewHolder extends RecyclerView.ViewHolder implements TimePick
         mHotspot.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (mAlarm != null) {
-                    onLastConnectionIsUnchecked();
-                    AlarmManager.getInstance(mContext).updateAlarmConnection(mAlarm.getAlarmId(), Connection.HOTSPOT, isChecked);
-                }
+                if (checkHotspot)
+                    if (mAlarm != null) {
+                        onLastConnectionIsUnchecked();
+                        AlarmManager.getInstance(mContext).updateAlarmConnection(mAlarm.getAlarmId(), Connection.HOTSPOT, isChecked);
+                    }
             }
         });
 
@@ -169,10 +186,11 @@ public class AlarmViewHolder extends RecyclerView.ViewHolder implements TimePick
         mBluetooth.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (mAlarm != null) {
-                    onLastConnectionIsUnchecked();
-                    AlarmManager.getInstance(mContext).updateAlarmConnection(mAlarm.getAlarmId(), Connection.BLUETOOTH, isChecked);
-                }
+                if (checkBluetooth)
+                    if (mAlarm != null) {
+                        onLastConnectionIsUnchecked();
+                        AlarmManager.getInstance(mContext).updateAlarmConnection(mAlarm.getAlarmId(), Connection.BLUETOOTH, isChecked);
+                    }
             }
         });
 
@@ -180,11 +198,12 @@ public class AlarmViewHolder extends RecyclerView.ViewHolder implements TimePick
         mSunday.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (mAlarm != null) {
-                    lastDayIsUnchecked();
-                    changeOpacity(mSunday, isChecked);
-                    AlarmManager.getInstance(mContext).updateAlarmDay(mAlarm.getAlarmId(), Calendar.SUNDAY, isChecked);
-                }
+                if (checkSunday)
+                    if (mAlarm != null) {
+                        lastDayIsUnchecked();
+                        changeOpacity(mSunday, isChecked);
+                        AlarmManager.getInstance(mContext).updateAlarmDay(mAlarm.getAlarmId(), Calendar.SUNDAY, isChecked);
+                    }
             }
         });
 
@@ -192,11 +211,12 @@ public class AlarmViewHolder extends RecyclerView.ViewHolder implements TimePick
         mMonday.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (mAlarm != null) {
-                    lastDayIsUnchecked();
-                    changeOpacity(mMonday, isChecked);
-                    AlarmManager.getInstance(mContext).updateAlarmDay(mAlarm.getAlarmId(), Calendar.MONDAY, isChecked);
-                }
+                if (checkMonday)
+                    if (mAlarm != null) {
+                        lastDayIsUnchecked();
+                        changeOpacity(mMonday, isChecked);
+                        AlarmManager.getInstance(mContext).updateAlarmDay(mAlarm.getAlarmId(), Calendar.MONDAY, isChecked);
+                    }
             }
         });
 
@@ -204,11 +224,12 @@ public class AlarmViewHolder extends RecyclerView.ViewHolder implements TimePick
         mTuesday.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (mAlarm != null) {
-                    lastDayIsUnchecked();
-                    changeOpacity(mTuesday, isChecked);
-                    AlarmManager.getInstance(mContext).updateAlarmDay(mAlarm.getAlarmId(), Calendar.TUESDAY, isChecked);
-                }
+                if (checkTuesday)
+                    if (mAlarm != null) {
+                        lastDayIsUnchecked();
+                        changeOpacity(mTuesday, isChecked);
+                        AlarmManager.getInstance(mContext).updateAlarmDay(mAlarm.getAlarmId(), Calendar.TUESDAY, isChecked);
+                    }
             }
         });
 
@@ -216,11 +237,12 @@ public class AlarmViewHolder extends RecyclerView.ViewHolder implements TimePick
         mWednesday.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (mAlarm != null) {
-                    lastDayIsUnchecked();
-                    changeOpacity(mWednesday, isChecked);
-                    AlarmManager.getInstance(mContext).updateAlarmDay(mAlarm.getAlarmId(), Calendar.WEDNESDAY, isChecked);
-                }
+                if (checkWednesday)
+                    if (mAlarm != null) {
+                        lastDayIsUnchecked();
+                        changeOpacity(mWednesday, isChecked);
+                        AlarmManager.getInstance(mContext).updateAlarmDay(mAlarm.getAlarmId(), Calendar.WEDNESDAY, isChecked);
+                    }
             }
         });
 
@@ -228,11 +250,12 @@ public class AlarmViewHolder extends RecyclerView.ViewHolder implements TimePick
         mThursday.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (mAlarm != null) {
-                    lastDayIsUnchecked();
-                    changeOpacity(mThursday, isChecked);
-                    AlarmManager.getInstance(mContext).updateAlarmDay(mAlarm.getAlarmId(), Calendar.THURSDAY, isChecked);
-                }
+                if (checkThursday)
+                    if (mAlarm != null) {
+                        lastDayIsUnchecked();
+                        changeOpacity(mThursday, isChecked);
+                        AlarmManager.getInstance(mContext).updateAlarmDay(mAlarm.getAlarmId(), Calendar.THURSDAY, isChecked);
+                    }
             }
         });
 
@@ -240,11 +263,12 @@ public class AlarmViewHolder extends RecyclerView.ViewHolder implements TimePick
         mFriday.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (mAlarm != null) {
-                    lastDayIsUnchecked();
-                    changeOpacity(mFriday, isChecked);
-                    AlarmManager.getInstance(mContext).updateAlarmDay(mAlarm.getAlarmId(), Calendar.FRIDAY, isChecked);
-                }
+                if (checkFriday)
+                    if (mAlarm != null) {
+                        lastDayIsUnchecked();
+                        changeOpacity(mFriday, isChecked);
+                        AlarmManager.getInstance(mContext).updateAlarmDay(mAlarm.getAlarmId(), Calendar.FRIDAY, isChecked);
+                    }
             }
         });
 
@@ -252,11 +276,12 @@ public class AlarmViewHolder extends RecyclerView.ViewHolder implements TimePick
         mSaturday.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (mAlarm != null) {
-                    lastDayIsUnchecked();
-                    changeOpacity(mSaturday, isChecked);
-                    AlarmManager.getInstance(mContext).updateAlarmDay(mAlarm.getAlarmId(), Calendar.SATURDAY, isChecked);
-                }
+                if (checkSaturday)
+                    if (mAlarm != null) {
+                        lastDayIsUnchecked();
+                        changeOpacity(mSaturday, isChecked);
+                        AlarmManager.getInstance(mContext).updateAlarmDay(mAlarm.getAlarmId(), Calendar.SATURDAY, isChecked);
+                    }
             }
         });
     }
@@ -484,5 +509,49 @@ public class AlarmViewHolder extends RecyclerView.ViewHolder implements TimePick
      */
     private void checkDefaultConnection() {
         mWifi.setChecked(true);
+    }
+
+    public void setCheckToggleOnOff(boolean checkToggleOnOff) {
+        this.checkToggleOnOff = checkToggleOnOff;
+    }
+
+    public void setCheckBluetooth(boolean checkBluetooth) {
+        this.checkBluetooth = checkBluetooth;
+    }
+
+    public void setCheckHotspot(boolean checkHotspot) {
+        this.checkHotspot = checkHotspot;
+    }
+
+    public void setCheckWifi(boolean checkWifi) {
+        this.checkWifi = checkWifi;
+    }
+
+    public void setCheckFriday(boolean checkFriday) {
+        this.checkFriday = checkFriday;
+    }
+
+    public void setCheckMonday(boolean checkMonday) {
+        this.checkMonday = checkMonday;
+    }
+
+    public void setCheckSaturday(boolean checkSaturday) {
+        this.checkSaturday = checkSaturday;
+    }
+
+    public void setCheckSunday(boolean checkSunday) {
+        this.checkSunday = checkSunday;
+    }
+
+    public void setCheckThursday(boolean checkThursday) {
+        this.checkThursday = checkThursday;
+    }
+
+    public void setCheckTuesday(boolean checkTuesday) {
+        this.checkTuesday = checkTuesday;
+    }
+
+    public void setCheckWednesday(boolean checkWednesday) {
+        this.checkWednesday = checkWednesday;
     }
 }

@@ -6,7 +6,6 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ToggleButton;
 
 import com.chauthai.swipereveallayout.ViewBinderHelper;
 
@@ -115,7 +114,9 @@ public class AlarmAdapter extends RecyclerView.Adapter<AlarmViewHolder> {
         holder.mSwitchedOffAlarmCover.setVisibility(currentAlarm.isActive() ? View.GONE : View.VISIBLE);
 
         // Setting the switch on/off toggle button
-        setToggleWithoutEvent(holder.mSwitchOnOffToggle, !currentAlarm.isActive());
+        holder.setCheckToggleOnOff(false);
+        holder.mSwitchOnOffToggle.setChecked(true);
+        holder.setCheckToggleOnOff(true);
 
         // Start time
         holder.mStartTime.setText(DateUtils.getTimeFromLong(currentAlarm.getStartTime()));
@@ -129,44 +130,74 @@ public class AlarmAdapter extends RecyclerView.Adapter<AlarmViewHolder> {
         }
 
         // Wifi
-        if (currentAlarm.getConnections().contains(Connection.WIFI))
-            setToggleWithoutEvent(holder.mWifi, true);
+        if (currentAlarm.getConnections().contains(Connection.WIFI)) {
+            holder.setCheckWifi(false);
+            holder.mWifi.setChecked(true);
+            holder.setCheckWifi(true);
+        }
 
         // Hotspot
-        if (currentAlarm.getConnections().contains(Connection.HOTSPOT))
-            setToggleWithoutEvent(holder.mHotspot, true);
+        if (currentAlarm.getConnections().contains(Connection.HOTSPOT)) {
+            holder.setCheckHotspot(false);
+            holder.mHotspot.setChecked(true);
+            holder.setCheckHotspot(true);
+        }
 
         // Bluetooth
-        if (currentAlarm.getConnections().contains(Connection.BLUETOOTH))
-            setToggleWithoutEvent(holder.mBluetooth, true);
+        if (currentAlarm.getConnections().contains(Connection.BLUETOOTH)) {
+            holder.setCheckBluetooth(false);
+            holder.mBluetooth.setChecked(true);
+            holder.setCheckBluetooth(true);
+        }
 
         // Sunday
-        if (currentAlarm.getDays().contains(Calendar.SUNDAY))
-            setToggleWithoutEvent(holder.mSunday, true);
+        if (currentAlarm.getDays().contains(Calendar.SUNDAY)) {
+            holder.setCheckSunday(false);
+            holder.mSaturday.setChecked(true);
+            holder.setCheckSunday(true);
+        }
 
         // Monday
-        if (currentAlarm.getDays().contains(Calendar.MONDAY))
-            setToggleWithoutEvent(holder.mMonday, true);
+        if (currentAlarm.getDays().contains(Calendar.MONDAY)) {
+            holder.setCheckMonday(false);
+            holder.mMonday.setChecked(true);
+            holder.setCheckMonday(true);
+        }
 
         // Tuesday
-        if (currentAlarm.getDays().contains(Calendar.TUESDAY))
-            setToggleWithoutEvent(holder.mTuesday, true);
+        if (currentAlarm.getDays().contains(Calendar.TUESDAY)) {
+            holder.setCheckTuesday(false);
+            holder.mTuesday.setChecked(true);
+            holder.setCheckTuesday(true);
+        }
 
         // Wednesday
-        if (currentAlarm.getDays().contains(Calendar.WEDNESDAY))
-            setToggleWithoutEvent(holder.mWednesday, true);
+        if (currentAlarm.getDays().contains(Calendar.WEDNESDAY)) {
+            holder.setCheckWednesday(false);
+            holder.mWednesday.setChecked(true);
+            holder.setCheckWednesday(true);
+        }
 
         // Thursday
-        if (currentAlarm.getDays().contains(Calendar.THURSDAY))
-            setToggleWithoutEvent(holder.mThursday, true);
+        if (currentAlarm.getDays().contains(Calendar.THURSDAY)) {
+            holder.setCheckThursday(false);
+            holder.mThursday.setChecked(true);
+            holder.setCheckThursday(true);
+        }
 
         // Friday
-        if (currentAlarm.getDays().contains(Calendar.FRIDAY))
-            setToggleWithoutEvent(holder.mFriday, true);
+        if (currentAlarm.getDays().contains(Calendar.FRIDAY)) {
+            holder.setCheckFriday(false);
+            holder.mFriday.setChecked(true);
+            holder.setCheckFriday(true);
+        }
 
         // Saturday
-        if (currentAlarm.getDays().contains(Calendar.SATURDAY))
-            setToggleWithoutEvent(holder.mSaturday, true);
+        if (currentAlarm.getDays().contains(Calendar.SATURDAY)) {
+            holder.setCheckSaturday(false);
+            holder.mSaturday.setChecked(true);
+            holder.setCheckSaturday(true);
+        }
     }
 
     @Override
@@ -174,18 +205,5 @@ public class AlarmAdapter extends RecyclerView.Adapter<AlarmViewHolder> {
         if (alarms != null)
             return alarms.size();
         return 0;
-    }
-
-    /**
-     * Method that checks or unchecks a toggle button without triggering its
-     * setOnCheck listener
-     *
-     * @param toggleButton
-     * @param isChecked
-     */
-    private void setToggleWithoutEvent(ToggleButton toggleButton, boolean isChecked) {
-        toggleButton.setEnabled(false);
-        toggleButton.setChecked(isChecked);
-        toggleButton.setEnabled(true);
     }
 }
