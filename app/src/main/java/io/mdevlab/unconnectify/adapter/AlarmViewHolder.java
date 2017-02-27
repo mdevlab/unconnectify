@@ -24,6 +24,7 @@ import io.mdevlab.unconnectify.utils.AlarmUtils;
 import io.mdevlab.unconnectify.utils.Connection;
 import io.mdevlab.unconnectify.utils.Constants;
 import io.mdevlab.unconnectify.utils.DateUtils;
+import io.mdevlab.unconnectify.utils.DialogUtils;
 
 /**
  * Created by mdevlab on 2/12/17.
@@ -174,11 +175,16 @@ public class AlarmViewHolder extends RecyclerView.ViewHolder implements TimePick
         mHotspot.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (checkHotspot)
+                if (DialogUtils.showDialog(mContext)) {
+                  if(checkHotspot) {
                     if (mAlarm != null) {
                         onLastConnectionIsUnchecked();
                         AlarmManager.getInstance(mContext).updateAlarmConnection(mAlarm.getAlarmId(), Connection.HOTSPOT, isChecked);
                     }
+                  }
+                } else {
+                    mHotspot.setChecked(false);
+                }
             }
         });
 
