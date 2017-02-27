@@ -31,9 +31,6 @@ public class AlarmSqlHelper extends SQLiteOpenHelper {
     public static final String DATABASE_NAME = "Alarms.db";
     //Current Version 1 since Feb 11 2017
     public static final int DATABASE_VERSION = 1;
-    public static final int NO_DURATION = 1;
-    public static final int NO_JOBID = -1;
-    public static final Boolean DEFAULT_CURRENTSTATE = false;
     public static final String ASC = "ASC";
 
     // Table Names
@@ -253,7 +250,7 @@ public class AlarmSqlHelper extends SQLiteOpenHelper {
                 selectionArgs,
                 null,
                 null,
-                null);
+                UPDATETIME + " DESC");
 
         // looping through all rows and adding to list
         if (cursor.moveToFirst()) {

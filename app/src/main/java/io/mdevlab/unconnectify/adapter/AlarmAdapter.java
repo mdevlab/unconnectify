@@ -16,6 +16,8 @@ import io.mdevlab.unconnectify.MainActivity;
 import io.mdevlab.unconnectify.R;
 import io.mdevlab.unconnectify.alarm.AlarmManager;
 import io.mdevlab.unconnectify.alarm.PreciseConnectivityAlarm;
+import io.mdevlab.unconnectify.data.AlarmSqlHelper;
+import io.mdevlab.unconnectify.utils.AlarmUtils;
 import io.mdevlab.unconnectify.utils.Connection;
 import io.mdevlab.unconnectify.utils.DateUtils;
 
@@ -41,6 +43,7 @@ public class AlarmAdapter extends RecyclerView.Adapter<AlarmViewHolder> {
     };
 
     private List<PreciseConnectivityAlarm> alarms;
+    private AlarmSqlHelper alarmSqlHelper;
     private Context mContext;
     private final ViewBinderHelper viewBinderHelper = new ViewBinderHelper();
 
@@ -53,6 +56,7 @@ public class AlarmAdapter extends RecyclerView.Adapter<AlarmViewHolder> {
     public AlarmAdapter(List<PreciseConnectivityAlarm> alarms, Context context) {
         this.alarms = alarms;
         this.mContext = context;
+        this.alarmSqlHelper = new AlarmSqlHelper(mContext);
     }
 
     /**
@@ -61,7 +65,8 @@ public class AlarmAdapter extends RecyclerView.Adapter<AlarmViewHolder> {
      * @param preciseConnectivityAlarm
      */
     public void addAlarm(PreciseConnectivityAlarm preciseConnectivityAlarm) {
-        alarms.add(preciseConnectivityAlarm);
+        alarms.clear();
+        alarms = alarmSqlHelper.readAllAlarms(null, null);
         notifyDataSetChanged();
     }
 
@@ -88,6 +93,8 @@ public class AlarmAdapter extends RecyclerView.Adapter<AlarmViewHolder> {
     @Override
     public void onBindViewHolder(AlarmViewHolder holder, final int position) {
         final PreciseConnectivityAlarm currentAlarm = alarms.get(position);
+
+        AlarmUtils.displayAlarm(currentAlarm, "onBindViewHolder");
 
         //Delete the alarm
         holder.mDeleteAlarm.setOnClickListener(new View.OnClickListener() {
