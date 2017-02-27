@@ -161,8 +161,8 @@ public class AlarmViewHolder extends RecyclerView.ViewHolder implements TimePick
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (DialogUtils.showDialog(mContext)) {
                     if (mAlarm != null) {
-                        if (!lastConnectionIsUnchecked())
-                            AlarmManager.getInstance(mContext).updateAlarmConnection(mAlarm.getAlarmId(), Connection.HOTSPOT, isChecked);
+                        onLastConnectionIsUnchecked();
+                        AlarmManager.getInstance(mContext).updateAlarmConnection(mAlarm.getAlarmId(), Connection.HOTSPOT, isChecked);
                     }
                 } else {
                     mHotspot.setChecked(false);
