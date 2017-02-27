@@ -61,8 +61,8 @@ public class AlarmAdapter extends RecyclerView.Adapter<AlarmViewHolder> {
      * @param preciseConnectivityAlarm
      */
     public void addAlarm(PreciseConnectivityAlarm preciseConnectivityAlarm) {
-        alarms.add(0, preciseConnectivityAlarm);
-        this.notifyDataSetChanged();
+        alarms.add(preciseConnectivityAlarm);
+        notifyDataSetChanged();
     }
 
     /**
@@ -73,7 +73,7 @@ public class AlarmAdapter extends RecyclerView.Adapter<AlarmViewHolder> {
      */
     public void deleteAlarm(int position, int alarmId) {
         alarms.remove(position);
-        this.notifyDataSetChanged();
+        notifyDataSetChanged();
         ((MainActivity) mContext).setAlarmsCount();
         AlarmManager.getInstance(mContext).clearAlarm(alarmId);
     }
@@ -130,74 +130,54 @@ public class AlarmAdapter extends RecyclerView.Adapter<AlarmViewHolder> {
         }
 
         // Wifi
-        if (currentAlarm.getConnections().contains(Connection.WIFI)) {
-            holder.setCheckWifi(false);
-            holder.mWifi.setChecked(true);
-            holder.setCheckWifi(true);
-        }
+        holder.setCheckWifi(false);
+        holder.mWifi.setChecked(currentAlarm.getConnections().contains(Connection.WIFI));
+        holder.setCheckWifi(true);
 
         // Hotspot
-        if (currentAlarm.getConnections().contains(Connection.HOTSPOT)) {
-            holder.setCheckHotspot(false);
-            holder.mHotspot.setChecked(true);
-            holder.setCheckHotspot(true);
-        }
+        holder.setCheckHotspot(false);
+        holder.mHotspot.setChecked(currentAlarm.getConnections().contains(Connection.HOTSPOT));
+        holder.setCheckHotspot(true);
 
         // Bluetooth
-        if (currentAlarm.getConnections().contains(Connection.BLUETOOTH)) {
-            holder.setCheckBluetooth(false);
-            holder.mBluetooth.setChecked(true);
-            holder.setCheckBluetooth(true);
-        }
+        holder.setCheckBluetooth(false);
+        holder.mBluetooth.setChecked(currentAlarm.getConnections().contains(Connection.BLUETOOTH));
+        holder.setCheckBluetooth(true);
 
         // Sunday
-        if (currentAlarm.getDays().contains(Calendar.SUNDAY)) {
-            holder.setCheckSunday(false);
-            holder.mSaturday.setChecked(true);
-            holder.setCheckSunday(true);
-        }
+        holder.setCheckSunday(false);
+        holder.mSaturday.setChecked(currentAlarm.getDays().contains(Calendar.SUNDAY));
+        holder.setCheckSunday(true);
 
         // Monday
-        if (currentAlarm.getDays().contains(Calendar.MONDAY)) {
-            holder.setCheckMonday(false);
-            holder.mMonday.setChecked(true);
-            holder.setCheckMonday(true);
-        }
+        holder.setCheckMonday(false);
+        holder.mMonday.setChecked(currentAlarm.getDays().contains(Calendar.MONDAY));
+        holder.setCheckMonday(true);
 
         // Tuesday
-        if (currentAlarm.getDays().contains(Calendar.TUESDAY)) {
-            holder.setCheckTuesday(false);
-            holder.mTuesday.setChecked(true);
-            holder.setCheckTuesday(true);
-        }
+        holder.setCheckTuesday(false);
+        holder.mTuesday.setChecked(currentAlarm.getDays().contains(Calendar.TUESDAY));
+        holder.setCheckTuesday(true);
 
         // Wednesday
-        if (currentAlarm.getDays().contains(Calendar.WEDNESDAY)) {
-            holder.setCheckWednesday(false);
-            holder.mWednesday.setChecked(true);
-            holder.setCheckWednesday(true);
-        }
+        holder.setCheckWednesday(false);
+        holder.mWednesday.setChecked(currentAlarm.getDays().contains(Calendar.WEDNESDAY));
+        holder.setCheckWednesday(true);
 
         // Thursday
-        if (currentAlarm.getDays().contains(Calendar.THURSDAY)) {
-            holder.setCheckThursday(false);
-            holder.mThursday.setChecked(true);
-            holder.setCheckThursday(true);
-        }
+        holder.setCheckThursday(false);
+        holder.mThursday.setChecked(currentAlarm.getDays().contains(Calendar.THURSDAY));
+        holder.setCheckThursday(true);
 
         // Friday
-        if (currentAlarm.getDays().contains(Calendar.FRIDAY)) {
-            holder.setCheckFriday(false);
-            holder.mFriday.setChecked(true);
-            holder.setCheckFriday(true);
-        }
+        holder.setCheckFriday(false);
+        holder.mFriday.setChecked(currentAlarm.getDays().contains(Calendar.FRIDAY));
+        holder.setCheckFriday(true);
 
         // Saturday
-        if (currentAlarm.getDays().contains(Calendar.SATURDAY)) {
-            holder.setCheckSaturday(false);
-            holder.mSaturday.setChecked(true);
-            holder.setCheckSaturday(true);
-        }
+        holder.setCheckSaturday(false);
+        holder.mSaturday.setChecked(currentAlarm.getDays().contains(Calendar.SATURDAY));
+        holder.setCheckSaturday(true);
     }
 
     @Override

@@ -149,7 +149,6 @@
                             android:layout_height="35dp"
                             android:layout_gravity="center"
                             android:background="@drawable/toogle_wifi"
-                            android:checked="false"
                             android:textOff=""
                             android:textOn="" />
 
@@ -165,7 +164,6 @@
                             android:layout_height="35dp"
                             android:layout_gravity="center"
                             android:background="@drawable/toogle_hotspot"
-                            android:checked="false"
                             android:textOff=""
                             android:textOn="" />
 
@@ -181,7 +179,6 @@
                             android:layout_height="35dp"
                             android:layout_gravity="center"
                             android:background="@drawable/toogle_bluetooth"
-                            android:checked="false"
                             android:textOff=""
                             android:textOn="" />
 
