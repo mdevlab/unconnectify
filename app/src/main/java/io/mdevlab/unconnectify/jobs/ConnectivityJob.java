@@ -2,10 +2,10 @@ package io.mdevlab.unconnectify.jobs;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
+import android.util.Log;
 
 import com.evernote.android.job.Job;
 
-import java.util.Calendar;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -123,13 +123,17 @@ public class ConnectivityJob extends Job {
          * In this case we execute the latest one
          */
         else {
-            PreciseConnectivityAlarm conflictAlarm = mAlarmSqlHelper.getAlarmById(mCurrentAlarm.getAlarmId());
+            PreciseConnectivityAlarm conflictAlarm = mAlarmSqlHelper.getAlarmById(conflictAlarmId);
             if (conflictAlarm.getLastUpdate() < mCurrentAlarm.getLastUpdate())
                 executeCurrentJob(connectivity, enableConnectivity);
         }
     }
 
     private void executeCurrentJob(Connectivity connectivity, boolean enableConnectivity) {
+
+        // Todo : Remove debug code
+        Log.e("Alarm job", "Connectivity " + connectivity + " is being turned on " + enableConnectivity);
+
         // If it's wifi, enable/disable wifi
         if (connectivity instanceof Wifi)
             enableWifi(enableConnectivity);
@@ -206,7 +210,7 @@ public class ConnectivityJob extends Job {
 
             // If alarmDuration is equal to 1, the next launch of the alarm is set for another day
             if (alarmDuration == 1) {
-                int numberOfDaysUntilNextAlarm = getNumberOfDaysUntilNextAlarm();
+                int numberOfDaysUntilNextAlarm = AlarmUtils.getNumberOfDaysUntilNextAlarm(mCurrentAlarm);
                 newExecutionTime = TimeUnit.DAYS.toMillis(numberOfDaysUntilNextAlarm);
                 switchActivationState = false;
             } else {
@@ -222,11 +226,10 @@ public class ConnectivityJob extends Job {
         }
 
         mCurrentAlarm.setExecuteTimeInMils(newExecutionTime);
-        mAlarmSqlHelper.updateAlarm(mCurrentAlarm.getAlarmId(), newExecutionTime, mCurrentAlarm.getDuration());
-
-//        AlarmManager.getInstance(mContext).updateAlarm(mCurrentAlarm,
-//                newExecutionTime,
-//                mCurrentAlarm.getDuration());
+        mAlarmSqlHelper.updateAlarm(mCurrentAlarm.getAlarmId(),
+                mCurrentAlarm.getStartTime(),
+                newExecutionTime,
+                mCurrentAlarm.getDuration());
     }
 
     /**
@@ -238,63 +241,7 @@ public class ConnectivityJob extends Job {
      * of connections to be handled by the alarm
      */
     private boolean isLastConnectivity(String connectionTag) {
-        return getConnectionFromString(connectionTag) == mCurrentAlarm.getLastConnectionOfAlarm();
-    }
-
-    /**
-     * Method that returns the number of days until the next day the
-     * alarm is supposed to be launched on
-     *
-     * @return
-     */
-    private int getNumberOfDaysUntilNextAlarm() {
-        /**
-         * The minimum number of days is set to the maximum value it can take,
-         * which is 7, one week, which is also the maximum periodicity of an
-         * active alarm
-         */
-        int minimumDays = 7;
-
-        // The value of the current day of the week
-        int today = Calendar.getInstance().get(Calendar.DAY_OF_WEEK);
-
-        int differenceBetweenTwoDays;
-        for (int day : mCurrentAlarm.getDays()) {
-            // We first get the difference between the 2 days
-            differenceBetweenTwoDays = DateUtils.differenceBetweenTwoDays(today, day);
-
-            // A new minimum is assigned to 'minimumDays' if the difference is smaller its value
-            if (differenceBetweenTwoDays < minimumDays)
-                minimumDays = differenceBetweenTwoDays;
-        }
-        return minimumDays;
-    }
-
-
-    /**
-     * @return: Time in milliseconds of the next launch of the alarm on another day
-     */
-    private long getTimeOfNextDayAlarm() {
-
-        // Start time of the alarm as HH:mm
-        String startTime = DateUtils.getTimeFromLong(mCurrentAlarm.getStartTime());
-
-        // The minutes and hours of the start time of the alarm
-        int startTimeMinute = Integer.parseInt(startTime.split(":")[0]);
-        int startTimeHour = Integer.parseInt(startTime.split(":")[1]);
-
-        // Start time in milliseconds of the alarm on the next day
-        long startTimeOnTheNextDay = TimeUnit.MINUTES.toMillis(60 - startTimeMinute) + TimeUnit.HOURS.toMillis((24 - startTimeHour) % 24);
-
-        /**
-         * Days in milliseconds until the next alarm launch
-         * We deduct 1 from the result because the result is going to be summed with
-         * the start time on the following day, so one day (or part of it at least)
-         * has already been consumed
-         */
-        long daysUntilNextAlarm = TimeUnit.DAYS.toMillis(getNumberOfDaysUntilNextAlarm() - 1);
-
-        return startTimeOnTheNextDay + daysUntilNextAlarm;
+        return getConnectionFromString(connectionTag) == mCurrentAlarm.getLastConnection();
     }
 
     /**
@@ -368,5 +315,31 @@ public class ConnectivityJob extends Job {
             default:
                 return mTag;
         }
+    }
+
+    /**
+     * @return: Time in milliseconds of the next launch of the alarm on another day
+     */
+    private long getTimeOfNextDayAlarm() {
+
+        // Start time of the alarm as HH:mm
+        String startTime = DateUtils.getTimeFromLong(mCurrentAlarm.getStartTime());
+
+        // The minutes and hours of the start time of the alarm
+        int startTimeMinute = Integer.parseInt(startTime.split(":")[0]);
+        int startTimeHour = Integer.parseInt(startTime.split(":")[1]);
+
+        // Start time in milliseconds of the alarm on the next day
+        long startTimeOnTheNextDay = TimeUnit.MINUTES.toMillis(startTimeMinute) + TimeUnit.HOURS.toMillis(startTimeHour);
+
+        /**
+         * Days in milliseconds until the next alarm launch
+         * We deduct 1 from the result because the result is going to be summed with
+         * the start time on the following day, so one day (or part of it at least)
+         * has already been consumed
+         */
+        long daysUntilNextAlarm = TimeUnit.DAYS.toMillis(AlarmUtils.getNumberOfDaysUntilNextAlarm(mCurrentAlarm) - 1);
+
+        return startTimeOnTheNextDay + daysUntilNextAlarm;
     }
 }

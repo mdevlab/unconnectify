@@ -21,7 +21,7 @@ public class ConnectivityJobManager {
      * @return: The built job request
      */
     public static JobRequest buildJobRequest(PreciseConnectivityAlarm alarm, String tag, boolean activate, long executionTime) {
-        if (executionTime < 0)
+        if (executionTime <= 0)
             return null;
 
         // Extras
@@ -33,7 +33,6 @@ public class ConnectivityJobManager {
                 .setExtras(extras)
                 .setPersisted(true)
                 .build();
-
         jobRequest.schedule();
 
         // Set the job id to the alarm

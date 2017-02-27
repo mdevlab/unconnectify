@@ -1,78 +1,19 @@
 package io.mdevlab.unconnectify.utils;
 
-import android.content.Context;
 import android.util.Log;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import io.mdevlab.unconnectify.alarm.PreciseConnectivityAlarm;
-import io.mdevlab.unconnectify.data.AlarmSqlHelper;
 
 /**
- * This class is a temporary class for generating a fake data
- * The future plan is the have a detailed unit test cases
- * Using JUNIT for Unit testing  and Espresso for instrumented tests
- * Created by bachiri on 2/11/17.
+ * Created by mdevlab on 2/11/17.
  */
 
 public class AlarmUtils {
-
-
-    //TODO create UNIT TEST
-    public static void createFakeData(Context context) {
-
-
-        AlarmSqlHelper alarmSqlHelper = new AlarmSqlHelper(context);
-
-
-        List<Integer> days = new ArrayList<Integer>();
-        days.add(2);
-        days.add(6);
-        days.add(3);
-        List<Connection> connections = new ArrayList<Connection>();
-        connections.add(Connection.BLUETOOTH);
-        connections.add(Connection.HOTSPOT);
-        //connections.add(Connection.CELLULAR_DATA);
-        connections.add(Connection.WIFI);
-
-
-        PreciseConnectivityAlarm preciseConnectivityAlarm = new PreciseConnectivityAlarm(System.currentTimeMillis(), 1, days, connections);
-        PreciseConnectivityAlarm preciseConnectivityAlarmOne = new PreciseConnectivityAlarm(System.currentTimeMillis() + 3000, 257003, days, connections);
-        PreciseConnectivityAlarm preciseConnectivityAlarmTwo = new PreciseConnectivityAlarm(System.currentTimeMillis() + 27500, 793903, days, connections);
-
-        //alarmSqlHelper.updateAlarmJob(1,1000);
-        // alarmSqlHelper.updateAlarm(2,10000,1045);
-
-        //alarmSqlHelper.updateAlarmConnection(1,Connection.CELLULAR_DATA,true);
-        //alarmSqlHelper.updateAlarmDay(1,2,false);
-//        List<PreciseConnectivityAlarm> a= alarmSqlHelper.readAllAlarms(null,null);
-        //PreciseConnectivityAlarm preciseConnectivityAlarm2 =  alarmSqlHelper.readNextAlarm();
-        alarmSqlHelper.createAlarm(preciseConnectivityAlarm);
-        alarmSqlHelper.createAlarm(preciseConnectivityAlarmOne);
-        alarmSqlHelper.createAlarm(preciseConnectivityAlarmTwo);
-        //AlarmNotificationManager.triggerNotification(context);
-
-
-        //alarmSqlHelper.updateAlarmJob(1,1990);
-        //alarmSqlHelper.updateAlarmCurrentState(1,true);
-        //PreciseConnectivityAlarm preciseConnectivityAlarm3 = alarmSqlHelper.getAlarmByJobId(1990);
-        //List<PreciseConnectivityAlarm> b= alarmSqlHelper.readAllAlarms(null,null);
-
-
-    }
-
-    public static Connection getFirstConnection(PreciseConnectivityAlarm alarm) {
-        List<Connection> connectionList = alarm.getConnections();
-
-        if (connectionList.contains(Connection.WIFI))
-            return Connection.WIFI;
-
-        if (connectionList.contains(Connection.HOTSPOT))
-            return Connection.HOTSPOT;
-
-        return Connection.BLUETOOTH;
-    }
 
     /**
      * Method that gets the connection enum value from a string
@@ -95,6 +36,12 @@ public class AlarmUtils {
         }
     }
 
+    /**
+     * Method that gets the string value of a connection enum
+     *
+     * @param connection: Connection object
+     * @return
+     */
     public static String getStringFromConnection(Connection connection) {
         if (connection == Connection.WIFI)
             return Constants.WIFI_TAG;
@@ -108,6 +55,12 @@ public class AlarmUtils {
         return "";
     }
 
+    /**
+     * Debugging method that displays all an alarm's information
+     *
+     * @param alarm:    Alarm object being debugged
+     * @param function: Function calling this method
+     */
     public static void displayAlarm(PreciseConnectivityAlarm alarm, String function) {
         Log.e("Alarm display", function);
 
@@ -145,5 +98,84 @@ public class AlarmUtils {
         List<Connection> wifi = new ArrayList<>();
         wifi.add(Connection.WIFI);
         return wifi;
+    }
+
+    /**
+     * Method that returns the time left in miliseconds until the next alarm trigger
+     *
+     * @param alarm
+     * @return
+     */
+    public static long getAlarmExecutionTime(PreciseConnectivityAlarm alarm) {
+
+        // The default value of the execution time
+        long executionTime = alarm.getStartTime() - System.currentTimeMillis();
+
+        // If the execution time is inferior to the current system time,
+        if (executionTime < 0) {
+
+            /**
+             * If execution time + Duration > Current time
+             * It means the second phase of the alarm needs to be handled
+             * The second phase being to re-enable the connections
+             * The second phase is triggered at the end time of the alarm
+             */
+            if (executionTime + alarm.getDuration() > 0) {
+                executionTime += alarm.getDuration();
+            }
+
+            /**
+             * In this case the alarm will be triggered on another day
+             * So we get the next day the alarm is supposed to be triggered on,
+             * then add to it the execution time
+             *
+             * This is calculated using the formula below:
+             * executionTime = (Number of days until next alarm trigger).toMiliseconds - (Current time - start time).toMiliseconds
+             *
+             * Example:
+             * - Start time is 7:41 pm
+             * - Current time is 9:41 pm
+             * - Today is Sunday, next alarm trigger is Tuesday
+             * So:
+             * - Number of days until next alarm trigger = 2 days = 48 hours
+             * - Current time - start time = 2 hours
+             * So basically the next alarm is in 46 hours, convert this to miliseconds and this
+             * gives us the time left until the next alarm trigger, which is the alarm's executionTime
+             */
+            else {
+                executionTime = TimeUnit.DAYS.toMillis(getNumberOfDaysUntilNextAlarm(alarm)) - (System.currentTimeMillis() - executionTime);
+            }
+        }
+
+        return executionTime;
+    }
+
+    /**
+     * Method that returns the number of days until the next day the
+     * alarm is supposed to be launched on
+     *
+     * @return
+     */
+    public static int getNumberOfDaysUntilNextAlarm(PreciseConnectivityAlarm alarm) {
+        /**
+         * The minimum number of days is set to the maximum value it can take,
+         * which is 7, one week, which is also the maximum periodicity of an
+         * active alarm
+         */
+        int minimumDays = 7;
+
+        // The value of the current day of the week
+        int today = Calendar.getInstance().get(Calendar.DAY_OF_WEEK);
+
+        int differenceBetweenTwoDays;
+        for (int day : alarm.getDays()) {
+            // We first get the difference between the 2 days
+            differenceBetweenTwoDays = DateUtils.differenceBetweenTwoDays(today, day);
+
+            // A new minimum is assigned to 'minimumDays' if the difference is smaller its value
+            if (differenceBetweenTwoDays < minimumDays)
+                minimumDays = differenceBetweenTwoDays;
+        }
+        return minimumDays;
     }
 }

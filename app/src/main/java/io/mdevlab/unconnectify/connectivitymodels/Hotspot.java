@@ -15,7 +15,6 @@ import cc.mvdan.accesspoint.WifiApControl;
  * Enabling, disabling and configuring of wireless Access Points are all unaccessible in the SDK behind hidden methods in WifiManager .
  * Reflection is used to get access to those methods.
  * <p>
- * <p>
  * Created by mdevlab on 2/10/17.
  */
 
@@ -41,7 +40,6 @@ public class Hotspot extends Connectivity {
         return hotspot;
     }
 
-
     /**
      * This function is for disabling the hotspot
      */
@@ -58,9 +56,5 @@ public class Hotspot extends Connectivity {
         if (wifiManager.isWifiEnabled())
             wifiManager.setWifiEnabled(false);
         apControl.enable();
-
-
     }
-
-
 }

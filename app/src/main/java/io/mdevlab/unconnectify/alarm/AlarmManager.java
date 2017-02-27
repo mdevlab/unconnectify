@@ -4,15 +4,11 @@ import android.content.Context;
 
 import com.evernote.android.job.JobManager;
 
-import java.util.List;
-import java.util.concurrent.TimeUnit;
-
 import io.mdevlab.unconnectify.data.AlarmSqlHelper;
 import io.mdevlab.unconnectify.jobs.ConnectivityJobManager;
 import io.mdevlab.unconnectify.notification.AlarmNotificationManager;
 import io.mdevlab.unconnectify.utils.AlarmUtils;
 import io.mdevlab.unconnectify.utils.Connection;
-import io.mdevlab.unconnectify.utils.DateUtils;
 
 /**
  * Created by mdevlab on 2/10/17.
@@ -51,16 +47,48 @@ public class AlarmManager {
         alarm.setAlarmId((int) alarmId);
         createAlarmJob(alarm);
 
+        // Todo : Remove debug code
         AlarmUtils.displayAlarm(alarm, "createAlarm");
 
         return alarmId;
     }
 
     /**
+     * Method that sets the first job for an alarm right after its creation
+     * It's also called to update an alarm's job after this alarm has been modified
+     * So it starts by canceling the previous job first before creating a new one
+     *
+     * @param alarm: The newly created alarm
+     */
+    private void createAlarmJob(PreciseConnectivityAlarm alarm) {
+        createAlarmJob(alarm, false);
+    }
+
+    /**
+     * Method that sets the first job for an alarm right after its creation
+     * It's also called to update an alarm's job after this alarm has been modified
+     * So it starts by canceling the previous job first before creating a new one
+     *
+     * @param alarm: The newly created alarm
+     */
+    private void createAlarmJob(PreciseConnectivityAlarm alarm, boolean activate) {
+
+        // Cancel previous job assigned to alarm if it exists
+        if (alarm.getJobId() != -1)
+            JobManager.instance().cancel(alarm.getJobId());
+
+        ConnectivityJobManager.buildJobRequest(alarm, AlarmUtils.getStringFromConnection(alarm.getFirstConnection()),
+                activate,
+                alarm.getExecuteTimeInMils());
+
+        alarmSqlHelper.updateAlarmJob(alarm.getAlarmId(), alarm.getJobId());
+    }
+
+    /**
      * This method is for deleting an alarm from the database
      *
      * @param alarmId id of the alarm
-     * @return true if deleted false otherways
+     * @return true if deleted, false otherwise
      */
     public Boolean clearAlarm(int alarmId) {
 
@@ -75,37 +103,6 @@ public class AlarmManager {
         }
 
         return false;
-    }
-
-    /**
-     * Method that sets the first job for an alarm right after its creation
-     * It's also called to update an alarm's job after this alarm has been modified
-     * So it starts by canceling the previous job first before creating a new one
-     *
-     * @param alarm: The newly created alarm
-     */
-    private void createAlarmJob(PreciseConnectivityAlarm alarm) {
-        // Cancel previous job assigned to alarm if it exists
-        if (alarm.getJobId() != -1)
-            JobManager.instance().cancel(alarm.getJobId());
-
-        /**
-         * The execution time of the alarm is either set by default to today
-         * If the user's input is a time in today that's passed, the alarm is set
-         * to that same time in one week
-         */
-        long executionTime = alarm.getExecuteTimeInMils();
-        if(executionTime != 1L) {
-            executionTime = alarm.getExecuteTimeInMils() - DateUtils.getCurrentTimeInMillis();
-            if (executionTime < 1)
-                executionTime += TimeUnit.DAYS.toMillis(7);
-        }
-
-        ConnectivityJobManager.buildJobRequest(alarm, AlarmUtils.getStringFromConnection(AlarmUtils.getFirstConnection(alarm)),
-                false,
-                executionTime);
-
-        alarmSqlHelper.updateAlarmJob(alarm.getAlarmId(), alarm.getJobId());
     }
 
     /**
@@ -132,20 +129,20 @@ public class AlarmManager {
     public void updateAlarmState(PreciseConnectivityAlarm alarm, boolean isActive) {
 
         // Update the state of the alarm object and in the dababase
-        alarm.setCurrentlyOn(isActive);
+        alarm.setActive(isActive);
+        alarm.setCurrentState(isActive);
         alarmSqlHelper.updateAlarmCurrentState(alarm.getAlarmId(), isActive);
 
-        // Update the value of 'isActive'
-        alarm.setActive(isActive);
-
         // If alarm is now active, create its job
-        if (isActive)
+        if (isActive) {
             createAlarmJob(alarm);
+        }
 
         // Else, cancel its current running job
         else
             cancelAlarmJob(alarm);
 
+        // Todo : Remove debug code
         AlarmUtils.displayAlarm(alarm, "updateAlarmState");
     }
 
@@ -157,22 +154,34 @@ public class AlarmManager {
      * @param alarmDuration: New duration to be assigned to the alarm being updated
      */
     public void updateAlarm(PreciseConnectivityAlarm alarm, long executionTime, long alarmDuration) {
+
         // Update the alarm object
-        alarm.setExecuteTimeInMils(executionTime);
-        alarm.setDuration(alarmDuration);
+        if (executionTime != alarm.getExecuteTimeInMils()) {
+            alarm.setStartTime(executionTime);
+            alarm.setExecuteTimeInMils(AlarmUtils.getAlarmExecutionTime(alarm));
+        } else
+            alarm.setDuration(alarmDuration);
 
         // Update the alarm in the database
-        alarmSqlHelper.updateAlarm(alarm.getAlarmId(), executionTime, alarmDuration);
+        alarmSqlHelper.updateAlarm(alarm.getAlarmId(),
+                alarm.getStartTime(),
+                alarm.getExecuteTimeInMils(),
+                alarm.getDuration());
 
-        // Create new job for the alarm
-        createAlarmJob(alarmSqlHelper.getAlarmById(alarm.getAlarmId()));
+        /**
+         * Create new job for the alarm
+         * 'activate' indicates whether to enable or disable the connections in the job
+         * If executionTime = startTime + duration, it means the next job is
+         * supposed to re-enable the connections, this is why the value of 'activate'
+         * becomes true.
+         */
+        boolean activate = false;
+        if (alarm.getExecuteTimeInMils() == alarm.getStartTime() + alarm.getDuration())
+            activate = true;
+        createAlarmJob(alarm, activate);
 
+        // Todo : REMOVE DEBUG CODE
         AlarmUtils.displayAlarm(alarm, "updateAlarm");
-    }
-
-    public void updateAlarmStartTime(PreciseConnectivityAlarm alarm, long newStartTime) {
-        alarm.setStartTime(newStartTime);
-        alarmSqlHelper.updateAlarmStartTime(alarm.getAlarmId(), newStartTime);
     }
 
     /**
@@ -184,14 +193,20 @@ public class AlarmManager {
      */
     public void updateAlarmConnection(int alarmId, Connection selectedConnection, boolean isActive) {
         PreciseConnectivityAlarm alarm = alarmSqlHelper.getAlarmById(alarmId);
+
+        // Update the alarm object
         if (isActive)
             alarm.getConnections().add(selectedConnection);
         else
             alarm.getConnections().remove(selectedConnection);
 
+        // Update the alarm in the database
         alarmSqlHelper.updateAlarmConnection(alarmId, selectedConnection, isActive);
-        createAlarmJob(alarmSqlHelper.getAlarmById(alarmId));
 
+        // Create a new job
+        createAlarmJob(alarm);
+
+        // Todo: Remove debug code
         AlarmUtils.displayAlarm(alarm, "updateAlarmConnection");
     }
 
@@ -204,16 +219,24 @@ public class AlarmManager {
      */
     public void updateAlarmDay(int alarmId, int selectedDay, boolean isActive) {
         PreciseConnectivityAlarm alarm = alarmSqlHelper.getAlarmById(alarmId);
+
+        // Update the alarm object
         if (isActive)
             alarm.getDays().add(selectedDay);
         else
             alarm.getDays().remove(Integer.valueOf(selectedDay));
 
+        // Update the alarm in the database
         alarmSqlHelper.updateAlarmDay(alarmId, selectedDay, isActive);
+
+        // Create a new job
         createAlarmJob(alarm);
 
+        // Todo : Remove debug code
         AlarmUtils.displayAlarm(alarm, "updateAlarmDay");
     }
+
+    // Todo : Review the handling conflicts logic
 
     /**
      * Method that handles conflicts between alarms
@@ -228,24 +251,24 @@ public class AlarmManager {
      * @return: Id of the conflicting alarm's id if a conflict is found, -1 otherwise
      */
     public int handleAlarmConflicts(PreciseConnectivityAlarm alarm, Connection connection) {
-        if (alarmSqlHelper != null) {
-
-            // Get a list of all precise active alarms from the database
-            List<PreciseConnectivityAlarm> activeAlarms = alarmSqlHelper.readAllAlarms(null, null);
-
-            /**
-             * Loop on the elements of the alarm
-             * The alarm passed on as an argument is compared with each element of the list
-             * If a conflict is found, the conflicting alarm's Id is returned
-             */
-            for (PreciseConnectivityAlarm activeAlarm : activeAlarms) {
-
-                // If the two alarms are in conflict, return the conflicting alarm's Id
-                if (alarm.getAlarmId() != activeAlarm.getAlarmId())
-                    if (alarm.inConflictWithAlarm(activeAlarm, connection) != -1)
-                        return activeAlarm.getAlarmId();
-            }
-        }
+//        if (alarmSqlHelper != null) {
+//
+//            // Get a list of all precise active alarms from the database
+//            List<PreciseConnectivityAlarm> activeAlarms = alarmSqlHelper.readAllActiveAlarms();
+//
+//            /**
+//             * Loop on the elements of the alarm
+//             * The alarm passed on as an argument is compared with each element of the list
+//             * If a conflict is found, the conflicting alarm's Id is returned
+//             */
+//            for (PreciseConnectivityAlarm activeAlarm : activeAlarms) {
+//
+//                // If the two alarms are in conflict, return the conflicting alarm's Id
+//                if (alarm.getAlarmId() != activeAlarm.getAlarmId())
+//                    if (alarm.inConflictWithAlarm(activeAlarm, connection))
+//                        return activeAlarm.getAlarmId();
+//            }
+//        }
 
         // At this point there aren't any conflicts, -1 is returned
         return -1;
