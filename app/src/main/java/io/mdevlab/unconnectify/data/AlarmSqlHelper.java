@@ -66,7 +66,6 @@ public class AlarmSqlHelper extends SQLiteOpenHelper {
      Table Create Statements for table alarm
      alarm(id, isactive, executiontimeinmils)
         */
-
     private static final String CREATE_TABLE_ALARM = "CREATE TABLE "
             + TABLE_ALARM + "("
             + KEY_ID + " INTEGER PRIMARY KEY  AUTOINCREMENT ,"
@@ -82,7 +81,6 @@ public class AlarmSqlHelper extends SQLiteOpenHelper {
      Table Create Statements for table alarm_days
      alarm_days(id, alarm_id, day_id)
       */
-
     private static final String CREATE_TABLE_ALARM_DAYS = "CREATE TABLE "
             + TABLE_ALARM_DAYS + "("
             + KEY_ALARM_ID + " INTEGER,"
@@ -93,7 +91,6 @@ public class AlarmSqlHelper extends SQLiteOpenHelper {
     Table Create Statements for table alarm_connections
         alarm_connections(id, alarm_id, connection_id)
         */
-
     private static final String CREATE_TABLE_ALARM_CONNECTIONS = "CREATE TABLE "
             + TABLE_ALARM_CONNECTIONS + "("
             + KEY_ALARM_ID + " INTEGER,"
@@ -105,7 +102,6 @@ public class AlarmSqlHelper extends SQLiteOpenHelper {
      *
      * @param context
      */
-
     public AlarmSqlHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
@@ -137,59 +133,66 @@ public class AlarmSqlHelper extends SQLiteOpenHelper {
     }
 
     /**
-     * This class create an alarm from PreciseConnectivityAlarmobject
-     * parse the object get all attributes an than create the object along with it's days and connections
+     * this method close the Database
+     */
+    public void closeDB() {
+        SQLiteDatabase db = this.getReadableDatabase();
+        if (db != null && db.isOpen())
+            db.close();
+    }
+
+    /**
+     * This class creates an alarm from a PreciseConnectivityAlarm object
+     * parses the object, gets all attributes and then creates the object
+     * along with its days and connections
      *
      * @param connectivityAlarm
      * @return the id of the inserted alarm returned by insert method of SQLiteDatabase class
      */
     public Long createAlarm(PreciseConnectivityAlarm connectivityAlarm) {
 
-        //get a writable instance of alarm db
+        // Get a writable instance of alarm db
         SQLiteDatabase db = this.getWritableDatabase();
 
         //get days and connections collections
         List<Connection> connections = connectivityAlarm.getConnections();
         List<Integer> days = connectivityAlarm.getDays();
 
-        // instantiate row to be inserted
+        // Instantiate row to be inserted
         ContentValues values = new ContentValues();
         values.put(ISACTIVE_COLUMN, String.valueOf(connectivityAlarm.isActive()));
-        values.put(CURRENTSTATE, String.valueOf(DEFAULT_CURRENTSTATE));
+        values.put(CURRENTSTATE, String.valueOf(connectivityAlarm.getCurrentState()));
         values.put(START_TIME_COLUMN, connectivityAlarm.getStartTime());
         values.put(EXECUTION_TIME_COLUMN, connectivityAlarm.getExecuteTimeInMils());
-        //update the current alarm update time value
         values.put(UPDATETIME, System.currentTimeMillis());
-        values.put(JOBID, NO_JOBID);
-        //put the duration value
+        values.put(JOBID, connectivityAlarm.getJobId());
         values.put(DURATION, connectivityAlarm.getDuration());
 
-        //insert row
+        // Insert row
         long alarmId = db.insert(TABLE_ALARM, null, values);
 
-        // insert tag_ids
-        for (long day_id : days) {
-            createAlarmDay(alarmId, day_id);
+        // Insert days
+        for (long day : days) {
+            createAlarmDay(alarmId, day);
         }
 
-        // insert tag_ids
-        for (Connection connection_id : connections) {
-            createAlarmConnection(alarmId, connection_id);
+        // Insert connections
+        for (Connection connection : connections) {
+            createAlarmConnection(alarmId, connection);
         }
 
         return alarmId;
-
-
     }
 
     /**
-     * This method add a row to alarm_connections table the connection attached to the alarm
+     * Method that adds a row to alarm_days table
+     * The day is attached to the alarm
      *
-     * @param alarmId       the alarm id attached to this connection
-     * @param connection_id the connection id attached to this alarm
+     * @param alarmId Alarm id of the alarm attached to this connection
+     * @param day     Day id attached to this alarm
      * @return
      */
-    private Long createAlarmConnection(long alarmId, Connection connection_id) {
+    private Long createAlarmDay(long alarmId, long day) {
 
         //get a writable instance of alarm db
         SQLiteDatabase db = this.getWritableDatabase();
@@ -197,31 +200,7 @@ public class AlarmSqlHelper extends SQLiteOpenHelper {
         // instantiate row to be inserted
         ContentValues values = new ContentValues();
         values.put(KEY_ALARM_ID, alarmId);
-        values.put(KEY_CONNECTION_ID, connection_id.getValue());
-
-        //insert row
-        long id = db.insert(TABLE_ALARM_CONNECTIONS, null, values);
-
-        //return alarm_connections KEY_ID
-        return id;
-    }
-
-    /**
-     * This method add a row to alarm_days table the day attached to the alarm
-     *
-     * @param alarmId the alarm id attached to this connection
-     * @param day_id  the day id attached to this alarm
-     * @return
-     */
-    private Long createAlarmDay(long alarmId, long day_id) {
-
-        //get a writable instance of alarm db
-        SQLiteDatabase db = this.getWritableDatabase();
-
-        // instantiate row to be inserted
-        ContentValues values = new ContentValues();
-        values.put(KEY_ALARM_ID, alarmId);
-        values.put(KEY_DAY_ID, day_id);
+        values.put(KEY_DAY_ID, day);
 
         //insert row
         long id = db.insert(TABLE_ALARM_DAYS, null, values);
@@ -231,7 +210,32 @@ public class AlarmSqlHelper extends SQLiteOpenHelper {
     }
 
     /**
-     * This method return all alarms within the specified selection
+     * Method that adds a row to alarm_connections table
+     * The connection is attached to the alarm
+     *
+     * @param alarmId    the alarm id attached to this connection
+     * @param connection the connection id attached to this alarm
+     * @return
+     */
+    private Long createAlarmConnection(long alarmId, Connection connection) {
+
+        //get a writable instance of alarm db
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        // instantiate row to be inserted
+        ContentValues values = new ContentValues();
+        values.put(KEY_ALARM_ID, alarmId);
+        values.put(KEY_CONNECTION_ID, connection.getValue());
+
+        //insert row
+        long id = db.insert(TABLE_ALARM_CONNECTIONS, null, values);
+
+        //return alarm_connections KEY_ID
+        return id;
+    }
+
+    /**
+     * This method returns all alarms within the specified selection
      * call example : readAllAlarms(ISACTIVE_COLUMN +" = ?", new String[] {"true"});
      *
      * @param selection     the selection clause
@@ -267,42 +271,46 @@ public class AlarmSqlHelper extends SQLiteOpenHelper {
     }
 
     /**
-     * This function build PreciseConnectivityAlarm from a cursor
+     * This function builds a PreciseConnectivityAlarm object from a cursor
      *
      * @param cursor the cursor from we will retrieve  PreciseConnectivityAlarm data
      * @return PreciseConnectivityAlarm created from the given cursor
      */
     public PreciseConnectivityAlarm getConnectivityAlarmFromCursor(Cursor cursor) {
-        //the preciseConnectivityAlarm to be returned
-        PreciseConnectivityAlarm preciseConnectivityAlarm = new PreciseConnectivityAlarm();
-        //get the alarm id
-        int alarmid = cursor.getInt((cursor.getColumnIndex(KEY_ID)));
 
-        //instanciate the preciseConnectivityAlarm with setters methods
+        // The preciseConnectivityAlarm to be returned
+        PreciseConnectivityAlarm preciseConnectivityAlarm = new PreciseConnectivityAlarm();
+
+        // Get the alarm id
+        int alarmId = cursor.getInt((cursor.getColumnIndex(KEY_ID)));
+
+        // Instantiate the alarm with its setter methods
         preciseConnectivityAlarm.setAlarmId(cursor.getInt((cursor.getColumnIndex(KEY_ID))));
         preciseConnectivityAlarm.setStartTime(cursor.getLong((cursor.getColumnIndex(START_TIME_COLUMN))));
         preciseConnectivityAlarm.setExecuteTimeInMils(cursor.getLong((cursor.getColumnIndex(EXECUTION_TIME_COLUMN))));
         preciseConnectivityAlarm.setActive(Boolean.parseBoolean(cursor.getString((cursor.getColumnIndex(ISACTIVE_COLUMN)))));
-        preciseConnectivityAlarm.setCurrentlyOn(Boolean.parseBoolean(cursor.getString((cursor.getColumnIndex(CURRENTSTATE)))));
+        preciseConnectivityAlarm.setCurrentState(Boolean.parseBoolean(cursor.getString((cursor.getColumnIndex(CURRENTSTATE)))));
         preciseConnectivityAlarm.setDuration(cursor.getInt((cursor.getColumnIndex(DURATION))));
         preciseConnectivityAlarm.setLastUpdate(cursor.getInt((cursor.getColumnIndex(UPDATETIME))));
         preciseConnectivityAlarm.setJobId(cursor.getInt((cursor.getColumnIndex(JOBID))));
 
-                /*Fill days and connections using respectively getAllDaysOfAlarm getAllConnectionOfAlarm the helper methods
-                * to get the alarms days and connections
-                */
-        List<Integer> days = getAllDaysOfAlarm(alarmid);
-        List<Connection> connections = getAllConnectionOfAlarm(alarmid);
+        /**
+         * Fill days and connections using respectively getAllDaysOfAlarm getAllConnectionOfAlarm the helper methods
+         * to get the alarms days and connections
+         */
+        List<Integer> days = getAllDaysOfAlarm(alarmId);
+        List<Connection> connections = getAllConnectionOfAlarm(alarmId);
 
-        //set days and connections list
+        // Set days and connections list
         preciseConnectivityAlarm.setConnections(connections);
         preciseConnectivityAlarm.setDays(days);
+
         return preciseConnectivityAlarm;
     }
 
     /**
-     * This method call readAllAlarms by specifying the selection and the selectino arguments
-     * readAllAlarms return the list of all active alarms
+     * This method calls readAllAlarms by specifying the selection and the selection arguments
+     * It returns a list of all active alarms
      *
      * @return A list of all active Alarms
      */
@@ -311,7 +319,7 @@ public class AlarmSqlHelper extends SQLiteOpenHelper {
     }
 
     /**
-     * Get all days on which the alarm will be  repeated
+     * Get all days on which the alarm will be repeated
      *
      * @param id of the alarm
      * @return return a list  of Days  of the given id
@@ -335,8 +343,7 @@ public class AlarmSqlHelper extends SQLiteOpenHelper {
     }
 
     /**
-     * This function return a list of connection related to this alarm and
-     * Get all Connection on which the alarm will apply the alarm to
+     * This function returns a list of the connections handled by an alarm
      *
      * @param id of the alarm
      * @return return a list  of Connection of the given id
@@ -359,7 +366,6 @@ public class AlarmSqlHelper extends SQLiteOpenHelper {
         return listOfConnections;
     }
 
-
     /**
      * * Deleting single Alarm by id
      *
@@ -375,19 +381,21 @@ public class AlarmSqlHelper extends SQLiteOpenHelper {
     }
 
     /**
-     * Update the executionTime and alarmDuration   of the given alarm
+     * Update the executionTime and alarmDuration of the given alarm
      *
      * @param alarmId       the alarm id to be updated
      * @param executionTime the executionTime value to be inserted
      * @param alarmDuration the alarmDuration value to be inserted
      * @return
      */
-    public int updateAlarm(int alarmId, long executionTime, long alarmDuration) {
+    public int updateAlarm(int alarmId, long startTime, long executionTime, long alarmDuration) {
+
         //Get the writable DB
         SQLiteDatabase db = this.getWritableDatabase();
 
-        //values to be updated EXECUTION_TIME_COLUMN,DURATION,UPDATETIME
+        // Values to be updated EXECUTION_TIME_COLUMN,DURATION,UPDATETIME
         ContentValues values = new ContentValues();
+        values.put(START_TIME_COLUMN, startTime);
         values.put(EXECUTION_TIME_COLUMN, executionTime);
         values.put(DURATION, alarmDuration);
         values.put(UPDATETIME, System.currentTimeMillis());
@@ -398,38 +406,18 @@ public class AlarmSqlHelper extends SQLiteOpenHelper {
     }
 
     /**
-     * Method that updates the start time of an alarm
-     *
-     * @param alarmId:      Alarm id of the alarm to update
-     * @param newStartTime: New value of the start time
-     * @return
-     */
-    public int updateAlarmStartTime(int alarmId, long newStartTime) {
-        //Get the writable DB
-        SQLiteDatabase db = this.getWritableDatabase();
-
-        //values to be updated: Start time
-        ContentValues values = new ContentValues();
-        values.put(START_TIME_COLUMN, newStartTime);
-        values.put(UPDATETIME, System.currentTimeMillis());
-
-        // updating the row
-        return db.update(TABLE_ALARM, values, KEY_ID + " = ?",
-                new String[]{String.valueOf(alarmId)});
-    }
-
-    /**
-     * Update the Jobid of the given alarm
+     * Update the JobId of the given alarm
      *
      * @param alarmId the alarm id to be updated
-     * @param jobId   the Jobid value to be inserted
+     * @param jobId   the JobId value to be inserted
      * @return
      */
     public int updateAlarmJob(int alarmId, int jobId) {
-        //Get the writable DB
+
+        // Get the writable DB
         SQLiteDatabase db = this.getWritableDatabase();
 
-        //values to be updated JOBID
+        // Values to be updated: JobId
         ContentValues values = new ContentValues();
         values.put(JOBID, jobId);
         values.put(UPDATETIME, System.currentTimeMillis());
@@ -437,7 +425,6 @@ public class AlarmSqlHelper extends SQLiteOpenHelper {
         // updating the row
         return db.update(TABLE_ALARM, values, KEY_ID + " = ?",
                 new String[]{String.valueOf(alarmId)});
-
     }
 
     /**
@@ -448,14 +435,22 @@ public class AlarmSqlHelper extends SQLiteOpenHelper {
      * @param isActive           status of Connection  if true create the connection row else delete the row
      */
     public void updateAlarmConnection(int alarmId, Connection selectedConnection, boolean isActive) {
+
+        // Get the writable DB
         SQLiteDatabase db = this.getWritableDatabase();
+
+        // Add the newly activated connection to the connections list of the alarm
         if (isActive) {
             createAlarmConnection(alarmId, selectedConnection);
-        } else {
+        }
+
+        // Delete the newly deactivated connection from the connections list of the alarm
+        else {
             db.delete(TABLE_ALARM_CONNECTIONS, KEY_ALARM_ID + " = ? AND " + KEY_CONNECTION_ID + "= ?",
                     new String[]{String.valueOf(alarmId), String.valueOf(selectedConnection.getValue())});
         }
-        //Update the attached alarm
+
+        // Update the 'last updated time' of the alarm
         alarmUpdated(alarmId);
     }
 
@@ -468,47 +463,42 @@ public class AlarmSqlHelper extends SQLiteOpenHelper {
      */
     public void updateAlarmDay(int alarmId, int selectedDay, boolean isActive) {
 
+        // Get the writable DB
         SQLiteDatabase db = this.getWritableDatabase();
+
+        // Add the newly selected day to the days list of the alarm
         if (isActive) {
             createAlarmDay(alarmId, selectedDay);
+        }
 
-        } else {
-            int i = db.delete(TABLE_ALARM_DAYS, KEY_ALARM_ID + " = ? AND " + KEY_DAY_ID + "= ?",
+        // Delete the newly unselected day from the days list of the alarm
+        else {
+            db.delete(TABLE_ALARM_DAYS, KEY_ALARM_ID + " = ? AND " + KEY_DAY_ID + "= ?",
                     new String[]{String.valueOf(alarmId), String.valueOf(selectedDay)});
 
         }
-        //Update the attached alarm
+
+        // Update the 'last updated time' of the alarm
         alarmUpdated(alarmId);
 
     }
 
     /**
-     * this method close the Database
-     */
-    public void closeDB() {
-        SQLiteDatabase db = this.getReadableDatabase();
-        if (db != null && db.isOpen())
-            db.close();
-    }
-
-    /**
-     * This method return the next Alarm based on  execution time and if the alarm is active
+     * This method returns the next Alarm based on execution time and if the alarm is active
      *
      * @return the next alarm
      */
     public PreciseConnectivityAlarm readNextAlarm() {
 
         SQLiteDatabase db = this.getWritableDatabase();
-        Cursor cursor;
-        PreciseConnectivityAlarm preciseConnectivityAlarm;
 
-        cursor = db.rawQuery("SELECT * FROM " + TABLE_ALARM + " WHERE " + ISACTIVE_COLUMN + "=? ORDER BY " + EXECUTION_TIME_COLUMN + " ASC, " + UPDATETIME + " DESC",
+        // Todo : Query seems wrong, lastUpdateTime isn't a parameter to take into consideration
+        Cursor cursor = db.rawQuery("SELECT * FROM " + TABLE_ALARM + " WHERE " + ISACTIVE_COLUMN + "=? ORDER BY " + EXECUTION_TIME_COLUMN + " ASC, " + UPDATETIME + " DESC",
                 new String[]{"true"});
+
         if (cursor.getCount() > 0) {
             cursor.moveToFirst();
-            //create the instance of preciseConnectivityAlarm form getConnectivityAlarmFromCursor method
-            preciseConnectivityAlarm = getConnectivityAlarmFromCursor(cursor);
-            return preciseConnectivityAlarm;
+            return getConnectivityAlarmFromCursor(cursor);
         }
 
         return null;
@@ -522,7 +512,7 @@ public class AlarmSqlHelper extends SQLiteOpenHelper {
      * @return the alarm
      */
     public PreciseConnectivityAlarm getAlarmByJobId(int jobId) {
-        return getAlarmByIds(jobId, "SELECT * FROM " + TABLE_ALARM + " WHERE " + JOBID + "=? ");
+        return getAlarmById(jobId, "SELECT * FROM " + TABLE_ALARM + " WHERE " + JOBID + "=? ");
     }
 
     /**
@@ -532,43 +522,40 @@ public class AlarmSqlHelper extends SQLiteOpenHelper {
      * @param id each alarm is associated to an id
      */
     public PreciseConnectivityAlarm getAlarmById(int id) {
-        return getAlarmByIds(id, "SELECT * FROM " + TABLE_ALARM + " WHERE " + KEY_ID + "=? ");
+        return getAlarmById(id, "SELECT * FROM " + TABLE_ALARM + " WHERE " + KEY_ID + "=? ");
     }
 
-
     /**
-     * A helper for retrieving a row by the specific id  ,this function is used in both getAlarmByJobId and getAlarmById
+     * A helper for retrieving a row by the specific id
+     * This function is used in both getAlarmByJobId and getAlarmById
      *
      * @param id
      * @param Query
      * @return
      */
-    private PreciseConnectivityAlarm getAlarmByIds(int id, String Query) {
+    private PreciseConnectivityAlarm getAlarmById(int id, String Query) {
         SQLiteDatabase db = this.getWritableDatabase();
 
-        Cursor cursor;
-        PreciseConnectivityAlarm preciseConnectivityAlarm;
-        cursor = db.rawQuery(Query,
+        Cursor cursor = db.rawQuery(Query,
                 new String[]{String.valueOf(id)});
+
         if (cursor.getCount() > 0) {
             cursor.moveToFirst();
-            //create the instance of preciseConnectivityAlarm form getConnectivityAlarmFromCursor method
-            preciseConnectivityAlarm = getConnectivityAlarmFromCursor(cursor);
-            return preciseConnectivityAlarm;
+            return getConnectivityAlarmFromCursor(cursor);
         }
 
         return null;
-
     }
 
-
     /**
-     * this method is called specifically to notice the alarm row if any change happened to this alarm
+     * Method called when an alarm is updated
+     * It sets the 'updateTime' of the alarm to the current System time
      *
      * @param alarmId alarm id to notice
      * @return number of rows updated
      */
     private int alarmUpdated(int alarmId) {
+
         //Get the writable DB
         SQLiteDatabase db = this.getWritableDatabase();
 
@@ -580,7 +567,6 @@ public class AlarmSqlHelper extends SQLiteOpenHelper {
         // updating the row
         return db.update(TABLE_ALARM, values, KEY_ID + " = ?",
                 new String[]{String.valueOf(alarmId)});
-
     }
 
     /**
@@ -588,23 +574,20 @@ public class AlarmSqlHelper extends SQLiteOpenHelper {
      *
      * @param alarmId  alarm concerned
      * @param isActive the state of current Connection whether true(ON) or false(OFF)
-     * @return the number of  row affected normally 1 or 0
+     * @return the number of rows affected normally 1 or 0
      */
     public int updateAlarmCurrentState(int alarmId, boolean isActive) {
-        //Get the writable DB
+
+        // Get the writable DB
         SQLiteDatabase db = this.getWritableDatabase();
 
         ContentValues values = new ContentValues();
         values.put(ISACTIVE_COLUMN, String.valueOf(isActive));
+        values.put(CURRENTSTATE, String.valueOf(isActive));
         values.put(UPDATETIME, System.currentTimeMillis());
 
         // updating the row
         return db.update(TABLE_ALARM, values, KEY_ID + " = ?",
                 new String[]{String.valueOf(alarmId)});
-    }
-
-    //TODO implement this function to allow querying the DB by id
-    public PreciseConnectivityAlarm getAlarm() {
-        return null;
     }
 }

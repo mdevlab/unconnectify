@@ -69,16 +69,6 @@ public class MainActivity extends AppCompatActivity implements TimePickerDialog.
         mAlarmsCount.setText(alarms.size() + " alarms");
     }
 
-
-    /**
-     * Show the time picker based on TimePickerFragment
-     */
-    private void showTimePicker() {
-        TimePickerFragment timePickerFragment = new TimePickerFragment();
-        timePickerFragment.setListener(this);
-        timePickerFragment.show(getSupportFragmentManager(), "time picker");
-    }
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -99,6 +89,15 @@ public class MainActivity extends AppCompatActivity implements TimePickerDialog.
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    /**
+     * Show the time picker based on TimePickerFragment
+     */
+    private void showTimePicker() {
+        TimePickerFragment timePickerFragment = new TimePickerFragment();
+        timePickerFragment.setListener(this);
+        timePickerFragment.show(getSupportFragmentManager(), "time picker");
     }
 
 

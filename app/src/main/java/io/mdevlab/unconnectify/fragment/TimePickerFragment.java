@@ -18,7 +18,7 @@ import io.mdevlab.unconnectify.utils.Constants;
 
 
 /**
- * this function is the main class for displaying the time picker fragement
+ * this function is the main class for displaying the time picker fragment
  */
 public class TimePickerFragment extends AppCompatDialogFragment {
 
@@ -59,7 +59,7 @@ public class TimePickerFragment extends AppCompatDialogFragment {
     }
 
     /**
-     * Set the TimePickerListener of  DialogFragment
+     * Set the TimePickerListener of DialogFragment
      *
      * @param mListener listener
      */

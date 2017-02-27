@@ -52,7 +52,7 @@ public class PreciseConnectivityAlarm {
     // Boolean defining the current state of connection within the Alarm
     //if True then ON
     //if False then OFF
-    protected boolean mCurrentlyOn;
+    protected boolean mCurrentState;
 
     // Date of last update to the alarm
     private long mLastUpdate;
@@ -78,11 +78,12 @@ public class PreciseConnectivityAlarm {
      */
     public PreciseConnectivityAlarm(long mExecutionTimeInMils, long mDuration, List<Integer> mDays, List<Connection> mConnections) {
         this.mStartTime = mExecutionTimeInMils;
-        this.mExecutionTimeInMils = mExecutionTimeInMils;
         this.mDuration = mDuration;
         this.mDays = mDays;
         this.mConnections = mConnections;
         this.isActive = true;
+        this.mCurrentState = false;
+        this.mExecutionTimeInMils = AlarmUtils.getAlarmExecutionTime(this);
     }
 
     /**
@@ -136,11 +137,12 @@ public class PreciseConnectivityAlarm {
      */
     public PreciseConnectivityAlarm(long mExecutionTimeInMils, int mDuration) {
         this.mStartTime = mExecutionTimeInMils;
-        this.mExecutionTimeInMils = mExecutionTimeInMils;
         this.mDuration = mDuration;
         this.mDays = DateUtils.getToday();
         this.mConnections = AlarmUtils.getDefaultConnection();
         this.isActive = true;
+        this.mCurrentState = false;
+        this.mExecutionTimeInMils = AlarmUtils.getAlarmExecutionTime(this);
     }
 
     /**
@@ -152,22 +154,22 @@ public class PreciseConnectivityAlarm {
      * @return: Id of the alarm in conflict with the current alarm, -1 if no
      * conflict found
      */
-    public int inConflictWithAlarm(PreciseConnectivityAlarm alarm, Connection connection) {
+    public boolean inConflictWithAlarm(PreciseConnectivityAlarm alarm, Connection connection) {
         if (alarm != null) {
 
             // Determine if both alarms handle one or more same connection(s)
             if (hasSameConnectivity(connection))
-                return alarm.getAlarmId();
+                return true;
 
             // Determine if both alarms are set to the same day(s)
             if (isLaunchedOnSameDay(alarm.getDays()))
-                return alarm.getAlarmId();
+                return true;
 
             // Determine if both alarms function in the same period
             if (isExecutedInTheSamePeriod(alarm.getExecuteTimeInMils(), alarm.getDuration()))
-                return alarm.getAlarmId();
+                return true;
         }
-        return -1;
+        return false;
     }
 
     /**
@@ -280,12 +282,12 @@ public class PreciseConnectivityAlarm {
     }
 
 
-    public boolean isCurrentlyOn() {
-        return mCurrentlyOn;
+    public boolean getCurrentState() {
+        return mCurrentState;
     }
 
-    public void setCurrentlyOn(boolean currentState) {
-        this.mCurrentlyOn = currentState;
+    public void setCurrentState(boolean currentState) {
+        this.mCurrentState = currentState;
     }
 
     public long getLastUpdate() {
@@ -307,13 +309,13 @@ public class PreciseConnectivityAlarm {
     /**
      * Method that returns the last connection of the current alarm
      * The chain of connections is: Wifi -> Hotspot -> Bluetooth
-     * So the last connection would be Bluetooth is the alarm handles bluetooth,
+     * So the last connection would be Bluetooth if the alarm handles bluetooth,
      * if not the last connection would be Hotspot it the alarm handles
-     * Bluetooth, else the last connection is Wifi.
+     * hotspot, else the last connection is Wifi.
      *
      * @return
      */
-    public Connection getLastConnectionOfAlarm() {
+    public Connection getLastConnection() {
         if (mConnections.contains(Connection.BLUETOOTH))
             return Connection.BLUETOOTH;
 
@@ -321,5 +323,24 @@ public class PreciseConnectivityAlarm {
             return Connection.HOTSPOT;
 
         return Connection.WIFI;
+    }
+
+    /**
+     * Method that returns the first connection of the current alarm
+     * The chain of connections is: Wifi -> Hotspot -> Bluetooth
+     * So the first connection would be Wifi if the alarm handles wifi,
+     * if not the first connection would be Hotspot it the alarm handles
+     * hotspot, else the first connection is Bluetooth.
+     *
+     * @return
+     */
+    public Connection getFirstConnection() {
+        if (mConnections.contains(Connection.WIFI))
+            return Connection.WIFI;
+
+        if (mConnections.contains(Connection.HOTSPOT))
+            return Connection.HOTSPOT;
+
+        return Connection.BLUETOOTH;
     }
 }

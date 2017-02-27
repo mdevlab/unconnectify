@@ -62,7 +62,6 @@ public class AlarmAdapter extends RecyclerView.Adapter<AlarmViewHolder> {
      * @param preciseConnectivityAlarm
      */
     public void addAlarm(PreciseConnectivityAlarm preciseConnectivityAlarm) {
-        //TODO add the alarm to the top of the list
         alarms.add(0, preciseConnectivityAlarm);
         this.notifyDataSetChanged();
     }
