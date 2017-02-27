@@ -7,6 +7,7 @@ import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -104,6 +105,10 @@ public class MainActivity extends AppCompatActivity implements TimePickerDialog.
     @Override
     public void onTimeSet(TimePicker timePicker, int hourOfDay, int minute) {
 
+        //Verify if The timepicker is shown
+        //This is a know Bug https://code.google.com/p/android/issues/detail?id=34833
+        if (timePicker.isShown()) {
+
         /**
          * If 'minute' is between 0 and 9 it only has one digit,
          * so a '0' is added to the beginning of it
@@ -112,6 +117,7 @@ public class MainActivity extends AppCompatActivity implements TimePickerDialog.
 
         // New execution time
         long newExecutionTime = DateUtils.getLongFromTime(hourOfDay + ":" + s_minute);
+
 
         //Create the default alarm
         PreciseConnectivityAlarm preciseConnectivityAlarm = new PreciseConnectivityAlarm(newExecutionTime);
@@ -125,6 +131,7 @@ public class MainActivity extends AppCompatActivity implements TimePickerDialog.
         mAlarmAdapter.addAlarm(preciseConnectivityAlarm);
 
         setAlarmsCount();
+        }
     }
 
     /**
