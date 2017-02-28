@@ -501,8 +501,9 @@ public class AlarmSqlHelper extends SQLiteOpenHelper {
          * where ISACTIVE_COLUMN = “true”
          * order by EXACT_EXECUTION_TIME ASC
          */
-        Cursor cursor = db.rawQuery("SELECT " + KEY_ID + ", " + CURRENTSTATE + ", " + START_TIME_COLUMN + ", " + EXECUTION_TIME_COLUMN + ", " +
-                        DURATION + ", " + JOBID + ", " + UPDATETIME + ", (" + UPDATETIME + " + " + EXECUTION_TIME_COLUMN + ") AS EXACT_EXECUTION_TIME" +
+        Cursor cursor = db.rawQuery("SELECT " + KEY_ID + ", " + ISACTIVE_COLUMN + ", " + START_TIME_COLUMN + ", " + CURRENTSTATE + ", " + START_TIME_COLUMN + ", " +
+                        EXECUTION_TIME_COLUMN + ", " + DURATION + ", " + JOBID + ", " + UPDATETIME + ", " + CURRENTSTATE + ", (" + UPDATETIME + " + " +
+                        EXECUTION_TIME_COLUMN + ") AS EXACT_EXECUTION_TIME" +
                         " FROM " + TABLE_ALARM +
                         " WHERE " + ISACTIVE_COLUMN + "=?" +
                         " ORDER BY EXACT_EXECUTION_TIME ASC",
