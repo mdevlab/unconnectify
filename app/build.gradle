@@ -54,12 +54,15 @@ dependencies {
     // Job scheduling
     compile 'com.evernote:android-job:1.1.5'
 
+    // Once library
+    compile "com.jonathanfinerty.once:once:1.2.1"
+
+    // TapTarget library
+    compile "uk.co.samuelwall:material-tap-target-prompt:1.8.3"
+
     // Unit tests
     testCompile 'junit:junit:4.12'
     compile('com.crashlytics.sdk.android:crashlytics:2.6.6@aar') {
         transitive = true;
     }
-
-    // TapTargetView for the App onboarding  this repo implement the  tap targets from google material design guidelines
-    compile 'com.getkeepsafe.taptargetview:taptargetview:1.8.0'
 }

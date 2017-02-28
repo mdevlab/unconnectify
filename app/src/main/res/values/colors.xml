@@ -20,9 +20,7 @@
 
 
     <!--onboarding Colors-->
-
-    <color name="outercirclecolor">#414141</color>
-    <color name="descriptiontextcolor">#ffffff</color>
+    <color name="onboarding_color">@android:color/black</color>
 
 
 </resources>

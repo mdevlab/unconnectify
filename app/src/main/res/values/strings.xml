@@ -2,9 +2,19 @@
     <string name="app_name">Unconnectify</string>
     <string name="action_add_alarm">Add alarm</string>
 
+    <!--Onboarding-->
+    <string name="feature_discovery_create_alarm_title">Create an alarm</string>
+    <string name="feature_discovery_create_alarm_body">Create an alarm by simply clicking on this button and setting when it should go off.</string>
 
-    <!--Onboarding Strings-->
-    <string name="add_alarm">Add an alarm</string>
-    <string name="add_alarm_description">Click on this button to add an alarm each time you want</string>
-    <string name="preference_onboarding_file">io.mdevlab.unconnectify.PREFERENCE_ONBOARDING</string>
+    <string name="feature_discovery_start_time_title">Disabling connections</string>
+    <string name="feature_discovery_start_time_body">Choose the time you want your alarm to disable the selected connections.</string>
+
+    <string name="feature_discovery_end_time_title">Re-enabling connections</string>
+    <string name="feature_discovery_end_time_body">If you want your alarm to re-enable your connections after it had disabled them, simply select when you want that to happen. If however you want your alarm to only disable connections, deactivate this option.</string>
+
+    <string name="feature_discovery_connection_title">Connections</string>
+    <string name="feature_discovery_connection_body">Choose the connections you want your alarm to handle disabling and re-enabling. You can choose among 3 options: Wifi, Hotspot and Bluetooth.</string>
+
+    <string name="feature_discovery_day_title">Alarm frequency</string>
+    <string name="feature_discovery_day_body">Choose how frequently you want your alarm to go off by simply selecting the days of the week your alarm should be scheduled on.</string>
 </resources>

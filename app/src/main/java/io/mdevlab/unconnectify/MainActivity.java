@@ -2,7 +2,6 @@ package io.mdevlab.unconnectify;
 
 import android.app.TimePickerDialog;
 import android.content.SharedPreferences;
-import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
@@ -14,10 +13,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.TimePicker;
-import android.widget.Toast;
-
-import com.getkeepsafe.taptargetview.TapTarget;
-import com.getkeepsafe.taptargetview.TapTargetView;
 
 import java.util.List;
 
@@ -30,7 +25,7 @@ import io.mdevlab.unconnectify.data.AlarmSqlHelper;
 import io.mdevlab.unconnectify.fragment.TimePickerFragment;
 import io.mdevlab.unconnectify.utils.DateUtils;
 import io.mdevlab.unconnectify.utils.DialogUtils;
-import io.mdevlab.unconnectify.utils.SharedPreferenceUtils;
+import io.mdevlab.unconnectify.utils.FeatureDiscovery;
 
 public class MainActivity extends AppCompatActivity implements TimePickerDialog.OnTimeSetListener {
     public static final String TAG = MainActivity.class.getSimpleName();
@@ -77,12 +72,6 @@ public class MainActivity extends AppCompatActivity implements TimePickerDialog.
         //Alarms counts textview
         mAlarmsCount = (TextView) findViewById(R.id.alarms_count);
         mAlarmsCount.setText(alarms.size() + " alarms");
-
-        //Shared preference for storing the onboarding Status
-        onboardingSharedPreference = SharedPreferenceUtils.getTheSharedPreference(MainActivity.this,getString(R.string.preference_onboarding_file));
-
-
-        addAlarmTarget();
     }
 
 
@@ -90,38 +79,10 @@ public class MainActivity extends AppCompatActivity implements TimePickerDialog.
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_main, menu);
+        MenuItem createAlarm = menu.findItem(R.id.action_add_alarm);
+        if (createAlarm != null)
+            FeatureDiscovery.getInstance().createAlarmFeatureDiscovery(MainActivity.this, findViewById(R.id.action_add_alarm));
         return true;
-    }
-
-
-    public void addAlarmTarget() {
-        TapTargetView.showFor(this,               // `this` is an Activity
-                TapTarget.forToolbarMenuItem(mToolbar,R.id.action_add_alarm, getString(R.string.add_alarm),getString(R.string.add_alarm_description))
-                        // All options below are optional
-                        .outerCircleColor(R.color.outercirclecolor)      // Specify a color for the outer circle
-                        .targetCircleColor(android.R.color.white)   // Specify a color for the target circle
-                        .titleTextSize(20)                  // Specify the size (in sp) of the title text
-                        .titleTextColor(android.R.color.white)      // Specify the color of the title text
-                        .descriptionTextSize(15)            // Specify the size (in sp) of the description text
-                        .descriptionTextColor(R.color.descriptiontextcolor)  // Specify the color of the description text
-                        .textColor(R.color.descriptiontextcolor)            // Specify a color for both the title and description text
-                        .textTypeface(Typeface.SANS_SERIF)  // Specify a typeface for the text
-                        .dimColor(android.R.color.background_dark)            // If set, will dim behind the view with 30% opacity of the given color
-                        .drawShadow(true)                   // Whether to draw a drop shadow or not
-                        .cancelable(false)                  // Whether tapping outside the outer circle dismisses the view
-                        .tintTarget(true)                   // Whether to tint the target view's color
-                        .transparentTarget(false)           // Specify whether the target is transparent (displays the content underneath)
-                        // Specify a custom drawable to draw as the target
-                        .targetRadius(60),                  // Specify the target radius (in dp)
-                new TapTargetView.Listener() {          // The listener can listen for regular clicks, long clicks or cancels
-                    @Override
-                    public void onTargetClick(TapTargetView view) {
-                        super.onTargetClick(view);      // This call is optional
-                        showTimePicker();
-                    }
-                });
-
-
     }
 
     @Override
@@ -176,10 +137,6 @@ public class MainActivity extends AppCompatActivity implements TimePickerDialog.
             preciseConnectivityAlarm.setAlarmId((int) alarmId);
 
             mAlarmAdapter.addAlarm(preciseConnectivityAlarm);
-
-
-
-
 
             setAlarmsCount();
         }
