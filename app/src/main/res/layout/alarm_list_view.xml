@@ -34,13 +34,13 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:background="@android:color/transparent"
+                android:checked="false"
                 android:textAllCaps="true"
                 android:textColor="@android:color/white"
                 android:textOff="OFF"
                 android:textOn="ON"
                 android:textSize="48sp"
-                android:textStyle="bold"
-                android:checked="false"/>
+                android:textStyle="bold" />
 
         </LinearLayout>
 
@@ -86,7 +86,6 @@
                 android:layout_height="match_parent"
                 android:background="@color/color_10"
                 android:orientation="vertical"
-                android:paddingBottom="8dp"
                 android:paddingTop="8dp">
 
                 <!-- Times -->
@@ -128,9 +127,11 @@
                 <!-- Connections-->
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="35dp"
-                    android:orientation="horizontal">
-
+                    android:layout_height="36dp"
+                    android:gravity="center"
+                    android:orientation="horizontal"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginBottom="8dp">
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -145,8 +146,8 @@
                         <!--Wifi-->
                         <ToggleButton
                             android:id="@+id/wifi"
-                            android:layout_width="35dp"
-                            android:layout_height="35dp"
+                            android:layout_width="36dp"
+                            android:layout_height="36dp"
                             android:layout_gravity="center"
                             android:background="@drawable/toogle_wifi"
                             android:textOff=""
@@ -160,8 +161,8 @@
                         <!--Hotspot-->
                         <ToggleButton
                             android:id="@+id/hotspot"
-                            android:layout_width="35dp"
-                            android:layout_height="35dp"
+                            android:layout_width="36dp"
+                            android:layout_height="36dp"
                             android:layout_gravity="center"
                             android:background="@drawable/toogle_hotspot"
                             android:textOff=""
@@ -175,8 +176,8 @@
                         <!--Bluetooth-->
                         <ToggleButton
                             android:id="@+id/bluetooth"
-                            android:layout_width="35dp"
-                            android:layout_height="35dp"
+                            android:layout_width="36dp"
+                            android:layout_height="36dp"
                             android:layout_gravity="center"
                             android:background="@drawable/toogle_bluetooth"
                             android:textOff=""
@@ -193,13 +194,10 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="50dp"
-                    android:orientation="horizontal"
-                    android:layout_marginTop="10dp">
+                    android:orientation="horizontal">
 
                     <ToggleButton
-
                         android:id="@+id/sunday"
-
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
@@ -211,7 +209,6 @@
                         android:textOn="S" />
 
                     <ToggleButton
-
                         android:id="@+id/monday"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
@@ -224,7 +221,6 @@
                         android:textOn="M" />
 
                     <ToggleButton
-
                         android:id="@+id/tuesday"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
@@ -283,7 +279,6 @@
                         android:textAppearance="@style/DaysStyleBold"
                         android:textOff="S"
                         android:textOn="S" />
-
                 </LinearLayout>
 
             </LinearLayout>
@@ -293,9 +288,9 @@
                 android:id="@+id/switched_off_alarm"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:clickable="true"
                 android:background="@color/transparent_black"
-                android:visibility="gone"/>
+                android:clickable="true"
+                android:visibility="gone" />
 
         </RelativeLayout>
 
