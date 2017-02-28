@@ -489,8 +489,23 @@ public class AlarmSqlHelper extends SQLiteOpenHelper {
 
         SQLiteDatabase db = this.getWritableDatabase();
 
-        // Todo : Query seems wrong, lastUpdateTime isn't a parameter to take into consideration
-        Cursor cursor = db.rawQuery("SELECT * FROM " + TABLE_ALARM + " WHERE " + ISACTIVE_COLUMN + "=? ORDER BY " + EXECUTION_TIME_COLUMN + " ASC, " + UPDATETIME + " DESC",
+        /**
+         * The next alarm should be the one that's active and going to be launched the soonest
+         * The exact execution time is calculated using "lastUpdateTime + executionTime"
+         * The result is to be ordered in an ascending order, so that the first element would
+         * be the soonest alarm to be launched
+         *
+         * The sql query would look like smth like this
+         * select KEY_ID, CURRENTSTATE, START_TIME_COLUMN, EXECUTION_TIME_COLUMN, DURATION, JOBID, UPDATETIME, (UPDATETIME + EXECUTION_TIME_COLUMN)  AS EXACT_EXECUTION_TIME
+         * from TABLE_ALARM
+         * where ISACTIVE_COLUMN = “true”
+         * order by EXACT_EXECUTION_TIME ASC
+         */
+        Cursor cursor = db.rawQuery("SELECT " + KEY_ID + ", " + CURRENTSTATE + ", " + START_TIME_COLUMN + ", " + EXECUTION_TIME_COLUMN + ", " +
+                        DURATION + ", " + JOBID + ", " + UPDATETIME + ", (" + UPDATETIME + " + " + EXECUTION_TIME_COLUMN + ") AS EXACT_EXECUTION_TIME" +
+                        " FROM " + TABLE_ALARM +
+                        " WHERE " + ISACTIVE_COLUMN + "=?" +
+                        " ORDER BY EXACT_EXECUTION_TIME ASC",
                 new String[]{"true"});
 
         if (cursor.getCount() > 0) {
