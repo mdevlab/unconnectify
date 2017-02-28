@@ -59,4 +59,7 @@ dependencies {
     compile('com.crashlytics.sdk.android:crashlytics:2.6.6@aar') {
         transitive = true;
     }
+
+    // TapTargetView for the App onboarding  this repo implement the  tap targets from google material design guidelines
+    compile 'com.getkeepsafe.taptargetview:taptargetview:1.8.0'
 }

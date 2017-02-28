@@ -18,4 +18,11 @@
 
     <color name="transparent_black">#60000000</color>
 
+
+    <!--onboarding Colors-->
+
+    <color name="outercirclecolor">#414141</color>
+    <color name="descriptiontextcolor">#ffffff</color>
+
+
 </resources>

@@ -1,4 +1,10 @@
 <resources>
     <string name="app_name">Unconnectify</string>
     <string name="action_add_alarm">Add alarm</string>
+
+
+    <!--Onboarding Strings-->
+    <string name="add_alarm">Add an alarm</string>
+    <string name="add_alarm_description">Click on this button to add an alarm each time you want</string>
+    <string name="preference_onboarding_file">io.mdevlab.unconnectify.PREFERENCE_ONBOARDING</string>
 </resources>
