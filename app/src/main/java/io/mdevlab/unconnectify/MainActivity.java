@@ -113,7 +113,7 @@ public class MainActivity extends AppCompatActivity implements TimePickerDialog.
     @Override
     public void onTimeSet(TimePicker timePicker, int hourOfDay, int minute) {
 
-        //Verify if The timepicker is shown
+        //Verify if The timePicker is shown
         //This is a know Bug https://code.google.com/p/android/issues/detail?id=34833
         if (timePicker.isShown()) {
 

@@ -143,7 +143,7 @@ public class AlarmUtils {
              * gives us the time left until the next alarm trigger, which is the alarm's executionTime
              */
             else {
-                executionTime = TimeUnit.DAYS.toMillis(getNumberOfDaysUntilNextAlarm(alarm)) - (System.currentTimeMillis() - executionTime);
+                executionTime = TimeUnit.DAYS.toMillis(getNumberOfDaysUntilNextAlarm(alarm)) - (System.currentTimeMillis() - alarm.getStartTime());
             }
         }
 

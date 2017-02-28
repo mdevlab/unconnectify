@@ -13,6 +13,7 @@ import android.support.v7.app.NotificationCompat;
 import java.util.List;
 
 import io.mdevlab.unconnectify.MainActivity;
+import io.mdevlab.unconnectify.R;
 import io.mdevlab.unconnectify.alarm.PreciseConnectivityAlarm;
 import io.mdevlab.unconnectify.data.AlarmSqlHelper;
 import io.mdevlab.unconnectify.utils.Connection;
@@ -65,8 +66,7 @@ public class AlarmNotificationManager {
             mBuilder.setContentTitle("Unconnectify")
                     .setContentIntent(resultPendingIntent)
                     .setContentText(notifiactionText)
-                    //TODO set the Right Icon
-                    .setSmallIcon(android.R.drawable.alert_light_frame)
+                    .setSmallIcon(R.mipmap.ic_launcher)
                 /*
                     * Sets the big view "big text" style and supplies the
                     * text (the user's reminder message) that will be displayed
@@ -99,7 +99,7 @@ public class AlarmNotificationManager {
         //TODO use the String Builder instead of appending values
 
         //Build the string
-        String result = "Next- Turning ";
+        String result = "Next - Turning ";
         if (currentStatus) {
             result += " OFF ";
         } else

@@ -7,7 +7,6 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ToggleButton;
 
 import com.chauthai.swipereveallayout.ViewBinderHelper;
 
@@ -18,6 +17,8 @@ import io.mdevlab.unconnectify.MainActivity;
 import io.mdevlab.unconnectify.R;
 import io.mdevlab.unconnectify.alarm.AlarmManager;
 import io.mdevlab.unconnectify.alarm.PreciseConnectivityAlarm;
+import io.mdevlab.unconnectify.data.AlarmSqlHelper;
+import io.mdevlab.unconnectify.utils.AlarmUtils;
 import io.mdevlab.unconnectify.utils.Connection;
 import io.mdevlab.unconnectify.utils.DateUtils;
 import io.mdevlab.unconnectify.utils.FeatureDiscovery;
@@ -44,6 +45,7 @@ public class AlarmAdapter extends RecyclerView.Adapter<AlarmViewHolder> {
     };
 
     private List<PreciseConnectivityAlarm> alarms;
+    private AlarmSqlHelper alarmSqlHelper;
     private Context mContext;
     private final ViewBinderHelper viewBinderHelper = new ViewBinderHelper();
 
@@ -56,6 +58,7 @@ public class AlarmAdapter extends RecyclerView.Adapter<AlarmViewHolder> {
     public AlarmAdapter(List<PreciseConnectivityAlarm> alarms, Context context) {
         this.alarms = alarms;
         this.mContext = context;
+        this.alarmSqlHelper = new AlarmSqlHelper(mContext);
     }
 
     /**
@@ -64,8 +67,9 @@ public class AlarmAdapter extends RecyclerView.Adapter<AlarmViewHolder> {
      * @param preciseConnectivityAlarm
      */
     public void addAlarm(PreciseConnectivityAlarm preciseConnectivityAlarm) {
-        alarms.add(0, preciseConnectivityAlarm);
-        this.notifyDataSetChanged();
+        alarms.clear();
+        alarms = alarmSqlHelper.readAllAlarms(null, null);
+        notifyDataSetChanged();
     }
 
     /**
@@ -76,7 +80,7 @@ public class AlarmAdapter extends RecyclerView.Adapter<AlarmViewHolder> {
      */
     public void deleteAlarm(int position, int alarmId) {
         alarms.remove(position);
-        this.notifyDataSetChanged();
+        notifyDataSetChanged();
         ((MainActivity) mContext).setAlarmsCount();
         AlarmManager.getInstance(mContext).clearAlarm(alarmId);
     }
@@ -92,12 +96,21 @@ public class AlarmAdapter extends RecyclerView.Adapter<AlarmViewHolder> {
     public void onBindViewHolder(AlarmViewHolder holder, final int position) {
         final PreciseConnectivityAlarm currentAlarm = alarms.get(position);
 
-        //Delete the alarm
+        AlarmUtils.displayAlarm(currentAlarm, "onBindViewHolder");
+
+        //Delete the alarm container view onclick listener
+        holder.mDeleteAlarmView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                deleteAlarm(position, currentAlarm.getAlarmId());
+            }
+        });
+
+        //Delete the alarm button onclick listener
         holder.mDeleteAlarm.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View view) {
-
                 deleteAlarm(position, currentAlarm.getAlarmId());
             }
         });
@@ -117,7 +130,9 @@ public class AlarmAdapter extends RecyclerView.Adapter<AlarmViewHolder> {
         holder.mSwitchedOffAlarmCover.setVisibility(currentAlarm.isActive() ? View.GONE : View.VISIBLE);
 
         // Setting the switch on/off toggle button
-        setToggleWithoutEvent(holder.mSwitchOnOffToggle, !currentAlarm.isActive());
+        holder.setCheckToggleOnOff(false);
+        holder.mSwitchOnOffToggle.setChecked(true);
+        holder.setCheckToggleOnOff(true);
 
         // Start time
         holder.mStartTime.setText(DateUtils.getTimeFromLong(currentAlarm.getStartTime()));
@@ -131,45 +146,56 @@ public class AlarmAdapter extends RecyclerView.Adapter<AlarmViewHolder> {
         }
 
         // Wifi
-        if (currentAlarm.getConnections().contains(Connection.WIFI))
-            setToggleWithoutEvent(holder.mWifi, true);
+        holder.setCheckWifi(false);
+        holder.mWifi.setChecked(currentAlarm.getConnections().contains(Connection.WIFI));
+        holder.setCheckWifi(true);
 
         // Hotspot
-        if (currentAlarm.getConnections().contains(Connection.HOTSPOT))
-            setToggleWithoutEvent(holder.mHotspot, true);
+        holder.setCheckHotspot(false);
+        holder.mHotspot.setChecked(currentAlarm.getConnections().contains(Connection.HOTSPOT));
+        holder.setCheckHotspot(true);
 
         // Bluetooth
-        if (currentAlarm.getConnections().contains(Connection.BLUETOOTH))
-            setToggleWithoutEvent(holder.mBluetooth, true);
+        holder.setCheckBluetooth(false);
+        holder.mBluetooth.setChecked(currentAlarm.getConnections().contains(Connection.BLUETOOTH));
+        holder.setCheckBluetooth(true);
 
         // Sunday
-        if (currentAlarm.getDays().contains(Calendar.SUNDAY))
-            setToggleWithoutEvent(holder.mSunday, true);
+        holder.setCheckSunday(false);
+        holder.mSaturday.setChecked(currentAlarm.getDays().contains(Calendar.SUNDAY));
+        holder.setCheckSunday(true);
 
         // Monday
-        if (currentAlarm.getDays().contains(Calendar.MONDAY))
-            setToggleWithoutEvent(holder.mMonday, true);
+        holder.setCheckMonday(false);
+        holder.mMonday.setChecked(currentAlarm.getDays().contains(Calendar.MONDAY));
+        holder.setCheckMonday(true);
 
         // Tuesday
-        if (currentAlarm.getDays().contains(Calendar.TUESDAY))
-            setToggleWithoutEvent(holder.mTuesday, true);
+        holder.setCheckTuesday(false);
+        holder.mTuesday.setChecked(currentAlarm.getDays().contains(Calendar.TUESDAY));
+        holder.setCheckTuesday(true);
 
         // Wednesday
-        if (currentAlarm.getDays().contains(Calendar.WEDNESDAY))
-            setToggleWithoutEvent(holder.mWednesday, true);
+        holder.setCheckWednesday(false);
+        holder.mWednesday.setChecked(currentAlarm.getDays().contains(Calendar.WEDNESDAY));
+        holder.setCheckWednesday(true);
 
         // Thursday
-        if (currentAlarm.getDays().contains(Calendar.THURSDAY))
-            setToggleWithoutEvent(holder.mThursday, true);
+        holder.setCheckThursday(false);
+        holder.mThursday.setChecked(currentAlarm.getDays().contains(Calendar.THURSDAY));
+        holder.setCheckThursday(true);
 
         // Friday
-        if (currentAlarm.getDays().contains(Calendar.FRIDAY))
-            setToggleWithoutEvent(holder.mFriday, true);
-
+        holder.setCheckFriday(false);
+        holder.mFriday.setChecked(currentAlarm.getDays().contains(Calendar.FRIDAY));
+        holder.setCheckFriday(true);
+        
         // Saturday
-        if (currentAlarm.getDays().contains(Calendar.SATURDAY))
-            setToggleWithoutEvent(holder.mSaturday, true);
-
+        holder.setCheckSaturday(false);
+        holder.mSaturday.setChecked(currentAlarm.getDays().contains(Calendar.SATURDAY));
+        holder.setCheckSaturday(true);
+      
+        // Feature discovery
         FeatureDiscovery.getInstance().onFirstAlarmCreatedFeatureDiscovery((Activity) mContext,
                 holder.mStartTime,
                 holder.mEndTime,
@@ -182,18 +208,5 @@ public class AlarmAdapter extends RecyclerView.Adapter<AlarmViewHolder> {
         if (alarms != null)
             return alarms.size();
         return 0;
-    }
-
-    /**
-     * Method that checks or unchecks a toggle button without triggering its
-     * setOnCheck listener
-     *
-     * @param toggleButton
-     * @param isChecked
-     */
-    private void setToggleWithoutEvent(ToggleButton toggleButton, boolean isChecked) {
-        toggleButton.setEnabled(false);
-        toggleButton.setChecked(isChecked);
-        toggleButton.setEnabled(true);
     }
 }

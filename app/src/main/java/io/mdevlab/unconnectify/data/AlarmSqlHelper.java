@@ -31,9 +31,6 @@ public class AlarmSqlHelper extends SQLiteOpenHelper {
     public static final String DATABASE_NAME = "Alarms.db";
     //Current Version 1 since Feb 11 2017
     public static final int DATABASE_VERSION = 1;
-    public static final int NO_DURATION = 1;
-    public static final int NO_JOBID = -1;
-    public static final Boolean DEFAULT_CURRENTSTATE = false;
     public static final String ASC = "ASC";
 
     // Table Names
@@ -122,7 +119,7 @@ public class AlarmSqlHelper extends SQLiteOpenHelper {
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
 
-        //TODO Implements the backup plan before updating the table so our users d'ont lose their alarms
+        //TODO Implements the backup plan before updating the table so our users dont lose their alarms
         // on upgrade drop older tables
         db.execSQL("DROP TABLE IF EXISTS " + CREATE_TABLE_ALARM);
         db.execSQL("DROP TABLE IF EXISTS " + CREATE_TABLE_ALARM_DAYS);
@@ -253,7 +250,7 @@ public class AlarmSqlHelper extends SQLiteOpenHelper {
                 selectionArgs,
                 null,
                 null,
-                null);
+                UPDATETIME + " DESC");
 
         // looping through all rows and adding to list
         if (cursor.moveToFirst()) {
@@ -492,8 +489,24 @@ public class AlarmSqlHelper extends SQLiteOpenHelper {
 
         SQLiteDatabase db = this.getWritableDatabase();
 
-        // Todo : Query seems wrong, lastUpdateTime isn't a parameter to take into consideration
-        Cursor cursor = db.rawQuery("SELECT * FROM " + TABLE_ALARM + " WHERE " + ISACTIVE_COLUMN + "=? ORDER BY " + EXECUTION_TIME_COLUMN + " ASC, " + UPDATETIME + " DESC",
+        /**
+         * The next alarm should be the one that's active and going to be launched the soonest
+         * The exact execution time is calculated using "lastUpdateTime + executionTime"
+         * The result is to be ordered in an ascending order, so that the first element would
+         * be the soonest alarm to be launched
+         *
+         * The sql query would look like smth like this
+         * select KEY_ID, CURRENTSTATE, START_TIME_COLUMN, EXECUTION_TIME_COLUMN, DURATION, JOBID, UPDATETIME, (UPDATETIME + EXECUTION_TIME_COLUMN)  AS EXACT_EXECUTION_TIME
+         * from TABLE_ALARM
+         * where ISACTIVE_COLUMN = “true”
+         * order by EXACT_EXECUTION_TIME ASC
+         */
+        Cursor cursor = db.rawQuery("SELECT " + KEY_ID + ", " + ISACTIVE_COLUMN + ", " + START_TIME_COLUMN + ", " + CURRENTSTATE + ", " + START_TIME_COLUMN + ", " +
+                        EXECUTION_TIME_COLUMN + ", " + DURATION + ", " + JOBID + ", " + UPDATETIME + ", " + CURRENTSTATE + ", (" + UPDATETIME + " + " +
+                        EXECUTION_TIME_COLUMN + ") AS EXACT_EXECUTION_TIME" +
+                        " FROM " + TABLE_ALARM +
+                        " WHERE " + ISACTIVE_COLUMN + "=?" +
+                        " ORDER BY EXACT_EXECUTION_TIME ASC",
                 new String[]{"true"});
 
         if (cursor.getCount() > 0) {
