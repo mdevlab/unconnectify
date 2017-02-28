@@ -162,11 +162,11 @@ public class PreciseConnectivityAlarm {
                 return true;
 
             // Determine if both alarms are set to the same day(s)
-            if (isLaunchedOnSameDay(alarm.getDays()))
+            if (isBeingLaunchedToday(alarm.getDays()))
                 return true;
 
             // Determine if both alarms function in the same period
-            if (isExecutedInTheSamePeriod(alarm.getExecuteTimeInMils(), alarm.getDuration()))
+            if (isExecutedInTheSamePeriod(alarm.getLastUpdate(), alarm.getExecuteTimeInMils(), alarm.getDuration()))
                 return true;
         }
         return false;
@@ -185,17 +185,14 @@ public class PreciseConnectivityAlarm {
 
     /**
      * Method that determines whether or not the current alarm object
-     * and another alarm object are set to the same day(s)
+     * and another alarm object are both set to be launched on the current
+     * day
      *
      * @param daysList: List of days in which the other alarm is set to
      * @return
      */
-    private boolean isLaunchedOnSameDay(List<Integer> daysList) {
-        for (Integer day : daysList)
-            // Checking whether 'day' is contained in the current alarm's object days of execution
-            if (mDays.contains(day))
-                return true;
-        return false;
+    private boolean isBeingLaunchedToday(List<Integer> daysList) {
+        return daysList.contains(DateUtils.getToday().get(0));
     }
 
     /**
@@ -205,9 +202,23 @@ public class PreciseConnectivityAlarm {
      * @param duration:      Duration of the alarm
      * @return
      */
-    private boolean isExecutedInTheSamePeriod(long executionTime, long duration) {
-        return (isInRange(executionTime, mExecutionTimeInMils + mDuration, executionTime + duration) ||
-                isInRange(mExecutionTimeInMils, executionTime + duration, mExecutionTimeInMils + mDuration));
+    private boolean isExecutedInTheSamePeriod(long lastUpdate, long executionTime, long duration) {
+
+
+        /**
+         * To know the exact time on which an alarm is launched, we get it using
+         * the formula : lastUpdate + executionTime
+         *
+         * Two alarms are in conflict when either one of them is launched between
+         * the execution time of the other one and its end time
+         */
+        return (isInRange(lastUpdate + executionTime,
+                mLastUpdate + mExecutionTimeInMils + mDuration,
+                lastUpdate + executionTime + duration) ||
+                isInRange(mLastUpdate + mExecutionTimeInMils,
+                        lastUpdate + executionTime + duration,
+                        mExecutionTimeInMils + mDuration)
+        );
     }
 
     /**

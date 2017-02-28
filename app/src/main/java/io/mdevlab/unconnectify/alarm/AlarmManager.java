@@ -4,6 +4,8 @@ import android.content.Context;
 
 import com.evernote.android.job.JobManager;
 
+import java.util.List;
+
 import io.mdevlab.unconnectify.data.AlarmSqlHelper;
 import io.mdevlab.unconnectify.jobs.ConnectivityJobManager;
 import io.mdevlab.unconnectify.notification.AlarmNotificationManager;
@@ -236,13 +238,11 @@ public class AlarmManager {
         AlarmUtils.displayAlarm(alarm, "updateAlarmDay");
     }
 
-    // Todo : Review the handling conflicts logic
-
     /**
      * Method that handles conflicts between alarms
-     * This method checks whether its argument, a precise alarm is
+     * This method checks whether its argument, an alarm is
      * in conflict with another alarm that already exists
-     * A conflict between two alarms is when all these conditions are met:
+     * A conflict between two alarms happens when all these conditions are met:
      * - both alarms run in the same day (or more than one day)
      * - At least one connection model is handled by both alarms
      * - The period of "work" of one alarm intersect with that of the other
@@ -251,24 +251,24 @@ public class AlarmManager {
      * @return: Id of the conflicting alarm's id if a conflict is found, -1 otherwise
      */
     public int handleAlarmConflicts(PreciseConnectivityAlarm alarm, Connection connection) {
-//        if (alarmSqlHelper != null) {
-//
-//            // Get a list of all precise active alarms from the database
-//            List<PreciseConnectivityAlarm> activeAlarms = alarmSqlHelper.readAllActiveAlarms();
-//
-//            /**
-//             * Loop on the elements of the alarm
-//             * The alarm passed on as an argument is compared with each element of the list
-//             * If a conflict is found, the conflicting alarm's Id is returned
-//             */
-//            for (PreciseConnectivityAlarm activeAlarm : activeAlarms) {
-//
-//                // If the two alarms are in conflict, return the conflicting alarm's Id
-//                if (alarm.getAlarmId() != activeAlarm.getAlarmId())
-//                    if (alarm.inConflictWithAlarm(activeAlarm, connection))
-//                        return activeAlarm.getAlarmId();
-//            }
-//        }
+        if (alarmSqlHelper != null) {
+
+            // Get a list of all precise active alarms from the database
+            List<PreciseConnectivityAlarm> activeAlarms = alarmSqlHelper.readAllActiveAlarms();
+
+            /**
+             * Loop on the elements of the alarm
+             * The alarm passed on as an argument is compared with each element of the list
+             * If a conflict is found, the conflicting alarm's Id is returned
+             */
+            for (PreciseConnectivityAlarm activeAlarm : activeAlarms) {
+
+                // If the two alarms are in conflict, return the conflicting alarm's Id
+                if (alarm.getAlarmId() != activeAlarm.getAlarmId())
+                    if (alarm.inConflictWithAlarm(activeAlarm, connection))
+                        return activeAlarm.getAlarmId();
+            }
+        }
 
         // At this point there aren't any conflicts, -1 is returned
         return -1;
