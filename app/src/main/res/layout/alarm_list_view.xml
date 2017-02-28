@@ -7,12 +7,13 @@
     app:dragEdge="right"
     app:mode="same_level">
 
-    <!--Secondary layout-->
+    <!--Secondary hidden layout-->
     <LinearLayout
         android:layout_width="240dp"
         android:layout_height="match_parent"
         android:orientation="horizontal">
 
+        <!--On/off-->
         <LinearLayout
             android:id="@+id/switch_alarm_on_off"
             android:layout_width="120dp"
@@ -44,6 +45,7 @@
 
         </LinearLayout>
 
+        <!--Delete alarm-->
         <LinearLayout
             android:id="@+id/delete_alarm"
             android:layout_width="120dp"

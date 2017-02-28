@@ -49,9 +49,6 @@ public class AlarmManager {
         alarm.setAlarmId((int) alarmId);
         createAlarmJob(alarm);
 
-        // Todo : Remove debug code
-        AlarmUtils.displayAlarm(alarm, "createAlarm");
-
         return alarmId;
     }
 
@@ -143,9 +140,6 @@ public class AlarmManager {
         // Else, cancel its current running job
         else
             cancelAlarmJob(alarm);
-
-        // Todo : Remove debug code
-        AlarmUtils.displayAlarm(alarm, "updateAlarmState");
     }
 
     /**
@@ -181,9 +175,6 @@ public class AlarmManager {
         if (alarm.getExecuteTimeInMils() == alarm.getStartTime() + alarm.getDuration())
             activate = true;
         createAlarmJob(alarm, activate);
-
-        // Todo : REMOVE DEBUG CODE
-        AlarmUtils.displayAlarm(alarm, "updateAlarm");
     }
 
     /**
@@ -207,9 +198,6 @@ public class AlarmManager {
 
         // Create a new job
         createAlarmJob(alarm);
-
-        // Todo: Remove debug code
-        AlarmUtils.displayAlarm(alarm, "updateAlarmConnection");
     }
 
     /**
@@ -233,9 +221,6 @@ public class AlarmManager {
 
         // Create a new job
         createAlarmJob(alarm);
-
-        // Todo : Remove debug code
-        AlarmUtils.displayAlarm(alarm, "updateAlarmDay");
     }
 
     /**

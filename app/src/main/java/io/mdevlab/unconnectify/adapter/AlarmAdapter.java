@@ -96,12 +96,19 @@ public class AlarmAdapter extends RecyclerView.Adapter<AlarmViewHolder> {
 
         AlarmUtils.displayAlarm(currentAlarm, "onBindViewHolder");
 
-        //Delete the alarm
+        //Delete the alarm container view onclick listener
+        holder.mDeleteAlarmView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                deleteAlarm(position, currentAlarm.getAlarmId());
+            }
+        });
+
+        //Delete the alarm button onclick listener
         holder.mDeleteAlarm.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View view) {
-
                 deleteAlarm(position, currentAlarm.getAlarmId());
             }
         });

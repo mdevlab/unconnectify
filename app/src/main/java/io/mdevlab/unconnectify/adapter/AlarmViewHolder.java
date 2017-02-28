@@ -40,8 +40,10 @@ public class AlarmViewHolder extends RecyclerView.ViewHolder implements TimePick
 
     SwipeRevealLayout mSwipeRevealLayout;
 
-    View mSwitchOnOff;
+    View mSwitchOnOffView;
     ToggleButton mSwitchOnOffToggle;
+
+    View mDeleteAlarmView;
     ImageView mDeleteAlarm;
 
     View mSwitchedOffAlarmCover;
@@ -90,9 +92,16 @@ public class AlarmViewHolder extends RecyclerView.ViewHolder implements TimePick
         // Main view container
         mContainer = itemView.findViewById(R.id.container);
 
-        // Switch alarm on/off
-        // Todo : Add on click listener to the view
-        mSwitchOnOff = itemView.findViewById(R.id.switch_alarm_on_off);
+        // Switch alarm on/off container view
+        mSwitchOnOffView = itemView.findViewById(R.id.switch_alarm_on_off);
+        mSwitchOnOffView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mSwitchOnOffToggle.setChecked(!mSwitchOnOffToggle.isChecked());
+            }
+        });
+
+        // Switch alarm on/off toggle
         mSwitchOnOffToggle = (ToggleButton) itemView.findViewById(R.id.switch_alarm_on_off_toggle);
         mSwitchOnOffToggle.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
@@ -132,6 +141,9 @@ public class AlarmViewHolder extends RecyclerView.ViewHolder implements TimePick
                     }
             }
         });
+
+        // Delete the alarm container view, its onclick listener is in the adapter
+        mDeleteAlarmView = itemView.findViewById(R.id.delete_alarm);
 
         // Delete the alarm, it's onClickListener is in the Adapter class
         mDeleteAlarm = (ImageView) itemView.findViewById(R.id.delete_alarm_button);
@@ -176,12 +188,12 @@ public class AlarmViewHolder extends RecyclerView.ViewHolder implements TimePick
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (DialogUtils.showDialog(mContext)) {
-                  if(checkHotspot) {
-                    if (mAlarm != null) {
-                        onLastConnectionIsUnchecked();
-                        AlarmManager.getInstance(mContext).updateAlarmConnection(mAlarm.getAlarmId(), Connection.HOTSPOT, isChecked);
+                    if (checkHotspot) {
+                        if (mAlarm != null) {
+                            onLastConnectionIsUnchecked();
+                            AlarmManager.getInstance(mContext).updateAlarmConnection(mAlarm.getAlarmId(), Connection.HOTSPOT, isChecked);
+                        }
                     }
-                  }
                 } else {
                     mHotspot.setChecked(false);
                 }

@@ -119,7 +119,7 @@ public class AlarmSqlHelper extends SQLiteOpenHelper {
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
 
-        //TODO Implements the backup plan before updating the table so our users d'ont lose their alarms
+        //TODO Implements the backup plan before updating the table so our users dont lose their alarms
         // on upgrade drop older tables
         db.execSQL("DROP TABLE IF EXISTS " + CREATE_TABLE_ALARM);
         db.execSQL("DROP TABLE IF EXISTS " + CREATE_TABLE_ALARM_DAYS);

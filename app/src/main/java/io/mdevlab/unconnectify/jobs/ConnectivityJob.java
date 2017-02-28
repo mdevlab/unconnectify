@@ -2,7 +2,6 @@ package io.mdevlab.unconnectify.jobs;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
-import android.util.Log;
 
 import com.evernote.android.job.Job;
 
@@ -130,10 +129,6 @@ public class ConnectivityJob extends Job {
     }
 
     private void executeCurrentJob(Connectivity connectivity, boolean enableConnectivity) {
-
-        // Todo : Remove debug code
-        Log.e("Alarm job", "Connectivity " + connectivity + " is being turned on " + enableConnectivity);
-
         // If it's wifi, enable/disable wifi
         if (connectivity instanceof Wifi)
             enableWifi(enableConnectivity);
