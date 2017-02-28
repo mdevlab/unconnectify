@@ -5,7 +5,20 @@
 
 ## Usage
 
-This is an app for enabling/disabling wifi, cellular data, bluetooth and hotspot
+The Unconnectify app lets you set up alarms for disabling and reenabling your connections, it puts you in control of your connections -- Easily create alarms and manage them, choose what to disable and/or reenable, at what time and how frequently.  
+
+Here’s what you can do with the Unconnectify app: 
+<ul>
+<li>Set when to automatically disable and reenable your connections.</li>
+<li>Adapt your alarms accordingly to your schedule and habits</li>
+<li>Optimize your battery consumption by disabling one or more of your connections when not in use</li>
+<li>Get notified about your upcoming alarms</li>
+</ul>
+The currently supported connections are Wifi, Hotspot, Bluetooth. Cellular data (3G/4G) support is coming soon, stay tuned!
+
+This app is on the Google play store, go try it out here:
+
+Still need help? Please tell us more about the issue, email us at mdevlab2017@gmail.com
 
 # Screenshot 
 
