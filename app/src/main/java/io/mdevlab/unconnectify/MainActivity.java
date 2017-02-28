@@ -1,6 +1,7 @@
 package io.mdevlab.unconnectify;
 
 import android.app.TimePickerDialog;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
@@ -24,6 +25,7 @@ import io.mdevlab.unconnectify.data.AlarmSqlHelper;
 import io.mdevlab.unconnectify.fragment.TimePickerFragment;
 import io.mdevlab.unconnectify.utils.DateUtils;
 import io.mdevlab.unconnectify.utils.DialogUtils;
+import io.mdevlab.unconnectify.utils.FeatureDiscovery;
 
 public class MainActivity extends AppCompatActivity implements TimePickerDialog.OnTimeSetListener {
     public static final String TAG = MainActivity.class.getSimpleName();
@@ -33,14 +35,17 @@ public class MainActivity extends AppCompatActivity implements TimePickerDialog.
     private AlarmAdapter mAlarmAdapter;
     private AlarmSqlHelper mAlarmSqlHelper;
     private TextView mAlarmsCount;
+    private Toolbar mToolbar;
+    private SharedPreferences onboardingSharedPreference;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+        mToolbar = (Toolbar) findViewById(R.id.toolbar);
+        mToolbar.inflateMenu(R.menu.menu_main);
+        setSupportActionBar(mToolbar);
 
         //Recycler View
         mAlarmList = (RecyclerView) findViewById(R.id.alarms_list);
@@ -69,10 +74,14 @@ public class MainActivity extends AppCompatActivity implements TimePickerDialog.
         mAlarmsCount.setText(alarms.size() + " alarms");
     }
 
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_main, menu);
+        MenuItem createAlarm = menu.findItem(R.id.action_add_alarm);
+        if (createAlarm != null)
+            FeatureDiscovery.getInstance().createAlarmFeatureDiscovery(MainActivity.this, findViewById(R.id.action_add_alarm));
         return true;
     }
 

@@ -1,7 +1,7 @@
 package io.mdevlab.unconnectify.connectivitymodels;
 
 /**
- * Created by bachiri on 2/10/17.
+ * Created by mdevlab on 2/10/17.
  */
 
 
