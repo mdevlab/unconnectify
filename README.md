@@ -5,6 +5,13 @@
 
     Unconnectify
 </h1>
-# unconnectify
+
+<h1 align="center">
+<img src="/screenshot/unconnectify.gif" width="280" height="498" alt="Video 1"/>
+</h1>
+
+**Min SDK:** 16
+
+## Usage
 
 This is an app for enabling/disabling wifi, cellular data, bluetooth and hotspot
