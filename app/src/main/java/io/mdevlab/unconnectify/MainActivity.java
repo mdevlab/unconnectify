@@ -1,5 +1,6 @@
 package io.mdevlab.unconnectify;
 
+import android.app.Activity;
 import android.app.TimePickerDialog;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -11,6 +12,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewTreeObserver;
 import android.widget.TextView;
 import android.widget.TimePicker;
 
@@ -68,6 +70,21 @@ public class MainActivity extends AppCompatActivity implements TimePickerDialog.
         //The alarm Adapter
         mAlarmAdapter = new AlarmAdapter(alarms, MainActivity.this);
         mAlarmList.setAdapter(mAlarmAdapter);
+
+        // Feature discovery
+        mAlarmList.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+                AlarmViewHolder holder = (AlarmViewHolder) mAlarmList.findViewHolderForAdapterPosition(0);
+                if (holder != null) {
+                    FeatureDiscovery.getInstance().onFirstAlarmCreatedFeatureDiscovery((Activity) MainActivity.this,
+                            holder.mStartTime,
+                            holder.mEndTime,
+                            holder.mWifi,
+                            holder.mSunday);
+                }
+            }
+        });
 
         //Alarms counts textview
         mAlarmsCount = (TextView) findViewById(R.id.alarms_count);

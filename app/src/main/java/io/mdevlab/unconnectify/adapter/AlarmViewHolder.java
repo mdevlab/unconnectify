@@ -49,21 +49,21 @@ public class AlarmViewHolder extends RecyclerView.ViewHolder implements TimePick
     View mSwitchedOffAlarmCover;
     View mContainer;
 
-    TextView mStartTime;
-    TextView mTimesSeparator;
-    TextView mEndTime;
+    public TextView mStartTime;
+    public TextView mTimesSeparator;
+    public TextView mEndTime;
 
-    ToggleButton mWifi;
-    ToggleButton mHotspot;
-    ToggleButton mBluetooth;
+    public ToggleButton mWifi;
+    public ToggleButton mHotspot;
+    public ToggleButton mBluetooth;
 
-    ToggleButton mSunday;
-    ToggleButton mMonday;
-    ToggleButton mTuesday;
-    ToggleButton mWednesday;
-    ToggleButton mThursday;
-    ToggleButton mFriday;
-    ToggleButton mSaturday;
+    public ToggleButton mSunday;
+    public ToggleButton mMonday;
+    public ToggleButton mTuesday;
+    public ToggleButton mWednesday;
+    public ToggleButton mThursday;
+    public ToggleButton mFriday;
+    public ToggleButton mSaturday;
 
     private boolean checkToggleOnOff = false;
 

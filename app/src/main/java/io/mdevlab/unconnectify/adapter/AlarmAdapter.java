@@ -1,6 +1,5 @@
 package io.mdevlab.unconnectify.adapter;
 
-import android.app.Activity;
 import android.content.Context;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
@@ -21,7 +20,6 @@ import io.mdevlab.unconnectify.data.AlarmSqlHelper;
 import io.mdevlab.unconnectify.utils.AlarmUtils;
 import io.mdevlab.unconnectify.utils.Connection;
 import io.mdevlab.unconnectify.utils.DateUtils;
-import io.mdevlab.unconnectify.utils.FeatureDiscovery;
 
 /**
  * Created by mdevlab on 2/12/17.
@@ -194,13 +192,6 @@ public class AlarmAdapter extends RecyclerView.Adapter<AlarmViewHolder> {
         holder.setCheckSaturday(false);
         holder.mSaturday.setChecked(currentAlarm.getDays().contains(Calendar.SATURDAY));
         holder.setCheckSaturday(true);
-      
-        // Feature discovery
-        FeatureDiscovery.getInstance().onFirstAlarmCreatedFeatureDiscovery((Activity) mContext,
-                holder.mStartTime,
-                holder.mEndTime,
-                holder.mWifi,
-                holder.mSunday);
     }
 
     @Override
