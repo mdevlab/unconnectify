@@ -187,7 +187,7 @@ public class AlarmAdapter extends RecyclerView.Adapter<AlarmViewHolder> {
         holder.setCheckFriday(false);
         holder.mFriday.setChecked(currentAlarm.getDays().contains(Calendar.FRIDAY));
         holder.setCheckFriday(true);
-        
+
         // Saturday
         holder.setCheckSaturday(false);
         holder.mSaturday.setChecked(currentAlarm.getDays().contains(Calendar.SATURDAY));
