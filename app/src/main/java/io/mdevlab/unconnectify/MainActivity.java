@@ -208,4 +208,9 @@ public class MainActivity extends AppCompatActivity implements TimePickerDialog.
             Hotspot.getInstance(MainActivity.this).disable();
         }
     }
+
+
+    public void onStartAnimation() {
+
+    }
 }
