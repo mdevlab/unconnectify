@@ -1,5 +1,7 @@
 package io.mdevlab.unconnectify;
 
+import android.animation.ObjectAnimator;
+import android.animation.ValueAnimator;
 import android.app.Activity;
 import android.app.TimePickerDialog;
 import android.content.SharedPreferences;
@@ -81,16 +83,25 @@ public class MainActivity extends AppCompatActivity implements TimePickerDialog.
                             holder.mStartTime,
                             holder.mEndTime,
                             holder.mWifi,
-                            holder.mSunday);
+                            holder.mSunday,
+                            holder);
                 }
             }
         });
+
+
+
 
         //Alarms counts textview
         mAlarmsCount = (TextView) findViewById(R.id.alarms_count);
         mAlarmsCount.setText(alarms.size() + " alarms");
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -210,7 +221,5 @@ public class MainActivity extends AppCompatActivity implements TimePickerDialog.
     }
 
 
-    public void onStartAnimation() {
 
-    }
 }

@@ -1,5 +1,7 @@
 package io.mdevlab.unconnectify.utils;
 
+import android.animation.ObjectAnimator;
+import android.animation.ValueAnimator;
 import android.app.Activity;
 import android.support.v4.view.animation.FastOutSlowInInterpolator;
 import android.util.Log;
@@ -7,6 +9,7 @@ import android.view.MotionEvent;
 import android.view.View;
 
 import io.mdevlab.unconnectify.R;
+import io.mdevlab.unconnectify.adapter.AlarmViewHolder;
 import jonathanfinerty.once.Once;
 import uk.co.samuelwall.materialtaptargetprompt.MaterialTapTargetPrompt;
 
@@ -18,6 +21,8 @@ public class FeatureDiscovery {
 
     private static FeatureDiscovery instance = null;
     private static final int ONCE_TRIGGER_MODE = Once.THIS_APP_INSTALL;
+    private AlarmViewHolder holder;
+    public static final long DEFAULT_HOLDER_ANIMATION_DURATION = 1500L;
 
     private FeatureDiscovery() {
     }
@@ -72,7 +77,8 @@ public class FeatureDiscovery {
                 Constants.FEATURE_DISCOVERY_CREATE_ALARM);
     }
 
-    public void onFirstAlarmCreatedFeatureDiscovery(final Activity activity, final View startTimeView, final View endTimeView, final View wifiView, final View sundayView) {
+    public void onFirstAlarmCreatedFeatureDiscovery(final Activity activity, final View startTimeView, final View endTimeView, final View wifiView, final View sundayView,final AlarmViewHolder holder) {
+       this.holder =holder;
         try {
             if (!Once.beenDone(ONCE_TRIGGER_MODE, Constants.FEATURE_DISCOVERY_START_TIME)) {
                 new MaterialTapTargetPrompt.Builder(activity)
@@ -172,6 +178,17 @@ public class FeatureDiscovery {
                         .setBackgroundColourFromRes(R.color.onboarding_color)
                         .setFocalColourFromRes(R.color.onboarding_color)
                         .setAnimationInterpolator(new FastOutSlowInInterpolator())
+                        .setOnHidePromptListener(new MaterialTapTargetPrompt.OnHidePromptListener() {
+                            @Override
+                            public void onHidePrompt(MotionEvent event, boolean tappedTarget) {
+
+                            }
+
+                            @Override
+                            public void onHidePromptComplete() {
+                                onStartAnimation(holder);
+                            }
+                        })
                         .create()
                         .show();
                 Once.markDone(Constants.FEATURE_DISCOVERY_DAY);
@@ -180,5 +197,38 @@ public class FeatureDiscovery {
             Log.e("MaterialTapTargetPrompt", "MaterialTapTargetPrompt exception");
             e.printStackTrace();
         }
+    }
+
+    /**
+     * This animation is part of the Discovery   process to show the user the turn on/off alarm  and the hidden container
+     * for deleting the alarm
+     *
+     * the alarm is translated using the value animator API
+     *
+     * @param holder Holder to animate
+     */
+    public void onStartAnimation(final AlarmViewHolder holder) {
+        //Get an instance of value animator
+        ValueAnimator valueAnimator = ValueAnimator.ofFloat(0,-400);
+        //Add a listner from where the translation will happen
+        //after we start the animation
+        valueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            @Override
+            public void onAnimationUpdate(ValueAnimator valueAnimator) {
+                float value = (float) valueAnimator.getAnimatedValue();
+                //translated the target views
+                holder.mAlarmContainer.setTranslationX(value);
+                holder.mSwipeRevealLayoutContainer.setTranslationX(value);
+
+
+            }
+        });
+        //Set the repetition and the mode
+        valueAnimator.setRepeatCount(1);
+        valueAnimator.setRepeatMode(ObjectAnimator.REVERSE);
+        valueAnimator.setDuration(1000L);
+        //Start the animation
+        valueAnimator.start();
+
     }
 }
