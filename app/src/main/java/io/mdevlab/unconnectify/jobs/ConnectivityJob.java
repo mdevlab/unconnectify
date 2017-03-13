@@ -205,7 +205,7 @@ public class ConnectivityJob extends Job {
 
             // If alarmDuration is equal to 1, the next launch of the alarm is set for another day
             if (alarmDuration == 1) {
-                int numberOfDaysUntilNextAlarm = AlarmUtils.getNumberOfDaysUntilNextAlarm(mCurrentAlarm);
+                int numberOfDaysUntilNextAlarm = AlarmUtils.getNumberOfDaysUntilNextAlarm(mCurrentAlarm, true);
                 newExecutionTime = TimeUnit.DAYS.toMillis(numberOfDaysUntilNextAlarm);
                 switchActivationState = false;
             } else {
@@ -333,7 +333,7 @@ public class ConnectivityJob extends Job {
          * the start time on the following day, so one day (or part of it at least)
          * has already been consumed
          */
-        long daysUntilNextAlarm = TimeUnit.DAYS.toMillis(AlarmUtils.getNumberOfDaysUntilNextAlarm(mCurrentAlarm) - 1);
+        long daysUntilNextAlarm = TimeUnit.DAYS.toMillis(AlarmUtils.getNumberOfDaysUntilNextAlarm(mCurrentAlarm, true) - 1);
 
         return startTimeOnTheNextDay + daysUntilNextAlarm;
     }

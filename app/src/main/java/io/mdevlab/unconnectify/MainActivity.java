@@ -165,9 +165,18 @@ public class MainActivity extends AppCompatActivity implements TimePickerDialog.
             preciseConnectivityAlarm.setAlarmId((int) alarmId);
 
             mAlarmAdapter.addAlarm(preciseConnectivityAlarm);
+            //update the notification
+            updateNextAlarmNotification();
 
             setAlarmsCount();
         }
+    }
+
+    /**
+     * Method that updates the displayed notification with the latest alarm info
+     */
+    private void updateNextAlarmNotification() {
+        AlarmManager.getInstance(MainActivity.this).handleNotification();
     }
 
     /**
@@ -207,6 +216,14 @@ public class MainActivity extends AppCompatActivity implements TimePickerDialog.
         if (DialogUtils.showDialog(MainActivity.this)) {
             Hotspot.getInstance(MainActivity.this).enable();
         }
+    }
+
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        //update the notification
+        updateNextAlarmNotification();
     }
 
     /**

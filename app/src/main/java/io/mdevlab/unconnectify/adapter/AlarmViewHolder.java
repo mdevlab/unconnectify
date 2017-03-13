@@ -4,6 +4,7 @@ import android.app.TimePickerDialog;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v7.widget.CardView;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.CompoundButton;
@@ -62,6 +63,10 @@ public class AlarmViewHolder extends RecyclerView.ViewHolder implements TimePick
     public ToggleButton mHotspot;
     public ToggleButton mBluetooth;
 
+    public View mWifiContainer;
+    public View mHotspotContainer;
+    public View mBluetoothContainer;
+
     public ToggleButton mSunday;
     public ToggleButton mMonday;
     public ToggleButton mTuesday;
@@ -107,7 +112,10 @@ public class AlarmViewHolder extends RecyclerView.ViewHolder implements TimePick
         });
 
         mSwipeRevealLayoutContainer =(LinearLayout) itemView.findViewById(R.id.swipeRevealLayoutContainer);
-        mAlarmContainer =(CardView) itemView.findViewById(R.id.alarm_container);
+        mAlarmContainer =(
+        
+        
+        ) itemView.findViewById(R.id.alarm_container);
         // Switch alarm on/off toggle
         mSwitchOnOffToggle = (ToggleButton) itemView.findViewById(R.id.switch_alarm_on_off_toggle);
         mSwitchOnOffToggle.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
@@ -182,11 +190,16 @@ public class AlarmViewHolder extends RecyclerView.ViewHolder implements TimePick
         mWifi.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (checkWifi)
+                if (checkWifi) {
                     if (mAlarm != null) {
+                        if (isChecked)
+                            mWifiContainer.setBackground(ContextCompat.getDrawable(mContext, R.drawable.white_circle));
+                        else
+                            mWifiContainer.setBackgroundResource(0);
                         onLastConnectionIsUnchecked();
                         AlarmManager.getInstance(mContext).updateAlarmConnection(mAlarm.getAlarmId(), Connection.WIFI, isChecked);
                     }
+                }
             }
         });
 
@@ -197,6 +210,10 @@ public class AlarmViewHolder extends RecyclerView.ViewHolder implements TimePick
                 if (DialogUtils.showDialog(mContext)) {
                     if (checkHotspot) {
                         if (mAlarm != null) {
+                            if (isChecked)
+                                mHotspotContainer.setBackground(ContextCompat.getDrawable(mContext, R.drawable.white_circle));
+                            else
+                                mHotspotContainer.setBackgroundResource(0);
                             onLastConnectionIsUnchecked();
                             AlarmManager.getInstance(mContext).updateAlarmConnection(mAlarm.getAlarmId(), Connection.HOTSPOT, isChecked);
                         }
@@ -211,11 +228,40 @@ public class AlarmViewHolder extends RecyclerView.ViewHolder implements TimePick
         mBluetooth.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (checkBluetooth)
+                if (checkBluetooth) {
                     if (mAlarm != null) {
+                        if (isChecked)
+                            mBluetoothContainer.setBackground(ContextCompat.getDrawable(mContext, R.drawable.white_circle));
+                        else
+                            mBluetoothContainer.setBackgroundResource(0);
                         onLastConnectionIsUnchecked();
                         AlarmManager.getInstance(mContext).updateAlarmConnection(mAlarm.getAlarmId(), Connection.BLUETOOTH, isChecked);
                     }
+                }
+            }
+        });
+
+        mWifiContainer = itemView.findViewById(R.id.wifi_container);
+        mWifiContainer.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mWifi.setChecked(!mWifi.isChecked());
+            }
+        });
+
+        mHotspotContainer = itemView.findViewById(R.id.hotspot_container);
+        mHotspotContainer.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mHotspot.setChecked(!mHotspot.isChecked());
+            }
+        });
+
+        mBluetoothContainer = itemView.findViewById(R.id.bluetooth_container);
+        mBluetoothContainer.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mBluetooth.setChecked(!mBluetooth.isChecked());
             }
         });
 

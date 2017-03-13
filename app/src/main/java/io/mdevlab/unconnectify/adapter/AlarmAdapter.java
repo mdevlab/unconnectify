@@ -129,7 +129,7 @@ public class AlarmAdapter extends RecyclerView.Adapter<AlarmViewHolder> {
 
         // Setting the switch on/off toggle button
         holder.setCheckToggleOnOff(false);
-        holder.mSwitchOnOffToggle.setChecked(true);
+        holder.mSwitchOnOffToggle.setChecked(!currentAlarm.isActive());
         holder.setCheckToggleOnOff(true);
 
         // Start time
@@ -143,19 +143,27 @@ public class AlarmAdapter extends RecyclerView.Adapter<AlarmViewHolder> {
             holder.mTimesSeparator.setAlpha(0.5f);
         }
 
+        boolean tempBool;
+
         // Wifi
         holder.setCheckWifi(false);
-        holder.mWifi.setChecked(currentAlarm.getConnections().contains(Connection.WIFI));
+        tempBool = currentAlarm.getConnections().contains(Connection.WIFI);
+        holder.mWifi.setChecked(tempBool);
+        holder.mWifiContainer.setBackground(tempBool ? ContextCompat.getDrawable(mContext, R.drawable.white_circle) : null);
         holder.setCheckWifi(true);
 
         // Hotspot
         holder.setCheckHotspot(false);
-        holder.mHotspot.setChecked(currentAlarm.getConnections().contains(Connection.HOTSPOT));
+        tempBool = currentAlarm.getConnections().contains(Connection.HOTSPOT);
+        holder.mHotspot.setChecked(tempBool);
+        holder.mHotspotContainer.setBackground(tempBool ? ContextCompat.getDrawable(mContext, R.drawable.white_circle) : null);
         holder.setCheckHotspot(true);
 
         // Bluetooth
         holder.setCheckBluetooth(false);
-        holder.mBluetooth.setChecked(currentAlarm.getConnections().contains(Connection.BLUETOOTH));
+        tempBool = currentAlarm.getConnections().contains(Connection.BLUETOOTH);
+        holder.mBluetooth.setChecked(tempBool);
+        holder.mBluetoothContainer.setBackground(tempBool ? ContextCompat.getDrawable(mContext, R.drawable.white_circle) : null);
         holder.setCheckBluetooth(true);
 
         // Sunday
@@ -187,7 +195,7 @@ public class AlarmAdapter extends RecyclerView.Adapter<AlarmViewHolder> {
         holder.setCheckFriday(false);
         holder.mFriday.setChecked(currentAlarm.getDays().contains(Calendar.FRIDAY));
         holder.setCheckFriday(true);
-        
+
         // Saturday
         holder.setCheckSaturday(false);
         holder.mSaturday.setChecked(currentAlarm.getDays().contains(Calendar.SATURDAY));

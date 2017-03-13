@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/swipeRevealLayout"
     android:layout_width="match_parent"
-    android:layout_height="158dp"
+    android:layout_height="144dp"
     app:dragEdge="right"
     app:mode="same_level">
 
@@ -90,8 +90,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:background="@color/color_10"
-                android:orientation="vertical"
-                android:paddingTop="8dp">
+                android:orientation="vertical">
 
                 <!-- Times -->
                 <LinearLayout
@@ -115,6 +114,7 @@
                         android:id="@+id/times_separator"
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
+                        android:gravity="center"
                         android:text="-"
                         android:textAppearance="@style/CodeFont" />
 
@@ -132,73 +132,83 @@
                 <!-- Connections-->
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="36dp"
+                    android:layout_height="wrap_content"
                     android:gravity="center"
-                    android:orientation="horizontal"
-                    android:layout_marginTop="8dp"
-                    android:layout_marginBottom="8dp">
+                    android:orientation="horizontal">
 
-                    <LinearLayout
-                        android:layout_width="match_parent"
+                    <android.support.v4.widget.Space
+                        android:layout_width="0dp"
                         android:layout_height="match_parent"
-                        android:orientation="horizontal">
+                        android:layout_weight="1" />
 
-                        <android.support.v4.widget.Space
-                            android:layout_width="0dp"
-                            android:layout_height="match_parent"
-                            android:layout_weight="1" />
+                    <!--Wifi-->
+                    <FrameLayout
+                        android:id="@+id/wifi_container"
+                        android:layout_width="48dp"
+                        android:layout_height="48dp">
 
-                        <!--Wifi-->
                         <ToggleButton
                             android:id="@+id/wifi"
-                            android:layout_width="36dp"
-                            android:layout_height="36dp"
+                            android:layout_width="24dp"
+                            android:layout_height="24dp"
                             android:layout_gravity="center"
                             android:background="@drawable/toogle_wifi"
                             android:textOff=""
                             android:textOn="" />
+                    </FrameLayout>
 
-                        <android.support.v4.widget.Space
-                            android:layout_width="0dp"
-                            android:layout_height="match_parent"
-                            android:layout_weight="1" />
+                    <android.support.v4.widget.Space
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1" />
 
-                        <!--Hotspot-->
+                    <!--Hotspot-->
+                    <FrameLayout
+                        android:id="@+id/hotspot_container"
+                        android:layout_width="48dp"
+                        android:layout_height="48dp">
+
                         <ToggleButton
                             android:id="@+id/hotspot"
-                            android:layout_width="36dp"
-                            android:layout_height="36dp"
+                            android:layout_width="24dp"
+                            android:layout_height="24dp"
                             android:layout_gravity="center"
                             android:background="@drawable/toogle_hotspot"
                             android:textOff=""
                             android:textOn="" />
+                    </FrameLayout>
 
-                        <android.support.v4.widget.Space
-                            android:layout_width="0dp"
-                            android:layout_height="match_parent"
-                            android:layout_weight="1" />
+                    <android.support.v4.widget.Space
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1" />
 
-                        <!--Bluetooth-->
+                    <!--Bluetooth-->
+                    <FrameLayout
+                        android:id="@+id/bluetooth_container"
+                        android:layout_width="48dp"
+                        android:layout_height="48dp">
+
                         <ToggleButton
                             android:id="@+id/bluetooth"
-                            android:layout_width="36dp"
-                            android:layout_height="36dp"
+                            android:layout_width="24dp"
+                            android:layout_height="24dp"
                             android:layout_gravity="center"
                             android:background="@drawable/toogle_bluetooth"
                             android:textOff=""
                             android:textOn="" />
+                    </FrameLayout>
 
-                        <android.support.v4.widget.Space
-                            android:layout_width="0dp"
-                            android:layout_height="match_parent"
-                            android:layout_weight="1" />
-                    </LinearLayout>
+                    <android.support.v4.widget.Space
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1" />
                 </LinearLayout>
 
                 <!-- Days -->
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="50dp"
+                    android:layout_height="48dp"
                     android:orientation="horizontal">
 
                     <ToggleButton

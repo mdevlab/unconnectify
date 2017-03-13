@@ -79,8 +79,24 @@ public class AlarmManager {
         ConnectivityJobManager.buildJobRequest(alarm, AlarmUtils.getStringFromConnection(alarm.getFirstConnection()),
                 activate,
                 alarm.getExecuteTimeInMils());
+    }
 
-        alarmSqlHelper.updateAlarmJob(alarm.getAlarmId(), alarm.getJobId());
+    /**
+     * Method that updates the job id in both an alarm object and in
+     * the database.
+     * It was made static as a quick solution, it shouldn't normally be
+     * this way, it should be corrected
+     *
+     * @param alarmId: Id of the alarm of which the job id needs to be updated
+     * @param jobId:   New job id to assign the alarm
+     */
+    public static void updateAlarmJobId(int alarmId, int jobId) {
+        if (alarmSqlHelper != null) {
+            PreciseConnectivityAlarm alarm = alarmSqlHelper.getAlarmById(alarmId);
+            if (alarm != null)
+                alarm.setJobId(jobId);
+            alarmSqlHelper.updateAlarmJob(alarmId, jobId);
+        }
     }
 
     /**
@@ -215,6 +231,12 @@ public class AlarmManager {
             alarm.getDays().add(selectedDay);
         else
             alarm.getDays().remove(Integer.valueOf(selectedDay));
+
+        alarm.setExecuteTimeInMils(AlarmUtils.getAlarmExecutionTime(alarm, true));
+        alarmSqlHelper.updateAlarm(alarmId,
+                alarm.getStartTime(),
+                alarm.getExecuteTimeInMils(),
+                alarm.getDuration());
 
         // Update the alarm in the database
         alarmSqlHelper.updateAlarmDay(alarmId, selectedDay, isActive);

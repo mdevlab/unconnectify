@@ -42,13 +42,14 @@ public class AlarmNotificationManager {
         AlarmSqlHelper alarmSqlHelper = new AlarmSqlHelper(context);
         PreciseConnectivityAlarm preciseConnectivityAlarm = alarmSqlHelper.readNextAlarm();
 
+        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(context);
         //force the verification of the returned Alarm
         if (preciseConnectivityAlarm != null) {
             //Set the text
             String notifiactionText = buildNotificationString(preciseConnectivityAlarm);
 
             //Get the Notification Builder
-            NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(context);
+
 
             //Set the intent
             Intent intent = new Intent(context, MainActivity.class);
@@ -80,6 +81,9 @@ public class AlarmNotificationManager {
 
             // Builds the notification and issues it.
             mNotifyMgr.notify(NOTIFICATIONID, mBuilder.build());
+        }else{
+            //Remove The notification if we get an empty result no Next alarm
+            mNotifyMgr.cancel(NOTIFICATIONID);
         }
 
     }
@@ -96,25 +100,25 @@ public class AlarmNotificationManager {
         List<Connection> connectionList = preciseConnectivityAlarm.getConnections();
         long executionTime = preciseConnectivityAlarm.getExecuteTimeInMils();
         Boolean currentStatus = preciseConnectivityAlarm.getCurrentState();
-        //TODO use the String Builder instead of appending values
 
-        //Build the string
-        String result = "Next - Turning ";
+        //Build the string using String Builder to avoid Instansiation of a new String each time
+        //String is immutable
+        StringBuilder result = new StringBuilder("Next - Turning ");
         if (currentStatus) {
-            result += " OFF ";
+            result.append( " ON ");
         } else
-            result += " ON ";
+            result.append(" OFF ");
 
         for (Connection connection : connectionList) {
-            result += connection + " | ";
+            result.append(connection ).append(" | ");
         }
 
         //Date  with the given format using timeinMillistoDate function from DateUtils
         String returnedDate = DateUtils.timeinMillistoDate(preciseConnectivityAlarm.getStartTime() + executionTime, DateUtils.NOTIFICATION_DATE_FORMAT);
 
         //set the final result
-        result += " at " + returnedDate;
+        result.append(" at ").append( returnedDate);
 
-        return result;
+        return result.toString();
     }
 }

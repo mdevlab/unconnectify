@@ -3,6 +3,8 @@
 </h1>
 **Min SDK:** 16
 
+**Google Play :** <a href="https://play.google.com/store/apps/details?id=io.mdevlab.unconnectify">Unconnectify</a>
+
 ## Usage
 
 The Unconnectify app lets you set up alarms for disabling and reenabling your connections, it puts you in control of your connections -- Easily create alarms and manage them, choose what to disable and/or reenable, at what time and how frequently.  
