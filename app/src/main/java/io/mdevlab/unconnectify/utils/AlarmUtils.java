@@ -100,13 +100,20 @@ public class AlarmUtils {
         return wifi;
     }
 
+    public static long getAlarmExecutionTime(PreciseConnectivityAlarm alarm) {
+        return getAlarmExecutionTime(alarm, false);
+    }
+
     /**
      * Method that returns the time left in miliseconds until the next alarm trigger
      *
      * @param alarm
      * @return
      */
-    public static long getAlarmExecutionTime(PreciseConnectivityAlarm alarm) {
+    public static long getAlarmExecutionTime(PreciseConnectivityAlarm alarm, boolean isAlarmDayBeingUpdated) {
+
+        if (isAlarmDayBeingUpdated)
+            return TimeUnit.DAYS.toMillis(getNumberOfDaysUntilNextAlarm(alarm)) - (System.currentTimeMillis() - alarm.getStartTime());
 
         // The default value of the execution time
         long executionTime = alarm.getStartTime() - System.currentTimeMillis();
@@ -150,13 +157,17 @@ public class AlarmUtils {
         return executionTime;
     }
 
+    public static int getNumberOfDaysUntilNextAlarm(PreciseConnectivityAlarm alarm) {
+        return getNumberOfDaysUntilNextAlarm(alarm, false);
+    }
+
     /**
      * Method that returns the number of days until the next day the
      * alarm is supposed to be launched on
      *
      * @return
      */
-    public static int getNumberOfDaysUntilNextAlarm(PreciseConnectivityAlarm alarm) {
+    public static int getNumberOfDaysUntilNextAlarm(PreciseConnectivityAlarm alarm, boolean skipCurrentDay) {
         /**
          * The minimum number of days is set to the maximum value it can take,
          * which is 7, one week, which is also the maximum periodicity of an
@@ -170,7 +181,7 @@ public class AlarmUtils {
         int differenceBetweenTwoDays;
         for (int day : alarm.getDays()) {
             // We first get the difference between the 2 days
-            differenceBetweenTwoDays = DateUtils.differenceBetweenTwoDays(today, day);
+            differenceBetweenTwoDays = DateUtils.differenceBetweenTwoDays(today, day, alarm, skipCurrentDay);
 
             // A new minimum is assigned to 'minimumDays' if the difference is smaller its value
             if (differenceBetweenTwoDays < minimumDays)
