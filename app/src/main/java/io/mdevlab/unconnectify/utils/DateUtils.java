@@ -56,6 +56,7 @@ public class DateUtils {
         Date date = new Date();
         date.setHours(Integer.parseInt(time.split(":")[0]));
         date.setMinutes(Integer.parseInt(time.split(":")[1]));
+        date.setSeconds(0);
         return date.getTime();
     }
 
