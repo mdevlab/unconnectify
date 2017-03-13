@@ -3,11 +3,13 @@ package io.mdevlab.unconnectify.adapter;
 import android.app.TimePickerDialog;
 import android.content.Context;
 import android.os.Bundle;
+import android.support.v7.widget.CardView;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.ToggleButton;
@@ -41,14 +43,17 @@ public class AlarmViewHolder extends RecyclerView.ViewHolder implements TimePick
 
     SwipeRevealLayout mSwipeRevealLayout;
 
-    View mSwitchOnOffView;
-    ToggleButton mSwitchOnOffToggle;
+    public View mSwipeRevealLayoutContainer;
+    public View mAlarmContainer;
 
-    View mDeleteAlarmView;
-    ImageView mDeleteAlarm;
+    public View mSwitchOnOffView;
+    public ToggleButton mSwitchOnOffToggle;
 
-    View mSwitchedOffAlarmCover;
-    View mContainer;
+    public View mDeleteAlarmView;
+    public ImageView mDeleteAlarm;
+
+    public View mSwitchedOffAlarmCover;
+    public View mContainer;
 
     public TextView mStartTime;
     public TextView mTimesSeparator;
@@ -106,6 +111,11 @@ public class AlarmViewHolder extends RecyclerView.ViewHolder implements TimePick
             }
         });
 
+        mSwipeRevealLayoutContainer =(LinearLayout) itemView.findViewById(R.id.swipeRevealLayoutContainer);
+        mAlarmContainer =(
+        
+        
+        ) itemView.findViewById(R.id.alarm_container);
         // Switch alarm on/off toggle
         mSwitchOnOffToggle = (ToggleButton) itemView.findViewById(R.id.switch_alarm_on_off_toggle);
         mSwitchOnOffToggle.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
