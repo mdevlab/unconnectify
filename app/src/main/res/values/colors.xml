@@ -17,10 +17,10 @@
     <color name="color_10">#414141</color>
 
     <color name="transparent_black">#60000000</color>
+    <color name="transparent_white">#45FFFFFF</color>
 
 
     <!--onboarding Colors-->
     <color name="onboarding_color">@android:color/black</color>
-
 
 </resources>
