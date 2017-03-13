@@ -6,6 +6,8 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
+import io.mdevlab.unconnectify.alarm.PreciseConnectivityAlarm;
+
 /**
  * This class is the class helper for all date conversion and transformations
  * -Using Date formats
@@ -75,7 +77,7 @@ public class DateUtils {
      * @param dayTwo: Day the precedes dayOne
      * @return: Number of days separating dayOne and dayTwo
      */
-    public static int differenceBetweenTwoDays(int dayOne, int dayTwo) {
+    public static int differenceBetweenTwoDays(int dayOne, int dayTwo, PreciseConnectivityAlarm alarm, boolean skipCurrentDay) {
         int theDifference = dayTwo - dayOne;
 
         /**
@@ -86,9 +88,22 @@ public class DateUtils {
          * There are 6 days separating tuesday of week 1 from monday of week 2, so
          * when the result is negative 7 is simply added to it.
          */
-        if (theDifference <= 0)
-            theDifference += 7;
+        if (theDifference == 0) {
 
+            if (skipCurrentDay)
+                return 7;
+
+            String startTime = getTimeFromLong(alarm.getStartTime());
+            int startTimeHour = Integer.parseInt(startTime.split(":")[0]);
+            int startTimeMinutes = Integer.parseInt(startTime.split(":")[1]);
+
+            String currentTime = getTimeFromLong(System.currentTimeMillis());
+            int currentTimeHour = Integer.parseInt(currentTime.split(":")[0]);
+            int currentTimeMinutes = Integer.parseInt(currentTime.split(":")[1]);
+
+            if (startTimeHour < currentTimeHour || (startTimeHour == currentTimeHour && startTimeMinutes < currentTimeMinutes))
+                return 7;
+        }
         return theDifference;
     }
 
