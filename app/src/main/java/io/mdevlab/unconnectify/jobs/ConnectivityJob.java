@@ -104,7 +104,7 @@ public class ConnectivityJob extends Job {
      */
     private void runCurrentJob(boolean enableConnectivity) {
         // Connectivity base object, can be wifi, hotspot or bluetooth
-        Connectivity connectivity = ConnectivityFactory.getConnectivity(AlarmUtils.getConnectionFromString(mTag), mContext);
+        Connectivity connectivity = ConnectivityFactory.INSTANCE.get(AlarmUtils.getConnectionFromString(mTag), mContext);
 
         // check whether for the current connection, the alarm is in conflict with another alarm
         int conflictAlarmId = AlarmManager.getInstance(mContext).handleAlarmConflicts(mCurrentAlarm, AlarmUtils.getConnectionFromString(mTag));
@@ -149,9 +149,9 @@ public class ConnectivityJob extends Job {
      */
     private void enableWifi(boolean activateWifi) {
         if (activateWifi)
-            Wifi.getInstance(mContext).enable();
+            Wifi.Companion.getInstance(mContext).enable();
         else
-            Wifi.getInstance(mContext).disable();
+            Wifi.Companion.getInstance(mContext).disable();
     }
 
     /**
@@ -161,9 +161,9 @@ public class ConnectivityJob extends Job {
      */
     private void enableHotspot(boolean activateHotspot) {
         if (activateHotspot)
-            Hotspot.getInstance(mContext).enable();
+            Hotspot.Companion.getInstance(mContext).enable();
         else
-            Hotspot.getInstance(mContext).disable();
+            Hotspot.Companion.getInstance(mContext).disable();
     }
 
     /**
@@ -173,9 +173,9 @@ public class ConnectivityJob extends Job {
      */
     private void enableBluetooth(boolean activateBluetooth) {
         if (activateBluetooth)
-            Bluetooth.getInstance().enable();
+            Bluetooth.Companion.getInstance().enable();
         else
-            Bluetooth.getInstance().disable();
+            Bluetooth.Companion.getInstance().disable();
     }
 
     /**

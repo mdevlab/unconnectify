@@ -3,7 +3,6 @@ package io.mdevlab.unconnectify.adapter;
 import android.app.TimePickerDialog;
 import android.content.Context;
 import android.os.Bundle;
-import android.support.v7.widget.CardView;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
@@ -112,10 +111,7 @@ public class AlarmViewHolder extends RecyclerView.ViewHolder implements TimePick
         });
 
         mSwipeRevealLayoutContainer =(LinearLayout) itemView.findViewById(R.id.swipeRevealLayoutContainer);
-        mAlarmContainer =(
-        
-        
-        ) itemView.findViewById(R.id.alarm_container);
+        mAlarmContainer = itemView.findViewById(R.id.alarm_container);
         // Switch alarm on/off toggle
         mSwitchOnOffToggle = (ToggleButton) itemView.findViewById(R.id.switch_alarm_on_off_toggle);
         mSwitchOnOffToggle.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {

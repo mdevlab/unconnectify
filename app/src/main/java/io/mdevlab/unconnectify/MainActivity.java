@@ -214,7 +214,7 @@ public class MainActivity extends AppCompatActivity implements TimePickerDialog.
     public void enable(View view) {
 
         if (DialogUtils.showDialog(MainActivity.this)) {
-            Hotspot.getInstance(MainActivity.this).enable();
+            Hotspot.Companion.getInstance(MainActivity.this).enable();
         }
     }
 
@@ -233,7 +233,7 @@ public class MainActivity extends AppCompatActivity implements TimePickerDialog.
      */
     public void disable(View view) {
         if (DialogUtils.showDialog(MainActivity.this)) {
-            Hotspot.getInstance(MainActivity.this).disable();
+            Hotspot.Companion.getInstance(MainActivity.this).disable();
         }
     }
 
